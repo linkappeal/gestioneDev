@@ -1,16 +1,15 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <project version="4">
   <component name="ChangeListManager">
-    <list default="true" id="b201f8b7-90ad-40ee-a6ae-efb29b131cac" name="Default Changelist" comment="Initial commit">
+    <list default="true" id="b201f8b7-90ad-40ee-a6ae-efb29b131cac" name="Default Changelist" comment="">
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/rotte.txt" beforeDir="false" afterPath="$PROJECT_DIR$/rotte.txt" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
     <option name="HIGHLIGHT_NON_ACTIVE_CHANGELIST" value="false" />
     <option name="LAST_RESOLUTION" value="IGNORE" />
   </component>
-  <component name="ComposerSettings" synchronizationState="SYNCHRONIZE">
+  <component name="ComposerSettings" doNotAsk="true" synchronizationState="SYNCHRONIZE">
     <pharConfigPath>$PROJECT_DIR$/composer.json</pharConfigPath>
     <execution />
   </component>
@@ -91,7 +90,8 @@
       <option name="number" value="Default" />
       <option name="presentableId" value="Default" />
       <updated>1616766619816</updated>
-      <workItem from="1616766621204" duration="954000" />
+      <workItem from="1616766621204" duration="1117000" />
+      <workItem from="1616768068512" duration="107000" />
     </task>
     <task id="LOCAL-00001" summary="Initial commit">
       <created>1616767033497</created>
@@ -107,26 +107,40 @@
       <option name="project" value="LOCAL" />
       <updated>1616767551385</updated>
     </task>
-    <option name="localTasksCounter" value="3" />
+    <task id="LOCAL-00003" summary="Initial commit">
+      <created>1616767584517</created>
+      <option name="number" value="00003" />
+      <option name="presentableId" value="LOCAL-00003" />
+      <option name="project" value="LOCAL" />
+      <updated>1616767584517</updated>
+    </task>
+    <task id="LOCAL-00004" summary="Initial commit">
+      <created>1616767607652</created>
+      <option name="number" value="00004" />
+      <option name="presentableId" value="LOCAL-00004" />
+      <option name="project" value="LOCAL" />
+      <updated>1616767607652</updated>
+    </task>
+    <option name="localTasksCounter" value="5" />
     <servers />
   </component>
   <component name="TypeScriptGeneratedFilesManager">
     <option name="version" value="3" />
   </component>
   <component name="VcsManagerConfiguration">
-    <MESSAGE value="Initial commit" />
     <MESSAGE value="Test di commit" />
-    <option name="LAST_COMMIT_MESSAGE" value="Test di commit" />
+    <MESSAGE value="Initial commit" />
+    <option name="LAST_COMMIT_MESSAGE" value="Initial commit" />
   </component>
   <component name="WindowStateProjectService">
-    <state x="351" y="0" key="CommitChangelistDialog2" timestamp="1616767550976">
+    <state x="351" y="0" key="CommitChangelistDialog2" timestamp="1616767607269">
       <screen x="0" y="0" width="1920" height="1040" />
     </state>
-    <state x="351" y="0" key="CommitChangelistDialog2/-1440.0.1440.860/0.0.1920.1040@0.0.1920.1040" timestamp="1616767550976" />
-    <state x="352" y="127" key="Vcs.Push.Dialog.v2" timestamp="1616767556342">
+    <state x="351" y="0" key="CommitChangelistDialog2/-1440.0.1440.860/0.0.1920.1040@0.0.1920.1040" timestamp="1616767607269" />
+    <state x="352" y="127" key="Vcs.Push.Dialog.v2" timestamp="1616767619875">
       <screen x="0" y="0" width="1920" height="1040" />
     </state>
-    <state x="352" y="127" key="Vcs.Push.Dialog.v2/-1440.0.1440.860/0.0.1920.1040@0.0.1920.1040" timestamp="1616767556342" />
+    <state x="352" y="127" key="Vcs.Push.Dialog.v2/-1440.0.1440.860/0.0.1920.1040@0.0.1920.1040" timestamp="1616767619875" />
     <state x="666" y="387" key="git4idea.remote.GitConfigureRemotesDialog" timestamp="1616766829727">
       <screen x="0" y="0" width="1920" height="1040" />
     </state>

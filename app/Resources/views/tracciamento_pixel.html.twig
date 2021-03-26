@@ -180,6 +180,10 @@
 									<div class="col-md-12">
 										<input type="checkbox" name="filtro-unique" class="filtri-checkbox" id="filtro-unique" data-filtro="unique" value="1"> IP Unici
 									</div>
+                                    <!-- modifica Francesco 23-03-2021 -->
+                                    <div class="col-md-12">
+                                        <input type="checkbox" name="filtro-nocookie" class="filtri-checkbox" id="filtro-nocookie" data-filtro="nocookie" value="1"> No Cookie Linkappeal
+                                    </div>
 								</div>
 							</div>
 
@@ -289,6 +293,11 @@
 		
 		if($('#filtro-unique').is(":checked")){
 			unique = '1';
+		}
+
+		<!-- modifica Francesco 23-03-2021 -->
+		if($('#filtro-nocookie').is(":checked")){
+			editore = 'linkappeal_no_cookie';
 		}
 		
 		if(selettore=='libera'){

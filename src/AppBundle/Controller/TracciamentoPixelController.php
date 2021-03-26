@@ -103,7 +103,7 @@ class TracciamentoPixelController extends Controller
 		$sql_cmp = "SELECT * FROM " . $target . "
 					WHERE id_campagna LIKE :id_campagna ";
 					if(!empty($media)){
-						$sql_cmp .= " AND media like :media ";	
+						$sql_cmp .= " AND media not like :media ";
 						$array_values['media'] =  '%'.$media.'%';
 						
 					}
