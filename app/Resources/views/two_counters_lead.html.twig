@@ -1,0 +1,612 @@
+{% extends base_template %}
+
+{% block stylesheets %}
+    {{ parent() }}
+	{% stylesheets 
+            'css/style_counter.css' 
+            'css/datepick.css'
+        %}
+	<link href="{{ asset_url }}" type="text/css" rel="stylesheet"/>
+        <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/font-awesome/4.6.0/css/font-awesome.min.css">
+        <link href="https://fonts.googleapis.com/css?family=Lobster" rel="stylesheet">
+        <link href="https://fonts.googleapis.com/css?family=Oswald:300,400,700" rel="stylesheet">
+	{% endstylesheets %}
+        
+
+{% endblock %}
+
+{% block javascripts %}
+    {{ parent() }}
+        {% javascripts
+
+                'js/jquery.plugin.js'
+                'js/jquery.datepick.js'
+        %}
+        <script src="{{ asset_url }}"></script>
+        {% endjavascripts %}
+    <script type="text/javascript">
+        jQuery(document).ready(function ($) {
+			$(".datepicker").datepick({
+				rangeSelect: true,
+				showTrigger: "<i class='fa fa-calendar'></i>",
+				dateFormat: 'dd/mm/yy',
+				startDate:'01/01/2000',
+				//onSelect: function() {
+				onClose: function() {
+					var loader = $(this).next().next().next().find('.contatore-ricerca').find('#loader');
+					var data = $(this).val();
+					var divRisultato = $(this).data('target');
+					//console.log(data);
+					if(data!=''){
+						var url = "{{admin.generateUrl('countbyrangedata')}}";
+						loader.fadeIn('fast');
+						$.ajax({url: url,
+							data: { data : data, target: divRisultato },
+							success: function(result){
+							console.log(result);
+							if(result.stato==true){ // pixel non presente
+								$(this).next().next('.data_label').html(data);
+								var html = generateHtmlDate(data,result,divRisultato);
+								console.log(html);
+								$('#' + divRisultato).html(html);
+							} // stato
+						}}).done(function() {
+							loader.fadeOut('fast');
+						});
+					}
+				} // onClose
+			}); // datepicker
+		}); // funzione document ready
+						
+		function countByData() {
+			var data = $("#data_conteggio").val();
+		} 
+		function mostraDettagliCampagna(blocco){
+			var object = '.campaign_details-'+blocco;
+			var containerWidth = $(window).width();
+			var objectWidth = $(object).width();
+			var position = (containerWidth / 2) - (objectWidth / 2);
+			$(object).css('left', position);
+			$(object).toggle();
+		}
+		function closePopup(obj){
+			$('.campaign_details-' + obj).fadeOut();
+		}
+		function generateHtmlDate(data,result,target){
+			var html='';
+			if(target=='intarget'){
+			html = '<p class="statistic-counter">'+ result.totali + '</p>';
+			html += '<span class="mostra-dettagli-counter" onclick="mostraDettagliCampagna(\'data\')">Mostra dettagli</span>'+
+					'<div class="dettaglio_campagna campaign_details-data popup" style="display:none;">' +
+						'<div class="top_gruppo_popup">' +
+							'<div class="inner_top_gruppo_left">'+
+								'<h3>Dettaglio data: ' + data +	': <b>'+ result.totali +'</b></h3>'+
+								'<input type="text" class="cercaCampagna-input" id="cercaCampagna-data" onkeyup="cercaCampagna(\'data\')" placeholder="Cerca una campagna...">' +
+							'</div>'+
+							'<div class="inner_top_gruppo_right"><span class="close" onclick="closePopup(\'data\');">x</span></div>'+
+							'<div class="clear"></div>'+
+							'</div>' +
+							'<div class="gruppo_popup data-list">';
+					for(campagnanome in result.per_campagna){
+						html += '<div class="gruppo_campagna" data-search="' +  campagnanome + '">' +
+							'<div class="titolo_campagna_popup">' +  campagnanome + '</div>' +
+							'<div class="clienti_campagna_popup">';
+						for(cli in result.per_campagna[campagnanome]){
+							html += '<div class="row popup_listato_clienti no-margin">' + 
+								'<span class="col-md-10 list-campaign-name">' + result.per_campagna[campagnanome][cli].cliente + '</span>' +
+								'<span class="col-md-2 popup_detail_right">' + result.per_campagna[campagnanome][cli].num + '</span>' +
+							'</div>';
+						}
+						html += '</div>' +
+							'</div>';
+					}
+					html += '</div>';
+					html += '</div>';
+					html += '<h4 class="titolo_off">off-target</h4>' +
+					'<p class="statistic-counter">' + result.totaleOfftarget + '</p>' + 
+					'<span class="mostra-dettagli-counter" onclick="mostraDettagliCampagna(\'data_not\')">Mostra dettagli</span>'+
+						'<div class="dettaglio_campagna campaign_details-data_not popup" style="display:none;">'+
+							'<div class="top_gruppo_popup">'+
+								'<div class="inner_top_gruppo_left">'+
+									'<h3>Dettaglio offtarget per data ' + data +	': <b>'+ result.totaleOfftarget +'</b></h3>'+
+									'<input type="text" class="cercaCampagna-input" id="cercaCampagna-data_not" onkeyup="cercaCampagna(\'data_not\')" placeholder="Cerca una campagna...">' +
+								'</div>'+
+								'<div class="inner_top_gruppo_right"><span class="close" onclick="closePopup(\'data_not\');">x</span></div>'+
+								'<div class="clear"></div>'+
+							'</div>' +
+							'<div class="gruppo_popup data_not-list">';
+							for(campagnanome in result.per_campagnaOfftarget){
+								html += '<div class="gruppo_campagna" data-search="' +  campagnanome + '">' +
+									'<div class="titolo_campagna_popup">' +  campagnanome + '</div>' +
+									'<div class="clienti_campagna_popup">';
+								for(cli in result.per_campagnaOfftarget[campagnanome]){
+									html += '<div class="row popup_listato_clienti no-margin">' + 
+										'<div class="col-md-10 list-campaign-name">' + result.per_campagnaOfftarget[campagnanome][cli].cliente + '</div>' +
+										'<div class="col-md-2 popup_detail_right">' + result.per_campagnaOfftarget[campagnanome][cli].num + '</div>' +
+									'</div>';
+								}
+								html +='</div>' +
+									'</div>';
+							}
+					html +='</div>';
+					html +='</div>';
+			}else{ // se devo mostrare le in dirette
+				html = '<p class="statistic-counter">'+ result.totali + '</p>'+
+				'<span class="mostra-dettagli-counter" onclick="mostraDettagliCampagna(\'data_dirette\')">Mostra dettagli</span>'+
+				'<ul class="dettaglio_campagna campaign_details-data_dirette popup" style="display:none;">'+
+				'<div class="top_gruppo_popup">'+
+						'<div class="inner_top_gruppo_left">'+
+							'<h3>Dettaglio dirette ' + data +	':'+
+								' <b>'+ result.totali + '</b>'+
+							'</h3>'+
+							'<input type="text" class="cercaCampagna-input" id="cercaCampagna-dirette" onkeyup="cercaCampagna(\'dirette\')" placeholder="Cerca una campagna...">' +
+						'</div>'+
+						'<div class="inner_top_gruppo_right"><span class="close" onclick="closePopup(\'data_dirette\');">x</span></div>'+
+						'<div class="clear"></div>'+
+					'</div>'+
+					'<div class="gruppo_popup dirette-list">';
+					for(campagnanome in result.per_campagna){
+						html += '<div class="gruppo_campagna" data-search="' +  campagnanome + '">' +
+							'<div class="titolo_campagna_popup">' +  campagnanome + '</div>' +
+							'<div class="clienti_campagna_popup">';
+						for(cli in result.per_campagna[campagnanome]){
+							html += '<div class="popup_listato_clienti">' + 
+								'<div class="col-md-10 list-campaign-name">Lead Totali</div>' +
+								'<div class="col-md-2 popup_detail_right">' + result.per_campagna[campagnanome][cli].num + '</div>' +
+							'</div>';
+						}
+						html +='</div>' +
+							'</div>';
+					}
+				html += '</div>';
+				html += '</ul>';
+			}
+				return html;
+		}
+		function cercaCampagna(lista) {
+			// Declare variables
+			var input, filter, li, i;
+			input = document.getElementById('cercaCampagna-' + lista);
+			filter = input.value.toUpperCase();
+			li = $('.'+lista+'-list .gruppo_campagna');
+			console.log(li);
+			// Loop through all list items, and hide those who don't match the search query
+			for (i = 0; i < li.length; i++) {
+				if ($(li[i]).data('search').toUpperCase().indexOf(filter) > -1) {
+					li[i].style.display = "";
+				} else {
+					li[i].style.display = "none";
+				}
+			}
+		}
+	</script>
+{% endblock %}
+
+{%- block actions -%}
+{% include 'SonataAdminBundle:CRUD:action_buttons.html.twig' %}
+{%- endblock -%}
+
+{# {% block tab_menu %}{{ knp_menu_render(admin.sidemenu(action), {'currentClass' : 'active', 'template': sonata_admin.adminPool.getTemplate('tab_menu_template')}, 'twig') }}{% endblock %} #}
+
+{% block list_table %}
+
+    <div class="col-xs-12 col-md-12">
+        <div class="box box-primary">
+            <div class="box-body">
+                <section id="counter" class="counter">
+                    <div class="main_counter_area">
+                        <div class="one-overlay p-y-3">
+                            <div class="container">
+                                <div class="row">
+                                    <div class="col-md-12 text-center titolo_primario"><h3 class="box-title">Conteggio Anagrafiche</h3></div>
+                                </div>
+                                <div class="row">
+								<div class="main_counter_content text-center white-text wow fadeInUp">
+									<div class="col-md-3">
+										<h4 class="titoli_blocchi">Altro ieri 
+										({{ "now"|date_modify("- 2 day") | date("d/m") }})
+											<div class="single_counter_box">
+												<p class="statistic-counter">{% if postyesterday is defined %}{{ postyesterday }}{% else %}0{% endif %}</p>
+												
+												<span class="mostra-dettagli-counter" onclick="mostraDettagliCampagna('altroieri')">Mostra dettagli</span>
+												<div class="dettaglio_campagna campaign_details-altroieri popup" style="display:none;">
+													<div class="top_gruppo_popup">
+														<div class="inner_top_gruppo_left">
+															<h3>Dettaglio dell'altro ieri({{ "now"|date_modify("- 2 day") | date("d/m") }}):
+																<b>{% if postyesterday is defined %}{{ postyesterday }}{% else %}0{% endif %}</b>
+															</h3>
+															<input type="text" class="cercaCampagna-input" id="cercaCampagna-altroieri" onkeyup="cercaCampagna('altroieri')" placeholder="Cerca una campagna...">
+														</div>
+														<div class="inner_top_gruppo_right"><span class="close" onclick="closePopup('altroieri');">x</span></div>
+														<div class="clear"></div>
+													</div>
+													<div class="gruppo_popup altroieri-list">
+														{% for key, value in postyesterday_campaign %}
+														<div class="gruppo_campagna" data-search="{{ key }}">
+															<div class="titolo_campagna_popup">{{ key }}</div>
+															<div class="clienti_campagna_popup">
+																{% for clienti in value %}
+																	<div class="row popup_listato_clienti no-margin">
+																		<div class="col-md-10 list-campaign-name">{{ clienti.cliente}}</div>
+																		<div class="col-md-2 popup_detail_right">{{ clienti.num}}</div>
+																	</div>
+																{% endfor %}
+															</div>
+														</div>
+														{% endfor %}
+													</div>
+												</div>
+												<h4 class="titolo_off">off-target</h4>
+												<p class="statistic-counter">
+													{% if postyesterday_notpassed is defined %}
+														{{ postyesterday_notpassed }}
+													{% else %}
+														0
+													{% endif %}
+												</p>
+												<span class="mostra-dettagli-counter" onclick="mostraDettagliCampagna('altroieri_not')">Mostra dettagli</span>
+													<ul class="dettaglio_campagna campaign_details-altroieri_not popup" style="display:none;">
+														<div class="top_gruppo_popup">
+															<div class="inner_top_gruppo_left">
+																<h3>Dettaglio offtarget dell'altro ieri({{ "now"|date_modify("- 2 day") | date("d/m") }}):
+																	<b>{% if postyesterday_notpassed is defined %}{{ postyesterday_notpassed }}{% else %}0{% endif %}</b>
+																</h3>
+																<input type="text" class="cercaCampagna-input" id="cercaCampagna-altroieri_not" onkeyup="cercaCampagna('altroieri_not')" placeholder="Cerca una campagna...">
+															</div>
+															<div class="inner_top_gruppo_right"><span class="close" onclick="closePopup('altroieri_not');">x</span></div>
+															<div class="clear"></div>
+														</div>
+													<div class="gruppo_popup altroieri_not-list">
+														{% for key, value in postyesterday_offtarget %}
+														<div class="gruppo_campagna" data-search="{{ key }}">
+															<div class="titolo_campagna_popup">{{ key }}</div>
+															<div class="clienti_campagna_popup">
+																{% for clienti in value %}
+																	<div class="row popup_listato_clienti no-margin">
+																		<div class="col-md-10 list-campaign-name">{{ clienti.cliente}}</div>
+																		<div class="col-md-2 popup_detail_right">{{ clienti.num}}</div>
+																	</div>
+																{% endfor %}
+															</div>
+														</div>
+														{% endfor %}
+													</div>
+													</ul>
+											</div>
+										</h4>
+									</div>
+										<div class="col-md-3">   
+											<h4 class="titoli_blocchi">Ieri ({{ "now"|date_modify("- 1 day") | date("d/m") }})
+												<div class="single_counter_box">
+													<p class="statistic-counter">
+														{% if yesterday is defined %}
+															{{ yesterday }}
+														{% else %}
+															0
+														{% endif %}
+													</p>
+													<span class="mostra-dettagli-counter" onclick="mostraDettagliCampagna('ieri')">Mostra dettagli</span>
+													<div class="dettaglio_campagna campaign_details-ieri popup" style="display:none;">
+														<div class="top_gruppo_popup">
+															<div class="inner_top_gruppo_left">
+																<h3>Dettaglio di ieri ({{ "now"|date_modify("- 1 day") | date("d/m") }}):
+																	<b>{% if yesterday is defined %}{{ yesterday }}{% else %}0{% endif %}</b>
+																</h3>
+																<input type="text" class="cercaCampagna-input" id="cercaCampagna-ieri" onkeyup="cercaCampagna('ieri')" placeholder="Cerca una campagna...">
+															</div>
+															<div class="inner_top_gruppo_right"><span class="close" onclick="closePopup('ieri');">x</span></div>
+															<div class="clear"></div>
+														</div>
+														<div class="gruppo_popup ieri-list">
+															{% for key, value in yesterday_campaign %}
+																<div class="gruppo_campagna" data-search="{{ key }}">
+																	<div class="titolo_campagna_popup">{{ key }}</div>
+																	<div class="clienti_campagna_popup">
+																		{% for clienti in value %}
+																			<div class="row popup_listato_clienti no-margin">
+																				<div class="col-md-10 list-campaign-name">{{ clienti.cliente}}</div>
+																				<div class="col-md-2 popup_detail_right">{{ clienti.num}}</div>
+																			</div>
+																		{% endfor %}
+																	</div>
+																</div>
+															{% endfor %}
+														</div>
+													</div>
+													<h4 class="titolo_off">off-target</h4>
+													<p class="statistic-counter">
+														{% if yesterday_notpassed is defined %}
+																{{ yesterday_notpassed }}
+															</p>
+														{% else %}
+															0
+														{% endif %}
+													</p>
+													<span class="mostra-dettagli-counter" onclick="mostraDettagliCampagna('ieri_not')">Mostra dettagli</span>
+													<div class="dettaglio_campagna campaign_details-ieri_not popup" style="display:none;">
+														<div class="top_gruppo_popup">
+															<div class="inner_top_gruppo_left">
+																<h3>Dettaglio Offtarget di ieri ({{ "now"|date_modify("- 1 day") | date("d/m") }}):
+																	<b>{% if yesterday_notpassed is defined %}{{ yesterday_notpassed }}{% else %}0{% endif %}</b>
+																</h3>
+																<input type="text" class="cercaCampagna-input" id="cercaCampagna-ieri_not" onkeyup="cercaCampagna('ieri_not')" placeholder="Cerca una campagna...">
+															</div>
+															<div class="inner_top_gruppo_right"><span class="close" onclick="closePopup('ieri_not');">x</span></div>
+															<div class="clear"></div>
+														</div>
+														<div class="gruppo_popup ieri_not-list">
+															{% for key, value in yesterday_offtarget %}
+																<div class="gruppo_campagna" data-search="{{ key }}">
+																	<div class="titolo_campagna_popup">{{ key }}</div>
+																	<div class="clienti_campagna_popup">
+																		{% for clienti in value %}
+																			<div class="row popup_listato_clienti no-margin">
+																				<div class="col-md-10 list-campaign-name">{{ clienti.cliente}}</div>
+																				<div class="col-md-2 popup_detail_right">{{ clienti.num}}</div>
+																			</div>
+																		{% endfor %}
+																	</div>
+																</div>
+															{% endfor %}
+														</div>
+													</div>
+												</div>
+											</h4>
+										</div> <!-- div col-md-3 -->
+										
+										
+										<div class="col-md-3">
+										<h4 class="titoli_blocchi">Oggi ({{ "now"|date("d/m") }})
+											<div class="single_counter_box">
+												   <small class="last-cron-text">
+													<i class="fa fa-clock-o fa-lg" aria-hidden="true"></i>
+														Ultimo cron {{ data_script }}
+											           </small> 
+												
+												<p class="statistic-counter">
+													{% if today is defined %}
+														{{today}}
+													{% else %}
+														0
+													{% endif %}
+												</p>
+												<span class="mostra-dettagli-counter" onclick="mostraDettagliCampagna('oggi')">Mostra dettagli</span>
+												<div class="dettaglio_campagna campaign_details-oggi popup" style="display:none;">
+													<div class="top_gruppo_popup">
+														<div class="inner_top_gruppo_left">
+															<h3>Dettaglio di oggi ({{ "now"|date("d/m") }}):
+																<b>{% if today is defined %}{{ today }}{% else %}0{% endif %}</b>
+															</h3>
+															<input type="text" class="cercaCampagna-input" id="cercaCampagna-oggi" onkeyup="cercaCampagna('oggi')" placeholder="Cerca una campagna...">
+														</div>
+														<div class="inner_top_gruppo_right"><span class="close" onclick="closePopup('oggi');">x</span></div>
+														<div class="clear"></div>
+													</div>
+													<div class="gruppo_popup oggi-list">
+														{% for key, value in today_campaign %}
+															<div class="gruppo_campagna" data-search="{{ key }}">
+																<div class="titolo_campagna_popup">{{ key }}</div>
+																<div class="clienti_campagna_popup">
+																	{% for clienti in value %}
+																		<div class="row popup_listato_clienti no-margin">
+																			<div class="col-md-10 list-campaign-name">{{ clienti.cliente}}</div>
+																			<div class="col-md-2 popup_detail_right">{{ clienti.num}}</div>
+																		</div>
+																	{% endfor %}
+																</div>
+															</div>
+														{% endfor %}
+													</div>
+												</div>
+												<h4 class="titolo_off">off-target</h4>
+												<p class="statistic-counter">
+													{% if today_notpassed is defined %}
+														{{today_notpassed}}
+													{% else %}
+														0
+													{% endif %}
+												</p>
+												<span class="mostra-dettagli-counter" onclick="mostraDettagliCampagna('oggi_not')">Mostra dettagli</span>
+												<div class="dettaglio_campagna campaign_details-oggi_not popup" style="display:none;">
+													<div class="top_gruppo_popup">
+														<div class="inner_top_gruppo_left">
+															<h3>Dettaglio offtarget di oggi({{ "now"|date("d/m") }}):
+																<b>{% if today_notpassed is defined %}{{ today_notpassed }}{% else %}0{% endif %}</b>
+															</h3>
+														</div>
+														<div class="inner_top_gruppo_right"><span class="close" onclick="closePopup('oggi_not');">x</span></div>
+														<div class="clear"></div>
+													</div>
+													{% for key, value in today_offtarget %}
+													<div class="gruppo_campagna" data-search="{{ key }}">
+														<div class="titolo_campagna_popup">{{ key }}</div>
+														<div class="clienti_campagna_popup">
+															{% for clienti in value %}
+																<div class="row popup_listato_clienti no-margin">
+																	<div class="col-md-10 list-campaign-name">{{ clienti.cliente}}</div>
+																	<div class="col-md-2 popup_detail_right">{{ clienti.num}}</div>
+																</div>
+															{% endfor %}
+														</div>
+													</div>
+													{% endfor %}
+												</div> 
+											</div>
+										</h4>
+									</div> <!-- div col-md-3 -->
+									
+									<div class="col-md-3">   
+										<h4 class="titoli_blocchi">
+											<input type="hidden"  id="data_conteggio" class="datepicker" name="data_conteggio" data-target="intarget" class="form-control" />
+											Data: <span class="data_label"></span>
+											<div class="single_counter_box">
+												<div class="contatore-ricerca" id="intarget">
+													<img id="loader" style="display:none;" src="/images/loader.gif" />
+												</div>
+											</div>
+										</h4>
+									</div>
+									</div>
+								</div> <!-- container -->
+							</div> <!-- one-overlay p-y-3 -->
+						</div> <!-- main_counter_area -->
+                </section><!-- End of counter Section -->
+            </div>
+        </div>
+    </div>
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	<!-- SEZIONE CAMPAGNE IN DIRETTA -->
+	<div class="col-xs-12 col-md-12">
+        <div class="box box-primary">
+            <div class="box-body">
+                <section id="counter" class="counter">
+                    <div class="main_counter_area">
+                        <div class="one-overlay p-y-3">
+                            <div class="container">
+                                <div class="row">
+                                    <div class="col-md-12 text-center titolo_primario"><h3 class="box-title">Conteggio Campagne Dirette</h3></div>
+                                </div>
+                                <div class="row">
+								<div class="main_counter_content text-center white-text wow fadeInUp">
+									<div class="col-md-3">
+										<h4 class="titoli_blocchi">Altro ieri 
+										({{ "now"|date_modify("- 2 day") | date("d/m") }})
+											<div class="single_counter_box">
+												{% if postyesterday_indirette is defined and postyesterday_indirette > 0 %}
+													<p class="indirette-counter">
+														{{postyesterday_indirette}}
+													</p>
+												<span class="mostra-dettagli-counter" onclick="mostraDettagliCampagna('altroieri_indirette')">Mostra dettagli</span>
+												<ul class="dettaglio_campagna campaign_details-altroieri_indirette popup" style="display:none;">
+													<div class="top_gruppo_popup">
+														<div class="inner_top_gruppo_left">
+															<h3>Dettaglio dirette dell'altro ieri({{ "now"|date_modify("- 2 day") | date("d/m") }}):
+																<b>{% if postyesterday_indirette is defined %}{{ postyesterday_indirette }}{% else %}0{% endif %}</b>
+															</h3>
+														</div>
+														<div class="inner_top_gruppo_right"><span class="close" onclick="closePopup('altroieri_indirette');">x</span></div>
+														<div class="clear"></div>
+													</div>
+													{% for key, value in postyesterday_indirette_campaign %}
+														<div class="gruppo_campagna" data-search="{{ key }}">
+															<div class="titolo_campagna_popup">{{ key }} - {{value[0].num}}</div>
+														</div>
+													{% endfor %}
+												</ul>
+												{% else %}
+													<p class="indirette-counter">
+														0
+													</p>
+												{% endif %}
+											</div>
+										</h4>
+									</div>
+										<div class="col-md-3">   
+											<h4 class="titoli_blocchi">Ieri ({{ "now"|date_modify("- 1 day") | date("d/m") }})
+												<div class="single_counter_box">
+														{% if yesterday_indirette is defined and yesterday_indirette > 0 %}
+															<p class="indirette-counter">
+																{{yesterday_indirette}}
+															</p>
+                                                        <span class="mostra-dettagli-counter" onclick="mostraDettagliCampagna('ieri_indirette')">Mostra dettagli</span>
+												        <ul class="dettaglio_campagna campaign_details-ieri_indirette popup" style="display:none;">
+															<div class="top_gruppo_popup">
+																<div class="inner_top_gruppo_left">
+																	<h3>Dettaglio dirette di ieri ({{ "now"|date_modify("- 1 day") | date("d/m") }}):
+																		<b>
+																			{% if yesterday_indirette is defined %}
+																				{{ yesterday_indirette }}
+																			{% else %}
+																				0
+																			{% endif %}
+																		</b>
+																	</h3>
+																</div>
+																<div class="inner_top_gruppo_right"><span class="close" onclick="closePopup('ieri_indirette');">x</span></div>
+																<div class="clear"></div>
+															</div>
+															{% for key, value in yesterday_indirette_campaign %}
+															<div class="gruppo_campagna" data-search="{{ key }}">
+																<div class="titolo_campagna_popup">{{ key }} - {{value[0].num}}</div>
+															</div>
+															{% endfor %}
+														</ul> 
+														{% else %}
+															<p class="indirette-counter">
+																0
+															</p>
+														{% endif %}
+												</div>
+											</h4>
+										</div>
+									<div class="col-md-3">
+										<h4 class="titoli_blocchi">Oggi ({{ "now"|date("d/m") }})
+											<div class="single_counter_box">
+														{% if today_indirette is defined and today_indirette > 0 %}
+															<p class="indirette-counter">
+																{{today_indirette}}
+															</p>
+														
+												<span class="mostra-dettagli-counter" onclick="mostraDettagliCampagna('oggi_indirette')">Mostra dettagli</span>
+												<ul class="dettaglio_campagna campaign_details-oggi_indirette popup" style="display:none;">
+												<div class="top_gruppo_popup">
+														<div class="inner_top_gruppo_left">
+															<h3>Dettaglio dirette di oggi({{  "now"|date("d/m") }}):
+																<b>{% if today_indirette is defined %}{{ today_indirette }}{% else %}0{% endif %}</b>
+															</h3>
+														</div>
+														<div class="inner_top_gruppo_right"><span class="close" onclick="closePopup('oggi_indirette');">x</span></div>
+														<div class="clear"></div>
+													</div>
+													{% for key, value in today_indirette_campaign %}
+													<div class="gruppo_campagna" data-search="{{ key }}">
+														<div class="titolo_campagna_popup">{{ key }} - {{value[0].num}}</div>
+													</div>
+													{% endfor %}
+												</ul> 
+												{% else %}
+													<p class="indirette-counter">
+														0
+													</p>
+												{% endif %}
+											</div>
+										</h4>
+									</div>
+									
+										<div class="col-md-3">   
+											<h4 class="titoli_blocchi">
+												<input type="hidden"  id="data_conteggio" name="data_conteggio" class="datepicker" data-target="dirette" class="form-control">
+												Data: <span class="data_label"></span>
+												<div class="single_counter_box">
+													<div class="contatore-ricerca" id="dirette">
+														<img id="loader" style="display:none;" src="/images/loader.gif" />
+													</div>
+												</div>
+											</h4>
+										</div>
+									</div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </section><!-- End of counter Section -->
+            </div>
+        </div>
+    </div>
+{% endblock %}
+
+
+

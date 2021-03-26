@@ -1,0 +1,177 @@
+imports:
+    - { resource: parameters.yml }
+    - { resource: security.yml }
+    - { resource: services.yml }
+    - { resource: "@AppBundle/Resources/config/admin.yml" }
+    - { resource: "@AppBundle/Resources/config/filter_services.yml" }
+
+# Put parameters here that don't need to change on each machine where the app is deployed
+# http://symfony.com/doc/current/best_practices/configuration.html#application-related-configuration
+parameters:
+    locale: it
+
+framework:
+    #esi:             ~
+    translator:      { fallbacks: ["%locale%"] }
+    secret:          "%secret%"
+    router:
+        resource: "%kernel.root_dir%/config/routing.yml"
+        strict_requirements: ~
+    form:            ~
+    csrf_protection: ~
+    validation:      { enable_annotations: true }
+    #serializer:      { enable_annotations: true }
+    templating:
+        engines: ['twig']
+    default_locale:  "%locale%"
+    trusted_hosts:   ~
+    trusted_proxies: ~
+    session:
+        # http://symfony.com/doc/current/reference/configuration/framework.html#handler-id
+        handler_id:  session.handler.native_file
+        save_path:   "%kernel.root_dir%/../var/sessions/%kernel.environment%"
+    fragments:       ~
+    http_method_override: true
+    assets: ~
+    php_errors:
+        log: true
+
+# Twig Configuration
+twig:
+    debug:            "%kernel.debug%"
+    strict_variables: "%kernel.debug%"
+    form_themes:
+        - 'SonataCoreBundle:Form:datepicker.html.twig'
+
+# Doctrine Configuration
+doctrine:
+    dbal:
+        default_connection: default
+        connections:
+            default:
+                driver:   pdo_mysql
+                host:     "%database_host%"
+                port:     "%database_port%"
+                dbname:   "%database_name%"
+                user:     "%database_user%"
+                password: "%database_password%"
+                charset:  UTF8
+                mapping_types:
+                    enum: string
+            pixel:
+                driver:   pdo_mysql
+                host:     '%pxl_database_host%'
+                port:     '%pxl_database_port%'
+                dbname:   "%pxl_database_name%"
+                user:     '%pxl_database_user%'
+                password: '%pxl_database_password%'
+                charset:  UTF8                    
+        # if using pdo_sqlite as your database driver:
+        #   1. add the path in parameters.yml
+        #     e.g. database_path: "%kernel.root_dir%/../var/data/data.sqlite"
+        #   2. Uncomment database_path in parameters.yml.dist
+        #   3. Uncomment next line:
+        #path:     "%database_path%"
+
+    orm:
+        default_entity_manager: default
+        entity_managers:
+            default:
+                connection: default
+                mappings:
+                    AppBundle:  ~
+            pixel_man:
+                connection: pixel
+                mappings:
+                    AppBundle: ~
+
+# Swiftmailer Configuration
+swiftmailer:
+    transport: "%mailer_transport%"
+    host:      "%mailer_host%"
+    username:  "%mailer_user%"
+    password:  "%mailer_password%"
+    spool:     { type: memory }
+    
+sonata_core: ~
+
+sonata_admin:
+    title:      LinkAppeal
+    title_logo: bundles/app/images/linkappeal_logo.png
+
+    persist_filters:      true
+    show_mosaic_button:   false
+    
+    templates:
+        #list:   SonataAdminBundle:CRUD:list.html.twig
+        #custom_list.html.twig
+        layout:  custom_layout.html.twig
+        
+    dashboard:
+        groups:
+            app.admin.group.gestione_utenti:
+                label: 'Gestione Utenti'
+                label_catalogue: AppBundle
+                items:
+                    - app.admin.utenti_backend
+                    - app.admin.ip_whitelist
+                roles: [ ROLE_ADMIN ]
+                
+            app.admin.group.anagrafiche:
+                label: 'Clienti/Fornitori'
+                label_catalogue: AppBundle
+                items:
+                    - app.admin.cliente
+                    - app.admin.fornitori
+                roles: [ ROLE_BACKEND_ACCESS ]
+           
+            app.admin.group.lead_extraction:
+                label: 'Anagrafiche'
+                label_catalogue: AppBundle
+                items:
+                    - app.admin.lead_uni
+                    - route: admin_app_lead_uni_list
+                      label: Estrazione Anagrafiche
+                roles: [ ROLE_BACKEND_ACCESS ]
+                
+            app.admin.group.counters:
+                label: 'Contatori'
+                label_catalogue: AppBundle
+                items:
+                    - app.admin.two_counters
+                    - route: two_counters_twocounters 
+                      label: Contatori
+                roles: [ ROLE_BACKEND_ACCESS ] 
+                
+            app.admin.group.landings:
+                label: 'Landings'
+                label_catalogue: AppBundle
+                items:
+                    - app.admin.landings
+                    - app.admin.aclientilandings
+                    - app.admin.campagne
+                roles: [ ROLE_ADMIN ]                
+                
+            app.admin.group.pixel_manager:
+                label: 'Pixel Manager'
+                label_catalogue: AppBundle
+                items:
+                    - app.admin.pixel_manager
+                    - route: pixel_manager_counters_pixelmanager 
+                      label: Pixel Manager
+                roles: [ ROLE_BACKEND_ACCESS ]                  
+                
+            
+    
+sonata_block:
+    default_contexts: [cms]
+    blocks:
+
+        # enable the SonataAdminBundle block
+        sonata.admin.block.admin_list:
+            contexts:   [admin]
+            
+fos_user:
+    db_driver: orm
+    firewall_name: main
+    user_class: AppBundle\Entity\User

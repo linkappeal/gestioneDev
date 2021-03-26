@@ -1,0 +1,316 @@
+<?php
+
+		
+$lock_file = __DIR__ . '/_miscelatore_light.lock';
+if (file_exists($lock_file )) {
+		die('Spiacente, un\'altra istanza dello Script è in esecuzione...');
+		$errorStr  = date("Y-m-d,H-i-s")." Error: Altra istanza in esecuzione: \n";		
+		$errorStr .= date("Y-m-d,H-i-s")." Exiting";
+		exit();
+		}
+$myfile = fopen($lock_file , "w") or die("Unable to create lock file!");
+error_reporting(E_ERROR);
+
+
+//settaggio del file di log
+//Directory corrente
+$curDir = dirname(__FILE__) ;
+$arrPath = explode("/", $curDir) ;
+
+$logfile = fopen($curDir."/log/".date("Ymd")."_miscelatore_light.txt", "a"); //FILE di LOG
+
+fwrite($logfile, date("Y-m-d,H-i-s")."\n\n\n\n/************************************************/ \n");
+fwrite($logfile, date("Y-m-d,H-i-s")."\n Avvio Script per Il miscelatore light di campagna\n\n");
+echo "\n\n /****  Avvio Script per Il miscelatore light di campagna ****/\n\n";
+
+//DBS
+
+
+/*************** 3) CONNESSIONE A DB DESTINAZIONE *****************/
+// Qui impostiamo i parametri di connessione al DB
+$config_file = $curDir."/../../../app/config/parameters.yml"; //file di config di symfony
+$db_config = yaml_parse_file($config_file);
+
+
+//MISCELATA LIGHT SCRIPT
+//connessioni al server
+
+//sintassi dell'array delle tabelle di source e di destinaz array('nometabella'=>'nomedb','nometabella2'=>'nomedb')
+$HotSourceTable=array();//SERIALIZZATO nometabella=>nomedb i db possono essere: concorso(leadout), offertesumisura,esclusivaperte,offertepromozioni,gestione, leadout
+	
+	
+	
+// DATABASE ALTRI
+	
+//esclusiva per te:
+$DBesclusivaperte =  array('host'=>'46.16.95.229', 'db'=>'esclusiv_cpl','username'=>'esclusiv_cplus', 'password'=>'HYpN%Ep!Mhxg', 'nome'=>'NAME','cognome'=>'SURNAME','cellulare'=>'PHONE1');
+$DBoffertesumisura=  array('host'=>'46.16.95.229', 'db'=>'offertes_cpl','username'=>'offertes_ucps', 'password'=>';2mgK6y7sZQg', 'nome'=>'NAME','cognome'=>'SURNAME','cellulare'=>'PHONE1');
+$DBoffertepromozioni=  array('host'=>'46.16.95.34', 'db'=>'offertep_cpl','username'=>'offertep_cpl', 'password'=>'UW[J8ScXWUJC', 'nome'=>'NAME','cognome'=>'SURNAME','cellulare'=>'PHONE1');
+$DBleadout=  array('host'=>'46.16.95.34', 'db'=>'leadoutl_dbb','username'=>'leadoutl_usbd', 'password'=>'A%2)8s!JTkBp','nome'=>'NAME','cognome'=>'SURNAME','cellulare'=>'PHONE1');
+$DBconcorso =  array('host'=>'46.254.38.170', 'db'=>'leadoutcnc_db562','username'=>'leadoutcnc_usrbd', 'password'=>'pB?HzC4GPZQi','nome'=>'nome','cognome'=>'cognome','cellulare'=>'cellulare');
+$DBgestione= array('host'=>$db_config['parameters']['database_host'], 'db'=>$db_config['parameters']['database_name'],'username'=>$db_config['parameters']['database_user'], 'password'=>$db_config['parameters']['database_password'],'nome'=>'nome','cognome'=>'cognome','cellulare'=>'cellulare');
+
+$DbsNameArray=array('gestione', 'concorso', 'offertesumisura', 'esclusivaperte', 'offertepromozioni', 'leadout');
+
+//test connections:
+foreach($DbsNameArray as $DBName) {
+	$dbvarname=${'DB'.$DBName};
+	$mysqli_par = new mysqli($dbvarname['host'],
+                          $dbvarname['username'],
+						  $dbvarname['password'],
+                          $dbvarname['db']);
+	if ($mysqli_par->connect_errno) {
+		echo "Non siamo riusciti a conneterci a: ".$DBName."; \n\n";
+	}else{
+		echo "Siamo riusciti a conneterci a: ".$DBName."; \n\n ";
+	}
+}
+
+
+//recupero row da tabella per ogni row ciclo:
+
+$SelectMiscelata= "select * from miscelate_light";
+//array che conterra tutti gli extrafield label del concorso
+$mysqli_get_misc = new mysqli($DBgestione['host'],
+                          $DBgestione['username'],
+						  $DBgestione['password'],
+                          $DBgestione['db']);
+
+if (!$result = $mysqli_get_misc->query($SelectMiscelata)) {
+	echo "errore recupero miscelate";
+	$errorStr  = date("Y-m-d,H-i-s")." Error: Failed to make a MySQL query, here is why: \n";
+	$errorStr .= date("Y-m-d,H-i-s")." Query: " . $SelectMiscelata . "\n";
+	$errorStr .= date("Y-m-d,H-i-s")."Errno: " . $mysqli_get_misc->errno . "\n";
+	$errorStr .= date("Y-m-d,H-i-s")."Error: " . $mysqli_get_misc->error . "\n";
+	fwrite($logfile, $errorStr);
+	esci();
+}else {
+	$countMisc=0;
+	while ($misc = $result->fetch_assoc()){
+		$MiscId=$misc['id'];
+		$NewLeads=array();
+		$HotSources=$misc['hot_sources'];
+		$ColdSource=$misc['cold_source'];
+		$ColdSource=unserialize($ColdSource);
+		$MixedTable=$misc['mixed_table'];
+		$PercentualeFredde=$misc['percentuale_fredde'];
+		if (empty($HotSources) OR empty($MixedTable)){
+			echo "la miscelata con id ".$MiscId." ha dei campi mancanti.. salto alla prossima \n\n";
+			continue;
+		}
+		//unserialize
+		$HotSources=unserialize($HotSources);
+		if(!is_array($HotSources)){
+			echo "il campo hotsources della miscelata ".$MiscId." non è correttamente settato... deve essere array.. salto alla prossima\n\n";
+			continue;
+		}
+		
+		$MixedTable=unserialize($MixedTable);
+		if(!is_array($MixedTable) OR !isset($MixedTable[1]) OR !in_array($MixedTable[1],$DbsNameArray)){
+			echo "il campo mixed_table della miscelata ".$MiscId." non è correttamente settato... deve essere array.. salto alla prossima\n\n";
+			continue;
+		}
+		echo "------ Stiamo lavorando la miscelata con id: ".$MiscId . "\n\n";
+		//recupero dalla mixed table tutte le chiavi primarie cellulare e le metto in comma separatedstring
+		$dbvarname=${'DB'.$MixedTable[1]};
+		$FieldCellulareInMixed=$dbvarname['cellulare'];
+		$QueryAlreadyPassedKeys="select ".$dbvarname['cellulare']." from ".$MixedTable[0]; 
+		echo "query recupero gia passate:".$QueryAlreadyPassedKeys;
+		
+		$mysqli_par = new mysqli($dbvarname['host'],
+							  $dbvarname['username'],
+							  $dbvarname['password'],
+								$dbvarname['db']);
+		$KeyAlreadyPassed='';
+		if (!$result = $mysqli_par->query($QueryAlreadyPassedKeys)) {
+			echo "errore recupero DATI GIA PASSATI";
+		}else {
+			$countKey=0;
+			while ($Cellmisc = $result->fetch_assoc()){
+				if($countKey==0){
+					$KeyAlreadyPassed='"'.$Cellmisc[$FieldCellulareInMixed].'"';
+				}else{
+					$KeyAlreadyPassed.=', "'.$Cellmisc[$FieldCellulareInMixed].'"';
+				}
+				$countKey++;
+			}
+			//parte delle query che evitano di ripetere l'import su chiave primaria
+			if($KeyAlreadyPassed!=''){
+				$KeyAlreadyPassed=" where cellulare not in (".$KeyAlreadyPassed.")";
+			}
+		}
+		echo "already passed: ".$KeyAlreadyPassed;
+			//unserializzo hotsourcetable, per ogni hotsourcetable controllo se il db è presente fra la rosa dei db, tento di connettermi alla tabella indicata con query_:
+			$CountHotNewLead=0;
+			foreach($HotSources as $HotSourceName=>$HotSourceDb){
+				echo "sto analizzando la hotsource:".$HotSourceName.", con db: ".$HotSourceDb . "\n\n";
+				if(!in_array($HotSourceDb, $DbsNameArray)){
+					echo "il db ".$HotSourceDb." della hotsource ".$HotSourceName." non è fra la rosa dei db possibili.. salto alla prossima hs.\n\n";
+					continue;
+				}
+				$dbvarname=${'DB'.$HotSourceDb};
+				$mysqli_par = new mysqli($dbvarname['host'],
+							  $dbvarname['username'],
+							  $dbvarname['password'],
+							  $dbvarname['db']);
+				//recupero le lead
+				$KeyAlreadyPassedToQuery=str_replace("cellulare", $dbvarname['cellulare'], $KeyAlreadyPassed);
+				$selectHotDataQuery="select ".$dbvarname['nome'].", ".$dbvarname['cognome'].", ".$dbvarname['cellulare']." from ".$HotSourceName.$KeyAlreadyPassedToQuery;
+				echo "query: ".$selectHotDataQuery. "\n";
+				if (!$result = $mysqli_par->query($selectHotDataQuery)) {
+					echo "errore recupero dati dalla hotsource";
+					$errorStr  = date("Y-m-d,H-i-s")." Error: Failed to make a MySQL query, here is why: \n";
+					$errorStr .= date("Y-m-d,H-i-s")." Query: " . $SelectMiscelata . "\n";
+					$errorStr .= date("Y-m-d,H-i-s")."Errno: " . $mysqli_get_misc->errno . "\n";
+					$errorStr .= date("Y-m-d,H-i-s")."Error: " . $mysqli_get_misc->error . "\n";
+					continue;
+				}else {
+					while ($Datas = $result->fetch_assoc()){
+						$LeadName=$Datas[$dbvarname['nome']];
+						$LeadCognome=$Datas[$dbvarname['cognome']];
+						$LeadCellulare=$Datas[$dbvarname['cellulare']];
+						//echo "lead datas: nome:".$LeadName."; cognome: ".$LeadCognome."; cellulare: ".$LeadCellulare . " \n\n";
+						$NewLeads[]=array($LeadName, $LeadCognome,$LeadCellulare);
+						$CountHotNewLead++;
+					}
+				}
+			}
+			if($CountHotNewLead>0){
+				echo "abbiamo recuperato ".$CountHotNewLead." lead calde, procediamo alle fredde \n\n";
+			}else{
+				echo "non abbiamo recuperato nessuna lead calda, passiamo alla prossima miscelata \n\n";
+				continue;
+			}
+			echo "lead calde trovate !!!!!!!: ".$CountHotNewLead."; percent: ".$PercentualeFredde."\n\n\r";
+			
+			$NumberOfCold=ceil(($CountHotNewLead*$PercentualeFredde)/(100-$PercentualeFredde));
+			echo "numero di fredde da recuperare:".$NumberOfCold;
+			//selezioniamo le fredde
+			print_r($ColdSource);
+			
+			if(is_array($ColdSource)){
+				echo "cold source isarray: yes <br>\n";
+			}else{
+				echo "cold source isarray:  no <br>\n";
+			}
+			if(isset($ColdSource[1])){
+				echo "cold source isset: yes <br>\n";
+			}else{
+				echo "cold source isset: no <br>\n";
+			}
+			if(in_array($ColdSource[1],$DbsNameArray)){
+				echo "cold source inarray: yes <br>\n";
+			}else{
+				echo "cold source inarray: no <br>\n";
+			}
+		
+			if($NumberOfCold>0 AND is_array($ColdSource) AND isset($ColdSource[1]) AND in_array($ColdSource[1],$DbsNameArray)){
+				echo "numero di fredde che speriamo di ritrovare in base alla percentuale: ".$NumberOfCold . "\n\n";
+				$LimitCold=' limit 1,'.$NumberOfCold;
+				$QueryRecuperoFredde="select nome, cognome, cellulare from ".$ColdSource[0].$KeyAlreadyPassed." order by rand() ".$LimitCold;
+				echo "db : ".$ColdSource[1];echo $QueryRecuperoFredde.' \n\n';
+				
+				$dbvarname=${'DB'.$ColdSource[1]};
+				$mysqli_par = new mysqli($dbvarname['host'],
+							  $dbvarname['username'],
+							  $dbvarname['password'],
+							  $dbvarname['db']);
+						  
+				if (!$result = $mysqli_par->query($QueryRecuperoFredde)) {
+					echo "errore recupero dati dalla coldsource";
+					echo $mysqli_par->errno;
+					continue;
+				}else {
+					 
+					while ($Datas = $result->fetch_assoc()){
+						$LeadName=$Datas['nome'];
+						$LeadCognome=$Datas['cognome'];
+						$LeadCellulare=$Datas['cellulare'];
+						//echo "lead datas: nome:".$LeadName."; cognome: ".$LeadCognome."; cellulare: ".$LeadCellulare . " \n\n";
+						$NewLeads[]=array($LeadName, $LeadCognome,$LeadCellulare);
+					}
+				}
+				
+			}else{
+				echo "le fredde non verranno recuperate, perche o il numero da recuperare è 0 o l'array non è settato bene a db \n\n";
+			}
+			if(count($NewLeads)>0){
+				//randomiziamo l'ordine dell array di insert
+				//print_r($NewLeads);
+				//echo "\n\n"; 
+				
+				$keys = array_keys($NewLeads);
+				shuffle($keys);
+
+				foreach ($keys as $key)
+				{
+					$NewLeadsRand[$key] = $NewLeads[$key];
+				}
+				$NewLeads=$NewLeadsRand;
+				//insert new lead
+				echo "Procediamo all'inserimento di ".count($NewLeads)."leads \n\n";
+				//print_r($NewLeads);
+				$dbvarname=${'DB'.$MixedTable[1]};
+				foreach($NewLeads as $NewLead){
+					//print_r($NewLead);
+					$NLnome=$NewLead[0];
+					$NLcognome=$NewLead[1];
+					$NLcellulare=$NewLead[2];
+					
+					$QueryInsertNL='insert into '.$MixedTable[0].' set ' . $dbvarname['nome']. ' = "'.$NLnome.'", ' . $dbvarname['cognome']. ' = "'.$NLcognome.'", ' . $dbvarname['cellulare']. ' = "'.$NLcellulare.'"';
+					
+					
+					
+					//echo "query di insert".$QueryInsertNL;
+					$dbvarname=${'DB'.$MixedTable[1]};
+					$mysqli_par = new mysqli($dbvarname['host'],
+										  $dbvarname['username'],
+										  $dbvarname['password'],
+										  $dbvarname['db']);
+					if ($mysqli_par->query($QueryInsertNL) === TRUE) {
+						$id = $mysqli_par->insert_id;
+						//echo "\n\n\r query di inserimento riuscita \r\n\n";
+					}else{
+						//echo "\n\n\r query di inserimento non riuscita \n\n\r";
+					}
+				}
+				
+			}else{
+				echo "\n\n\r non abbiamo ritrovato nessuna lead da importare per la miscelata ".$MiscId . " \n\n\r";
+			}
+			
+			
+		
+	}
+}
+
+
+esci();
+
+
+function esci(){
+	 global $lock_file;
+	 unlink($lock_file);
+	 exit();
+}
+//recupero row da tabella per ogni row ciclo:
+function date_now(){
+	$date_now = new DateTime();
+	$date_now = $date_now->format('Y\-m\-d\ H:i:s');
+	return $date_now;
+}
+
+
+
+/*
+
+//APPUNTI
+per il leadout cliente si dovra creare un cliente mirror a cui assegnare il leadout su una campagna senza generazione o viceversa nel caso di cliente con leadout già attivo bisogna creare le varie campagne col clinete mirror
+
+*/
+
+
+
+
+
+?>

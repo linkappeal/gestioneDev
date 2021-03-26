@@ -1,0 +1,197 @@
+2020-06-25,10-30-00
+
+
+
+/************************************************/ 
+2020-06-25,10-30-00
+ File che lancia i test per le campagne sms che lo richiedono 
+
+
+ Connesso a gestione! 
+
+
+ Abbiamo recuperato la campagna: Younited test 1K 25g con id 73, risposta: 0.
+
+
+ update campagna-73 allo stato 1 RIUSCITO... info:   
+
+
+ Recuperiamo fornitore con id: 3  
+
+
+ messaggio gsm ok 
+
+
+ Preleviamo numeri di test.  
+
+
+ Abbiamo recuperato 2 numeri di test  divisi in 1 lanci.  
+
+
+ Lancio n. 1  
+
+
+ Lanciamo lo script del fornitore: Crossing Bulk.php 
+
+
+ Il lancio è andato OK 
+
+
+ update stato numero RIUSCITO per il numero con id: 2738833, id del fornitore: CRONET-f9fc8d9b15a2-c092cec32051  
+
+
+ update stato numero RIUSCITO per il numero con id: 2778834, id del fornitore: CRONET-976d42519410-198fe0569461  
+
+
+ update campagna stato a 2 RIUSCITO.  
+
+
+ Esco  
+
+2020-06-25,10-48-24
+
+
+
+/************************************************/ 
+2020-06-25,10-48-24
+ File che lancia i test per le campagne sms che lo richiedono 
+
+
+ Connesso a gestione! 
+
+
+ Abbiamo recuperato la campagna: Younited test 1K 25g con id 73, risposta: 0.
+
+
+ update campagna-73 allo stato 1 RIUSCITO... info:   
+
+
+ Recuperiamo fornitore con id: 3  
+
+
+ messaggio gsm ok 
+
+
+ Preleviamo numeri di test.  
+
+
+ Abbiamo recuperato 1 numeri di test  divisi in 1 lanci.  
+
+
+ Lancio n. 1  
+
+
+ Lanciamo lo script del fornitore: Crossing Bulk.php 
+
+
+ Il lancio è andato OK 
+
+
+ update stato numero RIUSCITO per il numero con id: 2778834, id del fornitore: CRONET-03c461c9c2c2-bb58ea197e5b  
+
+
+ update campagna stato a 2 RIUSCITO.  
+
+
+ Esco  
+
+2020-06-25,12-19-12
+
+
+
+/************************************************/ 
+2020-06-25,12-19-12
+ File che lancia i test per le campagne sms che lo richiedono 
+
+
+ Connesso a gestione! 
+
+
+ Abbiamo recuperato la campagna: Younited test 1K 25g con id 73, risposta: 0.
+
+
+ update campagna-73 allo stato 1 RIUSCITO... info:   
+
+
+ Recuperiamo fornitore con id: 3  
+
+
+ messaggio gsm ok 
+
+
+ Preleviamo numeri di test.  
+
+
+ Abbiamo recuperato 2 numeri di test  divisi in 1 lanci.  
+
+
+ Lancio n. 1  
+
+
+ Lanciamo lo script del fornitore: Crossing Bulk.php 
+
+
+ Il lancio è andato OK 
+
+
+ update stato numero RIUSCITO per il numero con id: 2487375, id del fornitore: CRONET-af4ff78f13ef-7459e3900121  
+
+
+ update stato numero RIUSCITO per il numero con id: 2738833, id del fornitore: CRONET-24685d0a9dfc-18a4fc75cd53  
+
+
+ update campagna stato a 2 RIUSCITO.  
+
+
+ Esco  
+
+2020-06-25,13-03-10
+
+
+
+/************************************************/ 
+2020-06-25,13-03-10
+ File che lancia i test per le campagne sms che lo richiedono 
+
+
+ Connesso a gestione! 
+
+
+ Abbiamo recuperato la campagna: Test lancio direct crossing con risposta con id 77, risposta: 1.
+
+
+ update campagna-77 allo stato 1 RIUSCITO... info:   
+
+
+ Recuperiamo fornitore con id: 2  
+
+
+ messaggio gsm ok 
+
+
+ Preleviamo numeri di test.  
+
+
+ Abbiamo recuperato 2 numeri di test  divisi in 1 lanci.  
+
+
+ Lancio n. 1  
+
+
+ Lanciamo lo script del fornitore: CrossingDirect.php 
+
+
+ Il lancio è andato OK 
+
+
+ update stato numero RIUSCITO per il numero con id: 2738832, id del fornitore: CRONET-9e8c0447c4ff-45813380c069  
+
+
+ update stato numero RIUSCITO per il numero con id: 2778834, id del fornitore: CRONET-d7ef2590c6a5-137cba92993d  
+
+
+ update campagna stato a 2 RIUSCITO.  
+
+
+ Esco  
+

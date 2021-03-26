@@ -1,0 +1,24 @@
+<div class="modal-header">
+  <button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>
+  <h3 class="modal-title" id="myModalLabel">Attenzione</h3>
+</div>
+<div class="modal-body">
+  {% if (app.request.query.get('max_lead') != 0) %}
+  <h4>Hai selezionato un numero di lead superiore al numero massimo disponibile: {{app.request.query.get('max_lead')}}. <br />
+      Vuoi procedere all'estrazione del numero massimo di lead disponibili?</h4>
+  {% else %}
+      
+      <h4> Nessuna lead da estrarre con i parametri specificati.</h4>
+      
+  {% endif %}
+  
+</div>  
+<div class="modal-footer">
+ {% if (app.request.query.get('max_lead') != 0) %}
+  <button type="button" class="btn btn-default" data-dismiss="modal">Annulla</button>
+  <button type="button" class="btn btn-primary go_on_button" onclick="goToExport(1)">Prosegui</button>
+ {% else %}
+  <button type="button" class="btn btn-default" data-dismiss="modal">Chiudi</button>
+ {% endif %}
+</div>
+

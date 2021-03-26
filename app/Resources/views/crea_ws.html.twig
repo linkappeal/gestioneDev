@@ -1,0 +1,728 @@
+{% extends base_template %}
+
+        {% block stylesheets %}
+            {{ parent() }}
+			{% stylesheets 'css/style.css'	%}
+				<link href="{{ asset_url }}" type="text/css" rel="stylesheet"/>
+				<link href="/css/datepicker/daterangepicker.css" type="text/css" rel="stylesheet"/>
+			{% endstylesheets %}
+			<style>
+			.panel-message{padding: 15px; background-color: #00a66973; text-align: center; font-size: 18px; cursor: pointer;}
+			
+			
+			.select2-container{width: 100%;}
+			.calendar-icon{cursor: pointer; font-size: 25px; padding-top: 5px;}
+			.data_fine_label span{font-size: 15px;padding-top: 6px; display: block;}
+			
+			
+			
+			/*miscelate*/
+			label {
+				margin-bottom:0px;
+			}
+			
+			.campo-help{
+				margin-bottom: 8px;
+				display:block;
+			}
+			form {
+				padding-top:44px;
+			}
+			
+			input.inputerror, .inputerror{
+				border-color:#c42d2d !important;
+			}
+			.select2-container.inputerror{
+				border:1px solid;
+			}
+			.campo_errore {
+				color:#c42d2d;
+				font-size:90%;
+				line-height:90%;
+				margin-top:4px;
+			}
+			.campo_errore p{
+				margin-bottom:5px;
+			}
+			
+			.limit-number, .deduplica-campi {
+				display:none;
+				margin-top:18px;
+			}
+			#torna{
+				position:absolute;
+				right:15px;
+				top:15px;
+			}
+			#creaws, #creawsetorna, #modificamiscelata, #modificamiscelataetorna {
+				display:none;
+			}
+			.crea-ws #creaws, .crea-ws #creawsetorna{
+				display: inline-block;
+			}
+			.modifica-ws #modificamiscelata, .modifica-ws #modificamiscelataetorna{
+				display: inline-block;
+			}
+			</style>
+		{% endblock %}
+        {% block javascripts %}
+                {{ parent() }}
+			{% javascripts 'js/main.js' %}
+				<script src="{{ asset_url }}"></script>
+			{% endjavascripts %}
+		{% endblock %}
+
+		{% block content %}
+		{% if ws %}
+			<div class="container theme-showcase modifica-ws" data-idws="{{ ws.id }}" role="main" id="ws_maker_container">
+		{% else %}
+			<div class="container theme-showcase crea-ws" role="main" id="ws_maker_container">
+		{% endif %}
+			<div class="row">
+				<div class="col-sm-12">
+					<div class="panel panel-default">
+						<div class="panel-heading col-md-12">
+							<div class="col-md-12">
+								<h3 id="titolo-pagina">
+								{% if ws %}
+									<i class="fa fa-pencil" aria-hidden="true"></i> Modifica miscelata (id: {{ ws.id }})</h3>
+								{% else %}
+									<i class="fa fa-pencil-square-o" aria-hidden="true"></i> Crea nuovo Web Service
+								{% endif %}
+								</h3>
+								
+								<a id="torna" href="{{admin.generateUrl('webservices')}}" class="btn btn-primary">Torna al listato</a>
+							</div>
+						</div>
+						<div class="col-md-12 panel-message" onclick="hideMessage()" style="display: none;"></div>
+						<div class="panel-body">
+							<form name="login" action="" method="post" id="insert-pixel-form" style="margin-top:20px;clear:left;">
+							
+							
+							
+								<div class="form-group col-md-12">
+									<label for="nome">Nome</label>
+									<small  class="form-text text-muted campo-help">Inserire il nome del Web Service.</small>
+									{% if ws %}
+										<input type="text" value="{{ ws.nome }}" name="nome" class="form-control" id="nome" placeholder="Nome Web Service" />
+									{% else %}
+										<input type="text" name="nome" class="form-control" id="nome" placeholder="Nome Web Service" />
+									{% endif %}
+									<div class="campo_errore"></div>
+								</div>
+								
+								
+								
+								<div class="form-group col-md-12">
+									<label for="fornitore-select">Fornitore</label>
+									<small  class="form-text text-muted campo-help" style="display:block;">Scegli il fornitore di questo Web Service.</small>
+									<select class="" id="fornitore-select" name="fornitore-select" placeholder="Seleziona un fornitore">
+										<option value="" data-codice="">Seleziona un fornitore</option>
+										{% for fornitore in fornitori %}
+											<option value="{{fornitore.id}}" {% if ws.fornitore_id == fornitore.id %}selected="selected"{% endif %}>{{fornitore.nome}}</option>
+										{% endfor %}
+									</select>
+									<div class="campo_errore"></div>
+								</div>
+
+
+
+								<div class="form-group col-md-12">
+									<label for="campagna-select">Campagna</label>
+									<small  class="form-text text-muted campo-help" style="display:block;">Scegli la campagna di questo Web Service.</small>
+									<select class="" id="campagna-select" name="campagna-select" placeholder="Seleziona una campagna">
+										<option value="" data-codice="">Seleziona una campagna</option>
+										{% for campagna in campagne %}
+											<option value="{{campagna.id}}" {% if ws.campagna_id == campagna.id %}selected="selected"{% endif %}>{{campagna.nome_offerta}}</option>
+										{% endfor %}
+									</select>
+									<div class="campo_errore"></div>
+								</div>
+
+
+
+								<div class="form-group col-md-12">
+									<label for="token">Token</label>
+									{% if ws %}
+										<br /><b>{{ws.token}}</b>
+									{% else %}
+										<small class="form-text text-muted campo-help" style="display:block;">Il token verr&agrave; creato al salvataggio della ws</small>
+									{% endif %}
+									<div class="campo_errore"></div>
+								</div>
+								
+								
+								
+								<div class="form-group col-md-12">
+									<label for="attiva">Stato</label>
+									<small  class="form-text text-muted campo-help">Scegli se attivare il Web Service.</small>
+									<select class="attiva-select" id="attiva" name="attiva" >
+										<option value="1" {% if ws.attiva == 1 %}selected{% endif %}>Attivo</option>
+										<option value="0" {% if ws.attiva == 0 %}selected{% endif %}>Non attivo</option>
+									</select>
+									<div class="campo_errore"></div>
+								</div>
+								
+								
+								
+								<div class="form-group col-md-12">
+									<label for="route-select">Seleziona il routing</label>
+									<small  class="form-text text-muted campo-help">Scegli il/i routing da associare.</small>
+									
+									<select class="" id="route-select" name="route-select" multiple="multiple" >
+										<option value="" data-codice="">Seleziona un routing</option>
+										{% for route in routes %}
+											<option value="{{route.id}}" {% if route.id in ws.route_ids %}selected{% endif %}>{{route.nome}}</option>
+										{% endfor %}
+									</select>
+									<div class="campo_errore"></div>
+								</div>
+								
+								
+								
+								<div class="form-group col-md-12">
+									<label for="standardfields-select">Campi obbligatori</label>
+									<small  class="form-text text-muted campo-help">Scegli i campi obbligatori che il fornitore dovra inviare per far accettare l'anagrafica.</small>
+									<select class="" id="standardfields-select" name="standardfields-select"  multiple="multiple">
+										<option value="cellulare" data-codice="" {% if 'cellulare' in ws.campi_obbligatori %}selected="selected"{% endif %}>cellulare</option>
+										<option value="email" data-codice="" {% if 'email' in ws.campi_obbligatori %}selected="selected"{% endif %}>email</option>
+										{% for standardfield in standardfields %}
+											{% if standardfield.nome != 'cellulare' %}
+												<option value="{{standardfield.nome}}" >{{standardfield.nome}}</option>
+											{% endif %}
+										{% endfor %}
+									</select>
+									<div class="campo_errore"></div>
+								</div>
+								
+								
+								
+								<div class="form-group col-md-12">
+									<label for="limite">Campi specifici</label>
+									{% if specificfields is empty %}
+										<small  class="form-text text-muted campo-help">Nessun campo specifico &egrave; stato settato nel db.</small>
+									{% else %}
+										<small  class="form-text text-muted campo-help">Scegli i campi specifici che il fornitore dovra inviare per far accettare l'anagrafica.</small>
+										<select class="" id="specificfields-select" name="specificfields-selec"  multiple="multiple">
+											{% for specificfield in specificfields %}
+												<option value="{{specificfield.slug}}" {% if specificfield.slug in ws.campi_specifici %}selected="selected"{% endif %}>{{specificfield.slug}}</option>
+											{% endfor %}
+										</select>
+										<div class="campo_errore"></div>
+									{% endif %}
+								</div>
+								
+								
+								<div class="form-group col-md-12">
+									<label for="limite">Limite</label>
+									<small  class="form-text text-muted campo-help">Scegli il tipo di limite e il suo valore.</small>
+									<select class="" id="tipolimite-select" name="tipolimite-select">
+										<option value="0" data-codice="" selected="selected">Nessun limite</option>
+										<option value="accettate" data-codice="" {% if 'accettate' in ws.tipo_limite %}selected="selected"{% endif %}>Accettate</option>
+										<option value="ricevute" data-codice="" {% if 'ricevute' in ws.tipo_limite %}selected="selected"{% endif %}>Ricevute</option>
+									</select>
+									<div class="limit-number">
+										<small  class="form-text text-muted campo-help">Scegli il numero massimo di anagrafiche da ricevere/accettare.</small>
+										{% if ws %}
+											<input type="number" value="{{ ws.limite }}" name="limite" class="form-control" id="limite" placeholder="limite"/>
+										{% else %}
+											<input type="number" name="limite" class="form-control" id="limite"  placeholder="Limite"/>
+										{% endif %}
+									</div>
+									<div class="campo_errore"></div>
+								</div>
+								
+								
+								
+								<div class="form-group col-md-12">
+									<label for="limite">Deduplica</label>
+									<small  class="form-text text-muted campo-help">Scegli il tipo di deduplica.</small>
+									<select class="" id="deduplicatipo-select" name="deduplicatipo-select">
+										<option value="0" selected="selected">Nessuna deduplica</option>
+										<option value="1" {% if 1 in ws.tipo_deduplica|keys %}selected="selected"{% endif %}>Su Web Service</option>
+										<option value="2" {% if 2 in ws.tipo_deduplica|keys %}selected="selected"{% endif %}>Su Routing</option>
+										<option value="3" {% if 3 in ws.tipo_deduplica|keys %}selected="selected"{% endif %}>Su intero db</option>
+									</select>
+									{% set idx = (ws.tipo_deduplica|keys).0 %}
+									<div class="deduplica-campi">
+										<small  class="form-text text-muted campo-help">Scegli i campi sui quali effettuare la deduplica scelta.</small>
+										<select class="" id="deduplica-standardfields" name="deduplica-standardfields"  multiple="multiple" placeholder="Campi deduplica">
+											<option value="cellulare" data-codice="" {% if 'cellulare' in ws.tipo_deduplica[idx] %}selected="selected"{% endif %}>cellulare</option>
+											<option value="email" data-codice="" {% if 'email' in ws.tipo_deduplica[idx] %}selected="selected"{% endif %}>email</option>
+											{% for standardfield in standardfields %}
+												<option value="{{standardfield.nome}}" >{{standardfield.nome}}</option>
+											{% endfor %}
+										</select>
+									</div>
+									<div class="campo_errore"></div>
+								</div>
+								
+								<div class="form-group col-md-12">
+									<label for="ips">Whitelist Ip</label>
+									<small  class="form-text text-muted campo-help">Scrivi gli indirizzi ip da cui il Web Service pu&ograve; accettare anagrafiche separati da punto e virgola. Gli ip possono essere singoli (es 87.98.135.4), un range (es. 87.98.135.2-87.98.135.9) o wildcard (es 87.98.135.%)</small>
+									<input type="text" name="ips" class="form-control" id="ips" value="{{ ws.whitelist_ips|join(';') }}" placeholder="es 87.98.135.1;87.98.135.4-87.98.135.9"/>
+								</div>
+
+								<div class="form-group col-md-12">
+									<label for="privacy_tags">Privacy Tags</label>
+									<small  class="form-text text-muted campo-help">Scrivi la lista dei privacy tag validi per questo Web Service. Le varie etichette vanno separate da virgole.</small>
+									<input type="text" name="privacy_tags" class="form-control" id="privacy_tags" value="{{ ws.privacy_tags|join(',') }}" placeholder="es privacy_generale,profilazione,privacy_terzi"/>
+								</div>
+
+								<div class="form-group col-md-12">
+									<button type="button" onclick="salvaOrdine()" id="creaws" class="btn btn-primary">Crea Web Service</button>
+									<button type="button" onclick="salvaOrdine2()" id="creawsetorna" class="btn btn-primary">Crea Webservice e torna al listato</button>
+									
+									<button type="button" onclick="salvaOrdine()" id="modificamiscelata" class="btn btn-primary">Modifica Web Service</button>
+									<button type="button" onclick="salvaOrdine2()" id="modificamiscelataetorna" class="btn btn-primary">Modifica Web Service e torna al listato</button>
+								</div>
+							 </form>
+						</div>
+					</div>
+				</div>
+			</div> <!-- row -->
+		</div>
+		 
+		
+		<script>
+			
+		$(document).ready(function(){
+			
+			{% if ws %}
+				//inizialize modifica hotsources
+				$('#tipolimite-select').trigger('change');
+				$('#deduplicatipo-select').trigger('change');
+
+			{% endif %}
+			
+		
+		 });
+		 
+		 
+		 /*--- MISCELATE SCRIPTS --->*/
+		 //--UI
+		
+		
+		$(document).on('change', '#tipolimite-select', function(){
+			//make empty select campagna-select
+			if($(this).val()!=0){
+				$('.limit-number').css('display','block');
+			}else{
+				$('.limit-number').css('display','none');
+			}
+		});
+		
+		$(document).on('change', '#deduplicatipo-select', function(){
+			//make empty select campagna-select
+			if($(this).val()!=0){
+				$('.deduplica-campi').css('display','block');
+			}else{
+				$('.deduplica-campi').css('display','none');
+			}
+		});
+		
+		
+		//-- saving and processing
+		function salvaOrdine2() {
+			$('#torna').addClass('autoback');
+			salvaOrdine();
+		}
+
+		function salvaOrdine() {
+			$('#creaws').prop('disabled', true);
+			$('#creawsetorna').prop('disabled', true);
+			if (controlla_ws()) {
+				var nome = $.trim($('#nome').val());
+				var fornitore = $('#fornitore-select').val();
+				var campagna = $('#campagna-select').val();
+				var attiva = $('#attiva').val();
+				var routes = 0
+				if ($('#route-select').val().length > 0) {
+					var routingsArr = $('#route-select').val();
+					for (var i = 0; i < routingsArr.length; i++) {
+						if (i == 0) {
+							routes = routingsArr[i];
+						} else {
+							routes = routes + ',' + routingsArr[i];
+						}
+					}
+				}
+				var cobb = '';
+				if ($('#standardfields-select').val().length > 0) {
+					var cobbArr = $('#standardfields-select').val();
+					for (var i = 0; i < cobbArr.length; i++) {
+						if (i == 0) {
+							cobb = cobbArr[i];
+						} else {
+							cobb = cobb + ',' + cobbArr[i];
+						}
+					}
+				}
+
+				var cspec = '';
+				if ($('#specificfields-select').length > 0 && $('#specificfields-select').val().length > 0) {
+					var cspecArr = $('#specificfields-select').val();
+					for (var i = 0; i < cspecArr.length; i++) {
+						if (i == 0) {
+							cspec = cspecArr[i];
+						} else {
+							cspec = cspec + ',' + cspecArr[i];
+						}
+
+					}
+				}
+				var limitetipo = $('#tipolimite-select').val();
+				var limite = $('#limite').val();
+
+
+				var deduplicatipo = $('#deduplicatipo-select').val();
+				var deduplicacampi = '';
+				if (deduplicatipo != 0) {
+					if ($('#deduplica-standardfields').val().length > 0) {
+						var deduplicacampiArr = $('#deduplica-standardfields').val();
+						for (var i = 0; i < deduplicacampiArr.length; i++) {
+							if (i == 0) {
+								deduplicacampi = deduplicacampiArr[i];
+							} else {
+								deduplicacampi = deduplicacampi + ',' + deduplicacampiArr[i];
+							}
+						}
+					}
+				}
+				var ips = $('#ips').val();
+				var privacy_tags = $('#privacy_tags').val();
+
+
+				data_send = {
+					nome: nome,
+					fornitore: fornitore,
+					campagna: campagna,
+					attiva: attiva,
+					routes: routes,
+					cobb: cobb,
+					cspec: cspec,
+					limitetipo: limitetipo,
+					limite: limite,
+					deduplicatipo: deduplicatipo,
+					deduplicacampi: deduplicacampi,
+					ips: ips,
+					privacy_tags: privacy_tags,
+				};
+				console.log(data_send);
+				saveWs(data_send);
+			} else {
+				$("html, body").animate({scrollTop: 0}, "fast");
+			}
+			$('#creaws').prop('disabled', false);
+			$('#creawsetorna').prop('disabled', false);
+
+		}
+
+		function saveWs(data_send) {
+			var ok = 0;
+			if ($('#ws_maker_container').hasClass('crea-ws')) {
+				var url_save = '{{ admin.generateUrl('salvaWebservice') }}';
+				ok = 1;
+			} else {
+				var url_save = '{{ admin.generateUrl('editWebservice') }}';
+				//get the id
+
+				if ($('#ws_maker_container').attr('data-idws') > 0) {
+					data_send["id"] = $('#ws_maker_container').attr('data-idws');
+					ok = 1;
+				}
+
+			}
+			if (ok == 1) {
+				var url_listato = '{{ admin.generateUrl('webservices') }}';
+				var message = "";
+				$.ajax({
+					url: url_save,
+					data: data_send,
+					success: function (inserito) {
+						if ($('#torna').hasClass('autoback')) {
+							if ($('#ws_maker_container').hasClass('crea-ws')) {
+								window.location.href = url_listato + '?Messaggio=WsCrea&IdWs=' + inserito['result'] + '&fornitore=' + inserito['fornitore'] + '&campagna=' + inserito['campagna'] + '&token=' + inserito['token'];
+							} else {
+								window.location.href = url_listato + '?Messaggio=WsMod&IdWs=' + $('#ws_maker_container').attr('data-idws');
+							}
+						} else {
+							//salva nuova
+							if ($('#ws_maker_container').hasClass('crea-ws')) {
+								$('.panel-message').html('<h3><i class="fa fa-check-circle-o" aria-hidden="true"></i> Webservice creata (id ' + inserito['result'] + ')</h3>').slideDown();
+								$("html, body").animate({scrollTop: 0}, "fast");
+								//change to modifica
+								$('#ws_maker_container').removeClass('crea-ws').addClass('modifica-ws').attr('data-idws', inserito['result']);
+								$('#titolo-pagina').html('<i class="fa fa-pencil" aria-hidden="true"></i> Modifica ws (id: ' + inserito['result'] + ')</h3><p><table><tr><td>Fornitore:</td><td>' + inserito['fornitore'] + '</td></tr><tr><td>Campagna:</td><td>' + inserito['campagna'] + '</td></tr><tr><td>token:</td><td>' + inserito['token'] + '</td></tr></table></p></p>');
+							} else {
+								$('.panel-message').html('<h3><i class="fa fa-check-circle-o" aria-hidden="true"></i> Ws modificata (id ' + inserito['result'] + ')</h3>').slideDown();
+								$("html, body").animate({scrollTop: 0}, "fast");
+							}
+
+						}
+						$('#creawsetorna').remove();
+						$('#creaws').remove();
+					},
+					complete: function () {
+					}
+				});
+			} else {
+				alert('si &egrave; verificato un problema dusrante il salvataggio');
+			}
+		}
+		 
+		 
+		 //controll on inputs
+		 function controlla_ws(){
+			//azzero gli errori
+			$('.campo_errore').html('');
+			$('.inputerror').removeClass('inputerror');
+			$('.nomevuoto').removeClass('nomevuoto');
+			$('.limitevuoto').removeClass('limitevuoto');
+			$('.percentualevuota').removeClass('percentualevuota');
+			$('.rangepercentuale').removeClass('rangepercentuale');
+			$('.campovuoto').removeClass('campovuoto');
+			$('.campocaratteri').removeClass('campocaratteri');
+			
+			//check name
+			checkName();
+			 if(checkemptyInput($('#fornitore-select'))==2){
+				 var errorstring ='campovuoto';
+				 showInputError($('#fornitore-select'), errorstring);
+			 }
+			 if(checkemptyInput($('#campagna-select'))==2){
+				 var errorstring ='campovuoto';
+				 showInputError($('#campagna-select'), errorstring);
+			 }
+			if(checkemptyInput($('#route-select'))==2){
+				var errorstring ='campovuoto';
+				showInputError($('#route-select'), errorstring);
+			}
+			
+			if($('#tipolimite-select').val()!=0){
+				if(checkemptyInput($('#limite'))==2){
+					var errorstring ='campovuoto';
+					showInputError($('#limite'), errorstring);
+				}
+			}
+			
+			if($('#deduplicatipo-select').val()!=0){
+				if(checkemptyInput($('#deduplica-standardfields'))==2){
+					var errorstring ='campovuoto';
+					showInputError($('#deduplica-standardfields'), errorstring);
+				}
+			}
+			//if inputerror are present return false else return true
+			if($('.inputerror').length>0){
+				return false;
+			}else{
+				return true;
+			}
+			
+		 }
+		 
+		 //controlla il nome
+		 $(document).on('change', '#nome', function(){
+			checkName();
+		 });
+		 function checkName(){
+			//se il nome � gi� presente a db segna come errore
+			removeInputError($('#nome'), -1);
+			var nomiinuso=[{% for WsName in WssNames %}
+				{% if ws %}
+					{% if ws.nome != WsName.nome %}"{{WsName.nome}}",{% endif %}
+					{% else %}
+						"{{WsName.nome}}",
+					{% endif %}
+				{% endfor %}];
+			if(checkemptyInput($('#nome'))==2){
+				var errorstring ='nomevuoto';
+				showInputError($('#nome'), errorstring);
+			}
+			
+			var nomescelto=$.trim($('#nome').val());
+			
+			if(checkInvalidC($('#nome'))>0){
+				var errorstring ='campocaratteri';
+				showInputError($('#nome'), errorstring);
+			}
+			if($.inArray( nomescelto, nomiinuso) !=-1){
+				var errorstring ='nomepresente';
+				showInputError($('#nome'), errorstring);
+			}
+			
+			
+		 }
+		 
+		 $(document).on('change', '#limite', function(){
+			removeInputError($('#limite'), -1);
+			if(checkemptyInput($('#limite'))==2){
+				var errorstring ='limitevuoto';
+				showInputError($('#limite'), errorstring);
+			}
+		 });
+		 
+		 function checkemptyInput(campo){
+			//se il campo � vuoto aggiungi l'errore sotto l'input
+			if($.trim(campo.val()).length === 0){
+				return 2;
+			}else{
+				return 1;
+			}
+		 }
+		
+		 
+		 
+		 
+		 function checkInvalidC(campo){
+			//se il valore contiene spazi o " , ; \ / ? segna errore
+			var errore=0;
+			if(campo.val().indexOf(',') != -1){
+				errore++;
+			}
+			if(campo.val().indexOf('|') != -1){
+				errore++;
+			}
+			if(campo.val().indexOf('/') != -1){
+				errore++;
+			}
+			if(campo.val().indexOf(';') != -1){
+				errore++;
+			}
+			if(campo.val().indexOf('"') != -1){
+				errore++;
+			}
+			if(campo.val().indexOf('?') != -1){
+				errore++;
+			}
+			if(campo.val().indexOf("'") != -1){
+				errore++;
+			}
+			if(campo.val().indexOf(":") != -1){
+				errore++;
+			}
+			return errore;
+		 }
+		 function erroriPossibili(){
+		 var errpossibili=
+			{
+				'nomevuoto':'Il nome non pu&ograve essere vuoto',
+				'nomepresente':'Il nome scelto &egrave; gi&agrave; presente nel db',
+				'limitevuoto':'Il limite non pu&ograve essere vuoto',
+				'percentualevuota':'La percentuale di freddde non pu&ograve; essere vuota',
+				'rangepercentuale':'La percentuale di freddde deve essere un numero fra 0 e 99',
+				'campovuoto':'Il campo non pu&ograve; essere vuoto',
+				'campocaratteri':'Il campo non pu&ograve; contenere caratteri particolari come <i>, ; : / | ? " \'</i>'
+			}
+			return errpossibili;
+		 }
+		 function removeInputError(input, errorcode) {
+			if(errorcode==-1){
+				input.removeClass('inputerror');
+				if(input.closest('.form-group').find('.inputerror').length == 0){
+					input.closest('.form-group').find('.campo_errore').html('');
+				}
+			}else{
+				if(!input.hasClass('error-campovuoto') && !input.hasClass('error-campocaratteri')){
+					input.removeClass('inputerror');
+				}
+				var errori= erroriPossibili();
+				if(input.closest('.form-group').find('.campo_errore .'+errorcode).length>0){
+					var numberOfError=Number(input.closest('.form-group').find('.campo_errore .'+errorcode).attr('data-errorcount'));
+					if(numberOfError>1){
+						input.closest('.form-group').find('.campo_errore .'+errorcode).attr('data-errorcount',numberOfError-1);
+					}else{
+						input.closest('.form-group').find('.campo_errore .'+errorcode).remove();
+					}
+				}
+			}
+		 }
+		 
+		 function showInputError(input, errorcode) {
+			var errori= erroriPossibili();
+			
+				input.addClass('inputerror');
+			if(input.closest('.form-group').find('.campo_errore .'+errorcode).length>0){
+				var numberOfError=Number(input.closest('.form-group').find('.campo_errore .'+errorcode).attr('data-errorcount'));
+				input.closest('.form-group').find('.campo_errore .'+errorcode).attr('data-errorcount',numberOfError+1);
+			}else{
+				input.closest('.form-group').find('.campo_errore').append('<p class="'+errorcode+'" data-errorcount="1">'+errori[errorcode]+'</p>')
+			}
+		 }
+		 /*<--- WS SCRIPTS ---*/
+		
+		
+		
+		 
+		 
+		 
+	
+		 
+		
+		 
+		 function hideMessage(){
+			$('.panel-message').slideUp();
+		 }
+		 /* --- FUNZIONI DI MODIFICA ---*/
+		 function m_initialize_hotsource(db,tb,et){
+			//se la prima hot source � vuota la popolo altrimenti creo un altra hotsource e la popolo
+			if($('#sourcedb1').val() ==''){
+				$('#sourcedb1').val(db).change();
+				$('#sourcetable1').val(tb).change();
+				$('#sourceetichetta1').val(et).change();
+			}else{
+				//clone hotsourceline1
+				var formgroup=$('#hotsourceline1').closest('.form-group');
+				var clonedLine=$('#hotsourceline1').clone();
+				var id_number=$('.hotsourceline').length+1;
+				clonedLine.attr('id','hotsourceline'+id_number);
+				clonedLine.find('input.HsourceTable').attr('id','sourcetable'+id_number).attr('name','sourcetable'+id_number).val('');
+				clonedLine.find('.select2-container').remove();
+				clonedLine.find('select.HsourceDb').attr('id','sourcedb'+id_number).attr('name','sourcedb'+id_number).prop('selectedIndex',0).css('display','inline-block').select2();
+				clonedLine.find('select.campagna-select').attr('id','campagna-select'+id_number).attr('name','campagna-select'+id_number).prop('selectedIndex',0).css('display','inline-block').select2();
+				clonedLine.find('.frommanual span').text('Seleziona una campagna');
+				clonedLine.find('.frommanual .fa').removeClass('fa-hand-o-right').addClass('fa-list');
+				clonedLine.find('.select2-container.campagna-select').css('display','none');
+				clonedLine.find('.select2-container.HsourceDb').css('display','inline-block');
+				clonedLine.find('.HsourceTable').css('display','inline-block');
+				clonedLine.find('.frommanual').removeClass('frommanual').addClass('fromdb');
+				clonedLine.find('input.HsourceEt').attr('id','sourceetichetta'+id_number).attr('name','sourceetichetta'+id_number).val('');
+				clonedLine.append('<div class="elimina-hotsource"><i class="fa fa-remove"></div>');
+				clonedLine.find('.show-campagna-selected').text('');
+				clonedLine.find('.inputerror').removeClass('inputerror');
+				formgroup.append(clonedLine);
+				formgroup.append(formgroup.find('.campo_errore'));
+				formgroup.append(formgroup.find('#hsHelp'));
+				clonedLine.find('.HsourceDb').val(db).change();
+				clonedLine.find('.HsourceTable').val(tb).change();
+				clonedLine.find('input.HsourceEt').val(et).change();
+			}
+		 }
+		 
+		 function m_initialize_coldsource(db,tb,et){
+			 $('#coldsourcedb').val(db).change();
+			 $('#coldsourcetable').val(tb).change();
+			 $('#coldsourceetichetta').val(et).change();
+		 }
+		 function m_initialize_mixeddestination(db,tb){
+			 $('#mixedsourcedb').val(db).change();
+			 $('#mixedsourcetable').val(tb).change();
+		 }
+		 function m_initialize_attiva(attiva){
+			$('#attiva').val(attiva).change();
+		 }
+		 function m_initialize_contatore(cliente, campagna, landing){
+			//cerco fra tutte le option del select #alanding-select quello che metcha le 3 vars
+			$('#alanding-select option').each(function(){
+				if($(this).attr('data-cliente')==cliente && $(this).attr('data-landing')==landing && $(this).attr('data-campagna')==campagna){
+					
+					$('#alanding-select').val($(this).attr('value')).change();
+					return false;
+				}
+			});
+		 }
+		 
+		
+		 </script>
+		 {% endblock %}
+

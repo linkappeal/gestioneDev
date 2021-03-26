@@ -1,0 +1,414 @@
+{% extends base_template %}
+
+        {% block stylesheets %}
+            {{ parent() }}
+                {% stylesheets
+                        'css/style.css'
+                %}
+					<link href="{{ asset_url }}" type="text/css" rel="stylesheet"/>
+					<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/bootstrap-daterangepicker/2.1.27/daterangepicker.min.css" />
+                {% endstylesheets %}
+			
+				<style>
+					#conteggia-tutto-btn .fa{border-right: 1px solid #d2d6de; padding-right: 10px; margin-right: 5px; padding-top: 5px; padding-bottom: 5px;}
+					#trova-campagne-btn .fa{border-right: 1px solid #d2d6de; padding-right: 10px; margin-right: 5px; padding-top: 5px; padding-bottom: 5px;}
+					#conteggia-btn .fa{border-right: 1px solid #d2d6de; padding-right: 10px; margin-right: 5px; padding-top: 5px; padding-bottom: 5px;}
+					.panel-heading {padding: 10px 5px!important;background: #ececec; border-left: 2px solid #3c8dbc;margin-bottom:10px;}
+					.strong{font-weight: bold;}
+					.cliente-select{margin-bottom: 10px;}
+					.campagna_select{margin-bottom: 10px;width: 100%;}
+					.totale_mese, .totali_anno{float: right;}
+					.totale_mese .fa, .totali_anno .fa{margin-left: 10px;}
+					.right-panel-content{display: none;}
+					.submenu-link{cursor: pointer;}
+					.submenu-link:hover{background-color: #ececec;}
+					.active{display: block;}
+					.title-subtab{    font-size: 24px; padding: 5px; border-radius: 10px; border: 1px solid #3c8dbc; background-color: rgba(51, 122, 183, 0.5);}
+					.title-subtab .fa{margin-right: 15px;}
+					.title-subtab span.totals{margin-left: 15px; border-left: 1px solid #337ab7; padding-left: 15px; float: right; margin-right: 25px;}
+					.dropdown-toggle i.fa.fa-users { margin: 0px 5px 5px 0px; }
+					.no-padding{padding:0!important;}
+					.day-box{padding: 10px; border-bottom: 2px solid #3c8dbc; margin-bottom: 15px; min-height: 295px;} 
+					.day-box h4{ background-color: rgba(210, 214, 222, 0.8); padding: 10px; border-bottom: 1px solid #337ab7;}
+					.day-box h4 .fa{    margin-right: 15px;}
+					.right-panel-content{ }
+					.footer-mese-box a {color: #FFF;}
+					.totali_media{text-align: right;}
+					.submedia-box{border-bottom: 1px solid #ececec; cursor: pointer;}
+					.submedia-box:hover{background-color: #ececec;}
+					.totali_clienti_box{margin-left: 15px; margin-top: 13px; text-align: center; display: block; font-size: 20px;}
+					.scarica_button{margin-top: 10px; display: block;}
+					.totals_media_box{background: rgba(51, 122, 183, 0.3); margin-bottom: 15px;}
+					.riga_mese{border-bottom: 1px solid #ececec;}
+					.title_mese{font-size: 20px; background: rgba(60, 141, 188, 0.5); padding: 5px 15px;border-bottom: 1px solid #337ab7; margin-bottom: 10px;}
+					.modal-title{color: #3c8dbc;}
+					.title-underbox{font-size: 17px; margin-bottom: 20px;background: #eee; padding: 5px; border-bottom: 1px solid #777;}
+					.title-underbox .fa{margin-right: 10px;}
+					.mini-loader-box{background: rgba(0, 0, 0, 0.25); width: 100%; height: 100%; position: absolute; left: 0; top: 0; text-align: center; z-index: 100;}
+					.nome_mese{font-size: 14px;}
+					.title_concorsi_box{color: #3c8dbc; border-bottom: 2px solid #3c8dbc;border-top: 2px solid #3c8dbc; padding: 10px 25px;margin-bottom: 15px;}
+					.info_media_concorso_row{padding-bottom: 10px;margin-bottom: 5px;}
+					.media-box .fa { margin-right: 10px;}
+					.align-right{text-align: right;}
+					.loader { border: 16px solid #f3f3f3; border-radius: 50%; border-top: 16px solid #3498db; width: 120px; height: 120px; 
+					-webkit-animation: spin 2s linear infinite; /* Safari */  animation: spin 2s linear infinite; }
+					.mini-loader { position: absolute; top: 10px; margin: 5px auto; display: inline; border: 7px solid #f3f3f3; border-radius: 50%; border-top: 7px solid #3498db; width: 30px; height: 30px; -webkit-animation: spin 2s linear infinite; animation: spin 2s linear infinite;}
+					.modal-content {-webkit-border-radius: 10px;-moz-border-radius: 10px; border-radius: 10px;}
+					.btns-show-tabs{cursor: pointer; -webkit-border-top-left-radius: 4px;-webkit-border-top-right-radius: 4px;-moz-border-radius-topleft: 4px;-moz-border-radius-topright: 4px;border-top-left-radius: 4px; border-top-right-radius: 4px;}
+					.tb_active{ background: rgba(60, 141, 188, 0.6); font-weight: bold; border-left: 1px solid #337ab7; border-right: 1px solid #337ab7; border-top: 1px solid #337ab7;}
+					.tb_deactive{ border-bottom: 1px solid #337ab7;}
+					.last-row-totale{background: #ececec;}
+					.last-row-totale-gen{background: rgba(60, 141, 188, 0.6);border-top: 1px solid #000;}
+					.tab-show-tabs{margin-top: 10px;}
+					.scroll-dettaglio-box{height: 500px; float: left; overflow-y: scroll; margin-bottom: 25px; padding: 10px;}
+					.header-nomeMese{float: left;}
+					.header-giornini{float: left; margin-left: 20px; border-left: 1px solid #3c8dbc;padding-top: 10px;}
+					.header-totali  {float: right;}
+					.giornini_clicks_tutti{padding: 0px 5px; width: 45px; float: left; cursor: pointer; margin-left: 0px; text-align: center; display: block;}
+					.giornini {font-size: 15px;}
+					.giornini_clicks{padding: 0px 5px; width: 22px; height: 20px; float: left; cursor: pointer; margin-left: 0px; text-align: center; display: block;}
+					.giornini_clicks:hover{font-size: 18px;}
+					.giornini_clicks_tutti:hover{font-size: 17px; background-color: #aaa;}
+					.conteggi-mese{border-bottom: 2px solid #3c8dbc; padding-bottom: 20px;}
+					.header-box-mese {cursor: pointer; margin: 10px 0px 10px 0px; background-color: rgba(210, 214, 222, 0.8); padding: 0px 20px; border-bottom: 1px solid #337ab7;}
+					.header-box-mese fa{margin-left: 15px;}
+					.tbl_active{background: #8abbd7;
+								background: -moz-linear-gradient(left, #8abbd7 0%, #8abbd7 57%, #ffffff 94%, #ffffff 100%);
+								background: -webkit-linear-gradient(left, #8abbd7 0%,#8abbd7 57%,#ffffff 94%,#ffffff 100%);
+								background: linear-gradient(to right, #8abbd7 0%,#8abbd7 57%,#ffffff 94%,#ffffff 100%);
+								filter: progid:DXImageTransform.Microsoft.gradient( startColorstr='#8abbd7', endColorstr='#ffffff',GradientType=1 ); font-weight: bold; border-left: 1px solid #337ab7; border-bottom: 1px solid #337ab7; border-top: 1px solid #337ab7;}
+					.tbl_deactive { border-right: 1px solid #337ab7;}
+					.btns-show-left-tabs{height: 40px;padding-top: 10px; font-size: 15px;cursor:pointer;}
+					/* Safari */
+					@-webkit-keyframes spin {
+					  0% { -webkit-transform: rotate(0deg); }
+					  100% { -webkit-transform: rotate(360deg); }
+					}
+					@keyframes spin {
+					  0% { transform: rotate(0deg); }
+					  100% { transform: rotate(360deg); }
+					}
+				</style>
+        {% endblock %}
+        {% block content %}
+	<div class="container-fluid">
+		<section class="content">
+			<div class="sonata-ba-content">  
+				<div class="row">
+					<div class="col-md-12">
+						<div class="box box-primary">
+							<div class="box-header">	
+									<h2 class="title-box">Conteggi CPL</h2>
+							</div>
+							<div class="box-body">	
+								<div class="row">
+									<div class="col-md-8">
+									
+										
+										<select class="cliente-select" id="cliente-select" name="concorso">
+											<option value="" data-codice="">Seleziona un cliente...</option>
+											<option value="all" data-codice="">Tutti i clienti/tutte le campagne</option>
+											{% for cliente in customers %}
+												<option value="{{cliente.id}}" data-codice="{{cliente.id}}">{{cliente.name}}{% if cliente.account is not empty %} - {{cliente.account}}{% endif %}</option>
+											{% endfor %}
+										</select>
+									</div>
+									<div class="col-md-2">
+									<input type="checkbox" checked="checked" value="attivi" id="soloattive" /> Campagne attive
+									</div>
+									<div class="col-md-2">
+										<button id="trova-campagne-btn" class="btn btn-primary"><i class="fa fa-search" aria-hidden="true"></i> Trova Campagne</button>
+									</div>
+								</div>
+								<div class="row">
+									<div class="col-md-12 datepicker-box" style="display:none;">
+										<div class="col-md-1"><h4>Periodo</h4></div>
+										<div class="col-md-3">
+											{{datepicker.mesi | raw}}
+										</div>
+										<div class="col-md-2">
+											{{datepicker.anni | raw}}
+										</div>
+										<div class="col-md-3">
+											<button id="conteggia-tutto-btn" onclick="conteggiaTutti()" class="btn btn-primary"><i class="fa fa-calculator" aria-hidden="true"></i> Conteggia</button>
+										</div>
+									</div>
+									<div class="col-md-8 cmp-select-box"></div>
+									<div class="col-md-2" id="box-conteggia-btn"></div>
+									<div class="col-md-2"></div>
+								</div>
+							</div>
+
+							</div>
+						</div>
+					</div>
+				</div>
+				<div class="row">	
+					<div class="col-md-12">
+						<div class="box box-primary">
+							<div class="box-body">	
+							<div class="box-header">	
+									<div class="row">
+										<div class="col-md-12 title-underbox">
+											<div class="start-title">Seleziona un cliente per visualizzare i risultati</div>
+										</div>
+									</div>
+							</div>
+							<!-- left col-->
+							<div class="col-md-12">
+								<!-- menu -->
+								<div class="panel-group col-md-2 menu-conteggio">
+									
+								</div>
+								<!-- content -->
+								<div class="tab-content col-md-10">
+								</div>
+							</div>
+						</div>
+					</div> <!-- box-primary-->
+				</div>
+			</div><!-- row -->
+	
+
+	<script src="https://cdnjs.cloudflare.com/ajax/libs/bootstrap-daterangepicker/2.1.27/moment.min.js"></script>
+	<script src="https://cdnjs.cloudflare.com/ajax/libs/bootstrap-daterangepicker/2.1.27/daterangepicker.min.js"></script>
+	<script>
+			
+	$(function() {
+		
+		$('.cliente-select').on('change', function(){
+			var sel = $('.cliente-select option:selected').val();
+				$('.datepicker-box').fadeOut('fast');
+				$('.cmp-select-box').html('');
+				$('#box-conteggia-btn').html('');
+			
+			});
+		$('#mesi,#anni').trigger('change');
+		$('.datepicker').daterangepicker({
+				"locale": {
+				"direction": "ltr",
+				"format": "MM/DD/YYYY",
+				"separator": " - ",
+				"applyLabel": "Conferma",
+				"cancelLabel": "Cancella",
+				"fromLabel": "Da",
+				"toLabel": "A",
+				"customRangeLabel": "Custom",
+				"daysOfWeek": ["Do","Lu","Ma","Me","Gi","Ve","Sa"],
+				"monthNames": ["Gennaio","Febbraio","Marzo","Aprile","Maggio","Giugno","Luglio","Agosto","Settembre","Ottobre","Novembre","Dicembre"],
+				"firstDay": 1
+			},
+			"linkedCalendars": false,
+			"showCustomRangeLabel": false,
+		}, function(start, end, label) {
+		  console.log("New date range selected: ' + start.format('YYYY-MM-DD') + ' to ' + end.format('YYYY-MM-DD') + ' (predefined range: ' + label + ')");
+		});
+	
+		$('#trova-campagne-btn').on('click', function(){
+			var cli_id = $('.cliente-select option:selected').val(); 
+			console.log('cli_id',cli_id);
+			if(cli_id==''){return false;}
+			// tutti i clienti tutte le campagne
+			if(cli_id=='all'){
+				$('.cmp-select-box')	.fadeOut('fast').html('');
+				$('#box-conteggia-btn')	.fadeOut('fast').html('');
+				$('.datepicker-box').fadeIn();
+			}else{ // singola campagna
+				
+				var soloattive = '';
+				if($('#soloattive').is(":checked")){
+					soloattive = '1';
+				}
+				var url_get_cmp = '{{admin.generateUrl('getCampagneByClienteId')}}'; 
+				$.ajax({url: url_get_cmp,
+					data: { cli_id : cli_id, soloattive: soloattive},
+					success: function(result){
+					console.log(result);
+						$('.cmp-select-box').html(result.select).fadeIn();
+						$('#box-conteggia-btn').html(result.button).fadeIn();
+						$(".campagna_select").select2();
+					},
+					 complete: function(){
+						$('.mini-loader-box').fadeOut('fast');
+						$('.start-title').fadeOut('fast');
+					}
+				});
+			} // fine else tutte le campagne
+		});
+		
+	});
+	
+	function conteggia(){
+			var url 			= '{{admin.generateUrl('getConteggiCampagna')}}'; 
+			var campagna_id 	= $("#campagna-select option:selected").val();
+			var nome_cliente 	= $("#cliente-select option:selected").text();
+			var nome_campagna 	= $("#campagna-select option:selected").text();
+			if(campagna_id!=''){
+				getConteggi(campagna_id,nome_cliente,nome_campagna);
+			}
+		}
+		
+	function conteggiaTutti(){
+		var campagna_id 	= 0;
+		var nome_cliente 	= 'Tutti i clienti';
+		var nome_campagna 	= 'Tutte le campagne <strong>' + $("#mese option:selected").text() + ' ' + $("#anno option:selected").text() +'</strong>';
+		getConteggi(campagna_id,nome_cliente,nome_campagna);
+	}
+	// funzione principale di conteggio
+	function getConteggi(campagna_id,nome_cliente,nome_campagna){
+			var mese = '';
+			var anno = '';
+			if(campagna_id==0){
+				mese = $("#mese option:selected").val();
+				anno = $("#anno option:selected").val();
+			}
+			$('.menu-conteggio').fadeOut('fast').html('').fadeIn('fast');
+			$('.tab-content').fadeOut('fast').html('').fadeIn('fast');
+			$('.totali_campagna').fadeOut('fast').html('').fadeIn('fast');
+			$('.scarica_button').fadeOut('fast').html('').fadeIn('fast');
+			
+			$('.start-title').html('Sto caricando i risultati della ricerca...').fadeIn();
+			var url = '{{admin.generateUrl('getConteggiCampagna')}}'; 
+			$('.title-underbox').html('<div class="mini-loader-box"><div class="mini-loader"></div></div>'
+								+'<div class="col-md-9">'
+								+ '<i class="fa fa-user-circle" aria-hidden="true"></i>' + nome_cliente +'<br>' 
+								+ '<i class="fa fa-window-maximize" aria-hidden="true"></i>'+nome_campagna+'<br>'
+								+ '</div>' 
+								+ '<div class="col-md-1">'
+								+ '<span class="totali_clienti_box">'
+								+ '<i class="fa fa-users" aria-hidden="true"></i><span class="totali_campagna"></span>'
+								+ '</span>'
+								+ '</div>'
+								+ '<div class="col-md-2">'
+								+ '<span class="scarica_button"></span>'
+								+'</div>'
+								);
+			$.ajax({url: url,
+				data: { campagna_id : campagna_id, mese: mese, anno: anno},
+				success: function(result){
+				console.log(result);
+					$('.menu-conteggio').html(result.menu);
+					$('.tab-content').html(result.contenuto);
+					$('.totali_campagna').html(result.totali_campagna);
+					$('.scarica_button').html(result.scarica_button);
+				},
+				 complete: function(){
+					 $('.mini-loader-box').fadeOut('fast');
+					$('.start-title').fadeOut('fast');
+				}
+			});
+		}
+		
+	function getMediaInfo(media, codice_cnc, mese, anno){
+		var url = ''; 
+		var nome_concorso = $("#campagna-select option:selected").text();
+		console.log($("#campagna-select option:selected").text());
+		$('.media_cc-modal').html('<strong>' + media + '</strong>');
+		$('.concorso_cc-modal').html('<strong>' + nome_concorso + '</strong>');
+		
+		$.ajax({url: url,
+				data: { 
+						media : media,
+						codice_cnc : codice_cnc,
+						mese : mese,
+						anno : anno,
+					},
+				success: function(result){
+				console.log(result);
+					$('.modal-body').html(result.content);
+					$('#confirm').modal({
+						backdrop: 'static',
+						keyboard: false
+					});
+				}
+				});
+	}
+
+	function loadRightContent(id,campagna_id,mese,anno){
+		var url = '{{admin.generateUrl('getMeseRightContent')}}'; 
+		var id_dest = '#'+id;
+		$('.right-panel-content.active').removeClass('active').fadeOut('fast');
+		if($(id_dest).data('fill')!='1'){
+			$(id_dest).html('<div class="loader"></div><br>Sto caricando le informazioni...').fadeIn('fast').addClass('active');
+			$.ajax({url: url,
+				data: { 
+						campagna_id : campagna_id,
+						mese 		: mese,
+						anno 		: anno,
+					},
+				success: function(result){
+					console.log(result.contenuto);
+					if($(id_dest).length>0){
+						$(id_dest).html(result.contenuto).attr('data-fill', '1').fadeIn();
+					}
+				}
+			});
+		}else{
+			$(id_dest).fadeIn().addClass('active');
+		}
+	}
+	
+	function toggleGiorno(giorno,mese,anno,campagna_id){
+		var url = '{{admin.generateUrl('getGiorniniTotal')}}'; 
+		var miniloader = $('.miniloader');
+		var label_day = 'day_'+giorno+'_'+mese+'_'+anno;
+		
+		if($('#'+label_day).length<=0){
+			$.ajax({url: url,
+				data: { 
+						giorno 		: giorno,
+						mese 		: mese,
+						anno 		: anno,
+						campagna_id : campagna_id,
+					},
+				success: function(result){
+					//console.log(result.contenuto);
+					$('.giornini-content').append(result.giorno_box);
+				}
+			});
+		}else{
+			$('#'+label_day).toggle();
+		}
+	}
+	
+	function toggleTuttiGiorni(mese,anno){
+		$('.day-box_' + mese +'_'+ anno).toggle();
+	}
+	function toggleDettaglioAggregato(){
+		var tabToSlide = $('.tab-show-left-tabs');
+		if(tabToSlide.is(':visible')){
+			tabToSlide.slideUp();
+			$('.slideupicon').removeClass('fa-caret-square-o-up').addClass('fa-caret-square-o-down');
+		}else{
+			tabToSlide.slideDown();
+			$('.slideupicon').removeClass('fa-caret-square-o-down').addClass('fa-caret-square-o-up');
+			
+		}
+	}
+	
+	</script>
+				<!-- finestra modale -->
+				<div class="modal fade" id="confirm">
+				  <div class="modal-dialog" role="document">
+					<div class="modal-content">
+					  <div class="modal-header">
+						<button type="button" class="close" data-dismiss="modal" aria-label="Close">
+						  <span aria-hidden="true">&times;</span>
+						</button>
+						<h3 class="modal-title"><i class="fa fa-info-circle" aria-hidden="true"></i> Informazioni media: <span class="media_cc-modal"></span></h3>
+						<h5 class="modal-title">Concorso di riferimento: <span class="concorso_cc-modal"></span></h5>
+					  </div>
+					  <div class="modal-body">
+					  </div>
+					  <div class="modal-footer">
+						<button type="button" class="btn btn-secondary" data-dismiss="modal">Ok</button>
+					  </div>
+					</div>
+				  </div>
+				</div>
+			
+			</div> <!-- row -->
+		</section> <!-- row -->
+	</div> <!-- row -->
+{% endblock %}
+

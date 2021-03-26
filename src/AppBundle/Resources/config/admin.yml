@@ -1,0 +1,258 @@
+services:
+    app.cliente_list_builder:
+      class: AppBundle\Builder\ClienteListBuilder
+      arguments: [ "@doctrine" ]
+
+    app.lead_counters_builder:
+      class: AppBundle\Builder\LeadCountersBuilder
+      arguments: [ "@doctrine" ]
+      
+    app.ip_whitelist_builder:
+      class: AppBundle\Builder\IPListBuilder
+                
+    app.admin.cliente:
+        class: AppBundle\Admin\ClienteAdmin
+        tags:
+            - { name: sonata.admin, manager_type: orm, group: "Clienti", label: "Clienti" }
+        arguments:
+            - ~
+            - AppBundle\Entity\Cliente
+            - ~
+        calls:
+            - [ setTranslationDomain, [AppBundle]]
+
+    app.admin.fornitori:
+        class: AppBundle\Admin\FornitoriAdmin
+        tags:
+            - { name: sonata.admin, manager_type: orm, group: "Fornitori", label: "Fornitori" }
+        arguments:
+            - ~
+            - AppBundle\Entity\Fornitori
+            - ~
+        calls:
+            - [ setTranslationDomain, [AppBundle]]
+    app.admin.affiliati:
+        class: AppBundle\Admin\AffiliatiAdmin
+        tags:
+            - { name: sonata.admin, manager_type: orm, group: "Fornitori", label: "Affiliati" }
+        arguments:
+            - ~
+            - AppBundle\Entity\Affiliati
+            - ~
+        calls:
+            - [ setTranslationDomain, [AppBundle]]
+
+    app.admin.utenti_backend:
+        class: AppBundle\Admin\UserAdmin
+        tags:
+            - { name: sonata.admin, manager_type: orm, group: "Gestione Utenti", label: "Utenti Backend" }
+        arguments:
+            - ~
+            - AppBundle\Entity\User
+            - ~
+        calls:
+            - [ setTranslationDomain, [AppBundle]]
+        roles: [ ROLE_ADMIN ]
+        
+    app.admin.landings:
+        class: AppBundle\Admin\LandingAdmin
+        tags:
+            - { name: sonata.admin, manager_type: orm, group: "Landings", label: "Landing" }
+        arguments:
+            - ~
+            - AppBundle\Entity\Landing
+            - ~
+        calls:
+            - [ setTranslationDomain, [AppBundle]]  
+        roles: [ ROLE_ADMIN ]
+    app.admin.domini:
+        class: AppBundle\Admin\DominiAdmin
+        tags:
+            - { name: sonata.admin, manager_type: orm, group: "Landings", label: "Domini" }
+        arguments:
+            - ~
+            - AppBundle\Entity\Domini
+            - ~
+        calls:
+            - [ setTranslationDomain, [AppBundle]]
+        roles: [ ROLE_ADMIN ]
+    app.admin.campagne:
+        class: AppBundle\Admin\CampagnaAdmin
+        tags:
+            - { name: sonata.admin, manager_type: orm, group: "Landings", label: "Campagne" }
+        arguments:
+            - ~
+            - AppBundle\Entity\Campagna
+            - ~
+        calls:
+            - [ setTranslationDomain, [AppBundle]]  
+        roles: [ ROLE_ADMIN ] 
+    app.admin.brand:
+        class: AppBundle\Admin\BrandAdmin
+        tags:
+           - { name: sonata.admin, manager_type: orm, group: "Landings", label: "Brand" }
+        arguments:
+            - ~
+            - AppBundle\Entity\Brand
+            - ~
+        calls:
+            - [ setTranslationDomain, [AppBundle]]  
+        roles: [ ROLE_ADMIN ]            
+    app.admin.aclientilandings:
+        class: AppBundle\Admin\ALandingClienteAdmin
+        tags:
+            - { name: sonata.admin, manager_type: orm, group: "Landings", label: "Associa Cliente" }
+        arguments:
+            - ~
+            - AppBundle\Entity\A_landing_cliente
+            - ~
+        calls:
+            - [ setTranslationDomain, [AppBundle]]  
+        roles: [ ROLE_ADMIN ]            
+        
+    app.admin.ip_whitelist:
+        class: AppBundle\Admin\IPWhitelistAdmin
+        tags:
+            - { name: sonata.admin, manager_type: orm, group: "Gestione Utenti", label: "IP Whitelist" }
+        arguments:
+            - ~
+            - AppBundle\Entity\IPWhitelist
+            - ~
+        calls:
+            - [ setTranslationDomain, [AppBundle]]
+        roles: [ ROLE_ADMIN ]
+           
+    app.admin.lead_uni:
+        class: AppBundle\Admin\LeadAdmin
+        tags:
+            - { name: sonata.admin, manager_type: orm, group: "Lead Extraction", label: "Estrazione Anagrafiche" }
+        arguments:
+            - ~
+            - AppBundle\Entity\Lead_uni
+            - AppBundle:CRUDLead
+        calls:
+            - [ setClienteListBuilder, [ "@app.cliente_list_builder" ]]
+            - [ setLeadCounters, [ "@app.lead_counters_builder" ]]
+            - [ setTemplate, [list, custom_list.html.twig]]
+            - [ setDatagridBuilder, ["@app.admin.builder.orm_datagrid"]]
+            
+    app.admin.two_counters:
+        class: AppBundle\Admin\TwoCountersAdmin
+        tags:
+            - { name: sonata.admin, manager_type: orm, group: "Lead Extraction", label: "Contatori" }
+        arguments:
+            - ~
+            - ~
+            - AppBundle:CRUDTwoCount
+        calls:
+            
+    app.admin.pixel_manager:
+        class: AppBundle\Admin\PixelManagerAdmin
+        tags:
+            - { name: sonata.admin, manager_type: orm, group: "Pixel Manager", label: "Pixel Manager" }
+        arguments:
+            - ~
+            - ~
+            - AppBundle:CRUDPixelManager
+        calls:            
+        roles: [ ROLE_ADMIN ]
+    app.admin.clickcommand:
+        class: AppBundle\Admin\ClickcommandAdmin
+        tags:
+            - { name: sonata.admin, manager_type: orm, group: "Pixel Manager", label: "Click Command" }
+        arguments:
+            - ~
+            - ~
+            - AppBundle:CRUDClickcommand
+        calls:            
+        roles: [ ROLE_ADMIN ]
+    app.admin.ordini:
+        class: AppBundle\Admin\OrdiniAdmin
+        tags:
+            - { name: sonata.admin, manager_type: orm, group: "Ordini", label: "Ordini" }
+        arguments:
+            - ~
+            - ~
+            - AppBundle:CRUDOrdini
+        calls:            
+        roles: [ ROLE_ADMIN ]
+    app.admin.concorso:
+        class: AppBundle\Admin\ConcorsoAdmin
+        tags:
+            - { name: sonata.admin, manager_type: orm, group: "Concorso", label: "Concorso" }
+        arguments:
+            - ~
+            - ~
+            - AppBundle:CRUDConcorso
+        calls:            
+        roles: [ ROLE_ADMIN ]
+    app.admin.cplconteggi:
+        class: AppBundle\Admin\CplConteggiAdmin
+        tags:
+            - { name: sonata.admin, manager_type: orm, group: "Landings", label: "Conteggi CPL" }
+        arguments:
+            - ~
+            - ~
+            - AppBundle:CplConteggi
+        calls:            
+        roles: [ ROLE_ADMIN ]
+    app.admin.tracciamentopixel:
+        class: AppBundle\Admin\TracciamentoPixelAdmin
+        tags:
+            - { name: sonata.admin, manager_type: orm, group: "Pixel Manager", label: "Tracciamenti" }
+        arguments:
+            - ~
+            - ~
+            - AppBundle:TracciamentoPixel
+        calls:            
+        roles: [ ROLE_ADMIN ]
+    app.admin.miscelate:
+        class: AppBundle\Admin\MiscelateAdmin
+        tags:
+            - { name: sonata.admin, manager_type: orm, group: "Miscelate", label: "Miscelate" }
+        arguments:
+            - ~
+            - ~
+            - AppBundle:MiscelateAdmin
+        calls:            
+        roles: [ ROLE_ADMIN ]
+    app.admin.cpctocpa:
+        class: AppBundle\Admin\CpctocpaAdmin
+        tags:
+            - { name: sonata.admin, manager_type: orm, group: "Cpctocpa", label: "Cpc to cpa" }
+        arguments:
+            - ~
+            - ~
+            - AppBundle:CpctocpaAdmin
+        calls:            
+        roles: [ ROLE_ADMIN ]
+    app.admin.smsrecheck:
+        class: AppBundle\Admin\SmsrecheckAdmin
+        tags:
+            - { name: sonata.admin, manager_type: orm, group: "Smsrecheck", label: "Sms recheck" }
+        arguments:
+            - ~
+            - ~
+            - AppBundle:SmsrecheckAdmin
+        calls:            
+        roles: [ ROLE_ADMIN ]
+    app.admin.webservices:
+        class: AppBundle\Admin\WebservicesAdmin
+        tags:
+            - { name: sonata.admin, manager_type: orm, group: "Webservices", label: "Webservices" }
+        arguments:
+            - ~
+            - ~
+            - AppBundle:WebservicesAdmin
+        calls:            
+        roles: [ ROLE_ADMIN ]
+    app.admin.blacklister:
+        class: AppBundle\Admin\BlacklisterAdmin
+        tags:
+            - { name: sonata.admin, manager_type: orm, group: "Blacklister", label: "Blacklister" }
+        arguments:
+            - ~
+            - ~
+            - AppBundle:BlacklisterAdmin
+        calls:            
+        roles: [ ROLE_ADMIN ]

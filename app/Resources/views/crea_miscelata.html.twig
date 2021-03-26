@@ -1,0 +1,877 @@
+{% extends base_template %}
+
+        {% block stylesheets %}
+            {{ parent() }}
+			{% stylesheets 'css/style.css'	%}
+				<link href="{{ asset_url }}" type="text/css" rel="stylesheet"/>
+				<link href="/css/datepicker/daterangepicker.css" type="text/css" rel="stylesheet"/>
+			{% endstylesheets %}
+			<style>
+			.panel-message{padding: 15px; background-color: #00a66973; text-align: center; font-size: 18px; cursor: pointer;}
+			
+			
+			.select2-container{width: 100%;}
+			.calendar-icon{cursor: pointer; font-size: 25px; padding-top: 5px;}
+			.data_fine_label span{font-size: 15px;padding-top: 6px; display: block;}
+			
+			
+			
+			/*miscelate*/
+			label {
+				margin-bottom:0px;
+			}
+			.sourceline{
+				padding-right:34px;
+				position:relative;
+				margin-top: 10px;
+			}
+			
+			#hotsourceline1, #coldsourceline, #mixedsourceline {
+				margin-top: 0px;
+			}
+			.hotsourceline{
+				
+			}
+			.sourceline input, .sourceline .select2-container{
+				display:inline-block;
+				width:calc((100% - 24px) / 3)!important;
+				min-width:200px;
+				margin-left: -2px;
+				margin-right:8px;
+			}
+			.sourceline .select2-container.campagna-select{
+				display:inline-block;
+				width:66%!important;
+				min-width:300px;
+				margin-left: -2px;
+				margin-right:8px;
+			}
+			.campo-help{
+				margin-bottom: 8px;
+				display:block;
+			}
+			.sourceline .select2-container {
+				top: -2px;
+			}
+			.hotsourceline .first-input-hs, .hotsourceline .select2-container{
+				
+			}
+			.aggiungi-hotsource, .elimina-hotsource {
+				position:absolute;
+				width:30px;
+				height:50%;
+				text-align:center;
+				right:5px;
+				line-height:15px;
+				cursor:pointer;
+				color:#d2d6de;
+				transition:all 0.3s linear;
+			}
+			.aggiungi-hotsource{
+				top:0px;
+			}
+			#hotsourceline1 .aggiungi-hotsource{
+				top:10px;
+			}
+			.aggiungi-hotsource:hover {
+				color:green;
+			}
+			.elimina-hotsource{
+				top:19px;
+			}
+			.elimina-hotsource:hover {
+				color:#c42d2d;
+			}
+			form {
+				padding-top:44px;
+			}
+			
+			input.inputerror, .inputerror{
+				border-color:#c42d2d !important;
+			}
+			.select2-container.inputerror{
+				border:1px solid;
+			}
+			.campo_errore {
+				color:#c42d2d;
+				font-size:90%;
+				line-height:90%;
+				margin-top:4px;
+			}
+			.campo_errore p{
+				margin-bottom:5px;
+			}
+			
+			.seleziona-fromdb, .show-campagna-selected{
+				width: 33%;
+				
+				padding-right: 4px;
+				font-size: 12px;
+				color: #777;
+				display: inline-block;
+			}
+			.seleziona-fromdb{
+				text-align: right;
+			}
+			.seleziona-fromdb span, .seleziona-fromdb .fa {
+				cursor:pointer;
+			}
+			
+			.seleziona-fromdb:hover{
+				color: #444;
+			}
+			.seleziona-fromdb .fa{
+			    font-size: 9px;
+			}
+			#torna{
+				position:absolute;
+				right:15px;
+				top:15px;
+			}
+			#creamiscelata, #creamiscelataetorna, #modificamiscelata, #modificamiscelataetorna {
+				display:none;
+			}
+			.crea-miscelata #creamiscelata, .crea-miscelata #creamiscelataetorna{
+				display: inline-block;
+			}
+			.modifica-miscelata #modificamiscelata, .modifica-miscelata #modificamiscelataetorna{
+				display: inline-block;
+			}
+			</style>
+		{% endblock %}
+        {% block javascripts %}
+                {{ parent() }}
+			{% javascripts 'js/main.js' %}
+				<script src="{{ asset_url }}"></script>
+			{% endjavascripts %}
+		{% endblock %}
+
+		{% block content %}
+		{% if miscelata %}
+			<div class="container theme-showcase modifica-miscelata" data-idmis="{{ miscelata.id }}" role="main" id="miscelata_maker_container">
+		{% else %}
+			<div class="container theme-showcase crea-miscelata" role="main" id="miscelata_maker_container">
+		{% endif %}
+			<div class="row">
+				<div class="col-sm-12">
+					<div class="panel panel-default">
+						<div class="panel-heading col-md-12">
+							<div class="col-md-12">
+								<h3 id="titolo-pagina">
+								{% if miscelata %}
+									<i class="fa fa-pencil" aria-hidden="true"></i> Modifica miscelata (id: {{ miscelata.id }})</h3>
+								{% else %}
+									<i class="fa fa-pencil-square-o" aria-hidden="true"></i> Crea una nuova miscelata
+								{% endif %}
+								</h3>
+								
+								<a id="torna" href="{{admin.generateUrl('miscelate')}}" class="btn btn-primary">Torna al listato</a>
+							</div>
+						</div>
+						<div class="col-md-12 panel-message" onclick="hideMessage()" style="display: none;"></div>
+						<div class="panel-body">
+							<form name="login" action="" method="post" id="insert-pixel-form" style="margin-top:20px;clear:left;">
+								<div class="form-group col-md-12">
+									<label for="nome">Nome</label>
+									<small  class="form-text text-muted campo-help">Inserire il nome della nuova miscelata.</small>
+									{% if miscelata %}
+									<input type="text" value="{{ miscelata.nome }}" name="nome" class="form-control" id="nome" placeholder="Nome miscelata" />
+									{% else %}
+									<input type="text" name="nome" class="form-control" id="nome" placeholder="Nome miscelata" />
+									{% endif %}
+									<div class="campo_errore"></div>
+									
+									
+								</div>
+								<div class="form-group col-md-12">
+									<label for="nome">Fonti calde</label>
+									<small  class="form-text text-muted campo-help" style="display:block;">Inserire nome tabella, db di riferimento e etichetta per le fonti calde.</small>
+									<div class="hotsourceline sourceline" id="hotsourceline1">
+										<select class="campagna-select" id="campagna-select1" name="campagna-select1" style="display:none;">
+											<option value="" data-codice="">Seleziona una campagna</option>
+											{% for campagna in campagne %}
+												<option value="{{campagna.id}}" data-codice="{{campagna.id}}" data-db="{{ campagna.sourceDb }}" data-tb="{{ campagna.dbtab }}" data-nome="{{campagna.NomeOfferta}}">{{campagna.NomeOfferta}}</option>
+											{% endfor %}
+										</select>
+										<select name="sourcedb1" id="sourcedb1" class="HsourceDb">
+											<option value="">Scegli il db</option>
+											<option value="concorso" data-codice="concorso">Concorso</option>
+											<option value="offertesumisura" data-codice="offertesumisura">offertesumisura</option>
+											<option value="esclusivaperte" data-codice="esclusivaperte">esclusivaperte</option>
+											<option value="offertepromozioni" data-codice="offertepromozioni">offertepromozioni</option>
+											<option value="leadout" data-codice="leadout">leadout</option>
+										</select>
+										<input type="text" name="sourcetable1" class="form-control first-input-hs HsourceTable" id="sourcetable1" placeholder="Tabella" />
+										<input type="text" name="sourceetichetta1" class="form-control HsourceEt" id="sourceetichetta1" placeholder="Etichetta">
+										<div class="aggiungi-hotsource"><i class="fa fa-plus"></i></div>
+										<div class="show-campagna-selected"></div><div class="seleziona-fromdb fromdb"><span>Seleziona una campagna</span> <i class="fa fa-list"></i></div>
+									</div>
+									<div class="campo_errore"></div>
+									
+									
+								</div>
+								<div class="form-group col-md-12">
+									<label for="nome">Fonte fredda</label>
+									<small class="form-text text-muted campo-help" style="display:block;">Inserire nome tabella, db di riferimento e etichetta per la fonte fredda</small>
+									<div class="coldsourceline sourceline" id="coldsourceline">
+										<select name="coldsourcedb" id="coldsourcedb" class="CsourceDb">
+											<option value="" style="color:#d2d6de;">Scegli il db</option>
+											<option value="concorso" data-codice="concorso">Concorso</option>
+											<option value="offertesumisura" data-codice="offertesumisura">offertesumisura</option>
+											<option value="esclusivaperte" data-codice="esclusivaperte">esclusivaperte</option>
+											<option value="offertepromozioni" data-codice="offertepromozioni">offertepromozioni</option>
+											<option value="leadout" data-codice="leadout">leadout</option>
+										</select>
+										<input type="text" name="coldsourcetable" class="form-control CsourceTable" id="coldsourcetable" placeholder="Tabella" />
+										<input type="text" name="coldsourceetichetta" class="form-control CsourceEt" id="coldsourceetichetta" placeholder="Etichetta">
+									</div>
+									<div class="campo_errore"></div>
+									
+									
+								</div>
+								<div class="form-group col-md-12">
+									<label for="nome">Tabella di destinazione</label>
+									<small  class="form-text text-muted campo-help" style="display:block;">Inserire nome tabella e il db di riferimento dove verranno trasferite le leads</small>
+									<div class="mixedsourceline sourceline" id="mixedsourceline">
+										<select name="mixedsourcedb" id="mixedsourcedb" class="MsourceDb">
+											<option value="" style="color:#d2d6de;">Scegli il db</option>
+											<option value="concorso" data-codice="concorso">Concorso</option>
+											<option value="offertesumisura" data-codice="offertesumisura">offertesumisura</option>
+											<option value="esclusivaperte" data-codice="esclusivaperte">esclusivaperte</option>
+											<option value="offertepromozioni" data-codice="offertepromozioni">offertepromozioni</option>
+											<option value="leadout" data-codice="leadout">leadout</option>
+										</select>
+										<input type="text" name="mixedsourcetable" class="form-control MsourceTable" id="mixedsourcetable" placeholder="Tabella" />
+									</div>
+									<div class="campo_errore"></div>
+									
+									
+								</div>
+								<div class="form-group col-md-12">
+									<label for="attiva">Attiva</label>
+									<small  class="form-text text-muted campo-help">Scegli se attivare la miscelazione per questa miscelata.</small>
+									<select class="attiva-select" id="attiva" name="attiva">
+										<option value="1" data-codice="1" selected="selected">Attiva</option>
+										<option value="0" data-codice="0" >Non attiva</option>
+									</select>
+									
+									<div class="campo_errore"></div>
+								</div>
+								<div class="form-group col-md-12">
+									<label for="percentuale">Percentuale fredde</label>
+									<small  class="form-text text-muted campo-help">Perc. di fredde sul totale.</small>
+									{% if miscelata %}
+									<input type="number" value="{{ miscelata.percentuale_fredde }}" name="percentuale" class="form-control" id="percentuale" />
+									{% else %}
+									<input type="number" name="percentuale" class="form-control" id="percentuale" />
+									{% endif %}
+									
+									<div class="campo_errore"></div>
+									
+									
+								</div>
+								<div class="form-group col-md-12">
+									<label for="limite">Limite</label>
+									<small  class="form-text text-muted campo-help">Numero massimo di leads da miscelare.</small>
+									{% if miscelata %}
+									<input type="number" value="{{ miscelata.limite }}" name="limite" class="form-control" id="limite" />
+									{% else %}
+									<input type="number" name="limite" class="form-control" id="limite" />
+									{% endif %}
+									<div class="campo_errore"></div>
+									
+									
+								</div>
+								<div class="form-group col-md-12">
+									<label for="contatore">Lega a campagna <span style="font-weight:300;">(contatore)</span></label>
+									<small  class="form-text text-muted campo-help">Scegli una campagna/landing/cliente su cui conteggiare le leads.</small>
+									<div id="contatore" style="display:none;">
+										<input type="number" name="clienteid" class="form-control" id="clienteid" placeholder="cliente id" />
+										<input type="number" name="campagnaid" class="form-control" id="campagnaid" placeholder="campagna id"/>
+										<input type="number" name="landingid" class="form-control" id="landingid" placeholder="landing id"/>
+									</div>
+									<select class="alanding-select" id="alanding-select" name="alanding-select">
+										<option value="" data-codice="">Seleziona una campagna/landing...</option>
+											{% for alanding in alandings %}
+												<option value="{{alanding.id}}" data-codice="{{alanding .id}}" data-cliente="{{ alanding.cliente.id }}" data-landing="{{ alanding.landing.id }}" data-campagna="{{ alanding.campagna.id }}">{{ alanding.landing.slugLanding }}</option>
+											{% endfor %}
+										</select>
+									<div class="campo_errore"></div>
+									
+								</div>
+								
+								<div class="form-group col-md-12">
+									<button type="button" onclick="salvaOrdine()" id="creamiscelata" class="btn btn-primary">Crea miscelata</button>
+									<button type="button" onclick="salvaOrdine2()" id="creamiscelataetorna" class="btn btn-primary">Crea miscelata e torna al listato</button>
+									
+									<button type="button" onclick="salvaOrdine()" id="modificamiscelata" class="btn btn-primary">Modifica miscelata</button>
+									<button type="button" onclick="salvaOrdine2()" id="modificamiscelataetorna" class="btn btn-primary">Modifica miscelata e torna al listato</button>
+								</div>
+							 </form>
+						</div>
+					</div>
+				</div>
+			</div> <!-- row -->
+		</div>
+		 
+		
+		<script>
+			
+		$(document).ready(function(){
+			
+			{% if miscelata %}
+				//inizialize modifica hotsources
+				{% for hotsource in miscelata.hot_sources %}
+					m_initialize_hotsource('{{ hotsource[1] }}','{{ hotsource[0] }}','{{ hotsource[2] }}');
+				{% endfor %}
+				//inizialize modifica coldsources
+				m_initialize_coldsource('{{ miscelata.cold_source[1] }}','{{  miscelata.cold_source[0] }}','{{  miscelata.cold_source[2] }}');
+				//inizialize modifica mixeddestination
+				m_initialize_mixeddestination('{{ miscelata.mixed_table[1] }}','{{  miscelata.mixed_table[0] }}');
+				m_initialize_attiva('{{ miscelata.attiva }}');
+				{% if (miscelata.cliente_id>0)  and (miscelata.campagna_id>0)  and (miscelata.landing_id>0)%}
+					m_initialize_contatore('{{ miscelata.cliente_id }}', '{{ miscelata.campagna_id }}', '{{ miscelata.landing_id }}');
+				{% endif %}
+			{% endif %}
+			
+		
+		 });
+		 
+		 
+		 /*--- MISCELATE SCRIPTS --->*/
+		 //--UI
+		 //aggiungi e rimuovi hotsource
+		$(document).on('click', '.aggiungi-hotsource', function(){
+			//clone hotsourceline1
+			var formgroup=$('#hotsourceline1').closest('.form-group');
+			var clonedLine=$('#hotsourceline1').clone();
+			var id_number=$('.hotsourceline').length+1;
+			clonedLine.attr('id','hotsourceline'+id_number);
+			clonedLine.find('input.HsourceTable').attr('id','sourcetable'+id_number).attr('name','sourcetable'+id_number).val('');
+			clonedLine.find('.select2-container').remove();
+			clonedLine.find('select.HsourceDb').attr('id','sourcedb'+id_number).attr('name','sourcedb'+id_number).prop('selectedIndex',0).css('display','inline-block').select2();
+			clonedLine.find('select.campagna-select').attr('id','campagna-select'+id_number).attr('name','campagna-select'+id_number).prop('selectedIndex',0).css('display','inline-block').select2();
+			clonedLine.find('.frommanual span').text('Seleziona una campagna');
+			clonedLine.find('.frommanual .fa').removeClass('fa-hand-o-right').addClass('fa-list');
+			clonedLine.find('.select2-container.campagna-select').css('display','none');
+			clonedLine.find('.select2-container.HsourceDb').css('display','inline-block');
+			clonedLine.find('.HsourceTable').css('display','inline-block');
+			clonedLine.find('.frommanual').removeClass('frommanual').addClass('fromdb');
+			clonedLine.find('input.HsourceEt').attr('id','sourceetichetta'+id_number).attr('name','sourceetichetta'+id_number).val('');
+			clonedLine.append('<div class="elimina-hotsource"><i class="fa fa-remove"></div>');
+			clonedLine.find('.show-campagna-selected').text('');
+			clonedLine.find('.inputerror').removeClass('inputerror');
+			formgroup.append(clonedLine);
+			formgroup.append(formgroup.find('.campo_errore'));
+			formgroup.append(formgroup.find('#hsHelp'));
+			
+		});
+		$(document).on('click', '.elimina-hotsource', function(){
+			//clone hotsourceline1
+			$(this).closest('.hotsourceline').remove();
+		
+		});
+		$(document).on('click', '.fromdb span, .fromdb .fa', function(){
+			//clone hotsourceline1
+			$(this).closest('.fromdb').find('span').text('Seleziona manualmente');
+			$(this).closest('.fromdb').find('.fa').removeClass('fa-list').addClass('fa-hand-o-right');
+			$(this).closest('.sourceline').find('.select2-container.campagna-select').css('display','inline-block');
+			$(this).closest('.sourceline').find('.select2-container.HsourceDb').css('display','none');
+			$(this).closest('.sourceline').find('.HsourceTable').css('display','none');
+			$(this).closest('.fromdb').removeClass('fromdb').addClass('frommanual');
+		});
+		$(document).on('click', '.frommanual span,.frommanual  .fa', function(){
+			//clone hotsourceline1
+			$(this).closest('.frommanual').find('span').text('Seleziona una campagna');
+			$(this).closest('.frommanual').find('.fa').removeClass('fa-hand-o-right').addClass('fa-list');
+			$(this).closest('.sourceline').find('.select2-container.campagna-select').css('display','none');
+			$(this).closest('.sourceline').find('.select2-container.HsourceDb').css('display','inline-block');
+			$(this).closest('.sourceline').find('.HsourceTable').css('display','inline-block');
+			$(this).closest('.frommanual').removeClass('frommanual').addClass('fromdb');
+		});
+		$(document).on('change', '.hotsourceline select.campagna-select', function(){
+			//prendi i valori di db e tabella , converti i valori di db, inserisci nei campi
+			//crea div con riferimento campagna
+			//nascondi select
+			//clone hotsourceline1
+			if($(this).closest('.sourceline').find('.frommanual').length>0){
+				var db =$(this).find('option:selected').attr('data-db');
+				var dbOk=0;
+				if(db=='offertes_cpl'){
+					db ='offertesumisura';
+					dbOk=1;
+				}else if(db=='esclusiv_cpl'){
+					db ='esclusivaperte';
+					dbOk=1;
+				}else if(db=='offertep_cpl'){
+					db ='offertepromozioni';
+					dbOk=1;
+				}
+				if(dbOk==1){
+					var tbl=$(this).find('option:selected').attr('data-tb');
+					var nome=$(this).find('option:selected').attr('data-nome');
+					var id=$(this).find('option:selected').val();
+					$(this).closest('.sourceline').find('.HsourceTable').val(tbl);
+				
+					$(this).closest('.sourceline').find('.HsourceDb').val(db);
+					$(this).closest('.sourceline').find('.HsourceDb').change();
+				
+					$(this).closest('.sourceline').find('.frommanual span').text('Seleziona una campagna');
+					$(this).closest('.sourceline').find('.frommanual .fa').removeClass('fa-hand-o-right').addClass('fa-list');
+					$(this).closest('.sourceline').find('.select2-container.campagna-select').css('display','none');
+					$(this).closest('.sourceline').find('.select2-container.HsourceDb').css('display','inline-block');
+					$(this).closest('.sourceline').find('.HsourceTable').css('display','inline-block');
+					$(this).closest('.sourceline').find('.frommanual').removeClass('frommanual').addClass('fromdb');
+					$(this).closest('.sourceline').find('.show-campagna-selected').text('campagna: '+nome+' (id '+id+')');
+				}else{
+					alert('il db '+db+' della campagna scelta non è fra la rosa di db possibili per la miscelata.<br>Scegli un altra campagna');
+					$(this).closest('.sourceline').find('.show-campagna-selected').text('');
+					$(this).closest('.sourceline').find('.HsourceTable').val('');
+					$(this).closest('.sourceline').find('.HsourceDb').val('');
+					$(this).closest('.sourceline').find('.HsourceDb').change();
+				}
+			}
+			
+		});
+		$(document).on('change', '.HsourceTable, .HsourceDb', function(){
+			//make empty select campagna-select
+			if($(this).closest('.sourceline').find('.fromdb').length>0){
+				$(this).closest('.sourceline').find('select.campagna-select').val('');
+				$(this).closest('.sourceline').find('select.campagna-select').change();
+				$(this).closest('.sourceline').find('.show-campagna-selected').text('');
+				//see if we got a campaig with db and table parameters
+				var db=$(this).closest('.sourceline').find('.HsourceDb  option:selected').val();
+				var dbOk=0;
+				if(db=='offertesumisura'){
+					db ='offertes_cpl';
+					dbOk=1;
+				}else if(db=='esclusivaperte'){
+					db ='esclusiv_cpl';
+					dbOk=1;
+				}else if(db=='offertepromozioni'){
+					db ='offertep_cpl';
+					dbOk=1;
+				}
+				var tbl=$(this).closest('.sourceline').find('.HsourceTable').val();
+				if(dbOk==1 && tbl!=""){
+					$(this).closest('.sourceline').find('select.campagna-select option').each(function(){
+						if($(this).attr('data-tb')==tbl && $(this).attr('data-db')==db){
+							$(this).closest('.sourceline').find('.show-campagna-selected').text('campagna: '+$(this).attr('data-nome')+' (id '+$(this).val()+')');
+							$(this).closest('select').val($(this).val());
+							$(this).closest('select').change();
+						}
+					});
+				}
+			}
+		});
+		$(document).on('change', '#alanding-select', function(){
+			if(!$(this).hasClass('select-processing')){
+				$(this).addClass('select-processing');
+				if(Number($(this).val())>0){
+					var campagnaId=$(this).find('option:selected').attr('data-campagna');
+					var landingId=$(this).find('option:selected').attr('data-landing');
+					var clienteId=$(this).find('option:selected').attr('data-cliente');
+					if(Number(campagnaId)>0 && Number(landingId)>0 && Number(clienteId)>0){
+						$('#clienteid').val(clienteId);
+						$('#campagnaid').val(campagnaId);
+						$('#landingid').val( landingId);
+						$(this).removeClass('select-processing');
+					}else{
+						$('#clienteid').val('');
+						$('#campagnaid').val('');
+						$('#landingid').val('');
+						alert('alcuni dati sono mancanti su questa landing cliente. scegline un\'altra');
+						setTimeout(function(){ 
+							$('#alanding-select').val('');
+							$('#alanding-select').change();
+							$('#alanding-select').removeClass('select-processing');
+						}, 300);
+						
+					}
+				}else{
+					$('#clienteid').val('');
+					$('#campagnaid').val('');
+					$('#landingid').val('');
+					$(this).removeClass('select-processing');
+				}
+			}
+		});
+			
+		//-- saving and processing
+		function salvaOrdine2() {
+			$('#torna').addClass('autoback');
+			salvaOrdine();
+		}
+		 function salvaOrdine(){
+			$('#creamiscelata').prop('disabled', true);
+			$('#creamiscelataetorna').prop('disabled', true);
+			if(controlla_miscelata()){
+				var nome		 		= $.trim($('#nome').val());//$('#cliente-select option:selected').val();
+				var hot_sources 		= componiHotSources();//$('#clienteCampagna option:selected').val();
+				var cold_source 		= JSON.stringify([$.trim($('#coldsourcetable').val()),$('#coldsourcedb').val(),$.trim($('#coldsourceetichetta').val())]);
+				var mixed_table 		= JSON.stringify([$.trim($('#mixedsourcetable').val()),$('#mixedsourcedb').val()]);
+				var percentuale_fredde 	= $('#percentuale').val();
+				var limite 	= $('#limite').val();
+				var attiva		 	= $('#attiva').val();
+				var cliente_id		 	= $('#clienteid').val();
+				var campagna_id 			= $('#campagnaid').val();
+				var landing_id 			= $('#landingid').val();
+			
+				console.log('nome:'+nome+'; hot_sources: '+hot_sources+'; cold_source: '+cold_source+'; mixed_table: '+mixed_table+'; percentuale_fredde:'+percentuale_fredde+'; limite: '+limite+'; attiva: '+attiva+'; cliente: '+cliente_id+';campagna: '+campagna_id+'; landing: '+landing_id);
+				data_send = {	nome				: nome, 
+								hot_sources			: hot_sources,
+								cold_source 		: cold_source,
+								mixed_table 		: mixed_table,
+								percentuale_fredde 	: percentuale_fredde,
+								limite 				: limite,
+								attiva 				: attiva,
+								cliente_id 			: cliente_id,
+								campagna_id 		: campagna_id,
+								landing_id 			: landing_id,
+							};
+								
+				saveMiscelata(data_send);
+			}else{
+				$("html, body").animate({ scrollTop: 0 }, "fast");
+			}
+			$('#creamiscelata').prop('disabled', false);
+			$('#creamiscelataetorna').prop('disabled', false);
+			
+		 }
+		 function saveMiscelata(data_send){
+			var ok=0;
+			if($('#miscelata_maker_container').hasClass('crea-miscelata')){
+				var url_save = '{{admin.generateUrl('salvaMiscelata')}}';
+				ok=1;
+			}else{
+				var url_save = '{{admin.generateUrl('editMiscelata')}}';
+				//get the id
+				
+				if($('#miscelata_maker_container').attr('data-idmis')>0 ){
+					data_send["id"] = $('#miscelata_maker_container').attr('data-idmis');
+					ok=1;
+				}
+				
+			}
+			if(ok==1){
+			var url_listato = '{{admin.generateUrl('miscelate')}}';
+			var message="";
+			$.ajax({url: url_save,
+					data: data_send,
+					success: function(inserito){
+					if($('#torna').hasClass('autoback')){
+						if($('#miscelata_maker_container').hasClass('crea-miscelata')){
+							window.location.href =url_listato+'?Messaggio=MisCrea&IdMisc='+inserito['result'];
+						}else{
+							window.location.href =url_listato+'?Messaggio=MisMod&IdMisc='+ $('#miscelata_maker_container').attr('data-idmis');
+						}
+					}else{
+						//salva nuova
+						if($('#miscelata_maker_container').hasClass('crea-miscelata')){
+							$('.panel-message').html('<h3><i class="fa fa-check-circle-o" aria-hidden="true"></i> Miscelata creata (id '+inserito['result']+')</h3>').slideDown();
+							$("html, body").animate({ scrollTop: 0 }, "fast");
+							//change to modifica
+							$('#miscelata_maker_container').removeClass('crea-miscelata').addClass('modifica-miscelata').attr('data-idmis', inserito['result']);
+							$('#titolo-pagina').html('<i class="fa fa-pencil" aria-hidden="true"></i> Modifica miscelata (id: '+inserito['result']+')</h3>');
+						}else{
+							$('.panel-message').html('<h3><i class="fa fa-check-circle-o" aria-hidden="true"></i> Miscelata modificata (id '+inserito['result']+')</h3>').slideDown();
+							$("html, body").animate({ scrollTop: 0 }, "fast");
+						
+					
+							
+						}
+						
+					}
+					$('#creamiscelataetorna').remove();
+					$('#creamiscelata').remove();
+					},
+					 complete: function(){
+					}
+				});
+			}else{alert('si &egrave; verificato un problema dusrante il salvataggio');}
+		 }
+		 
+		 //funzioni di calcolo
+		 function componiHotSources(){
+			var miscelateArray=[];
+			//per ogni hosource line aggiungi alla array vuoto iniziale le tre informazioni
+			$('.hotsourceline').each(function(){
+					 miscelateArray.push([$.trim($(this).find('.HsourceTable').val()),$(this).find('.HsourceDb option:selected').val(),$.trim($(this).find('.HsourceEt').val())]);
+			}); 
+			return JSON.stringify(miscelateArray);
+		 }
+		 
+		 //controll on inputs
+		 function controlla_miscelata(){
+			//azzero gli errori
+			$('.campo_errore').html('');
+			$('.inputerror').removeClass('inputerror');
+			$('.nomevuoto').removeClass('nomevuoto');
+			$('.limitevuoto').removeClass('limitevuoto');
+			$('.percentualevuota').removeClass('percentualevuota');
+			$('.rangepercentuale').removeClass('rangepercentuale');
+			$('.campovuoto').removeClass('campovuoto');
+			$('.campocaratteri').removeClass('campocaratteri');
+			
+			//check name
+			checkName();
+			//check hotsources, cold sources, mixed destination
+			$('.HsourceTable, .CsourceTable, .MsourceTable, .HsourceEt, .CsourceEt, select.HsourceDb, #coldsourcedb, #mixedsourcedb').each(function(){
+				checkMultipleField($(this));
+			});
+			//check percentuale
+			checkPercentuale();
+			//check limite
+			removeInputError($('#limite'), -1);
+			if(checkemptyInput($('#limite'))==2){
+				var errorstring ='limitevuoto';
+				showInputError($('#limite'), errorstring);
+			}
+			//if inputerror are present return false else return true
+			if($('.inputerror').length>0){
+				return false;
+			}else{
+				return true;
+			}
+			
+		 }
+		 
+		 //controlla il nome
+		 $(document).on('change', '#nome', function(){
+			checkName();
+		 });
+		 function checkName(){
+			//se il nome è già presente a db segna come errore
+			removeInputError($('#nome'), -1);
+			var nomiinuso=[{% for misc in miscelate %}
+				{% if miscelata %}
+					{% if miscelata.nome != misc.nome %}"{{misc.nome}}",{% endif %}
+					{% else %}
+						"{{misc.nome}}",
+					{% endif %}
+				{% endfor %}];
+			if(checkemptyInput($('#nome'))==2){
+				var errorstring ='nomevuoto';
+				showInputError($('#nome'), errorstring);
+			}
+			var nomescelto=$.trim($('#nome').val());
+			if($.inArray( nomescelto, nomiinuso) !=-1){
+				var errorstring ='nomepresente';
+				showInputError($('#nome'), errorstring);
+			}
+		 }
+		 $(document).on('change', '#limite', function(){
+			removeInputError($('#limite'), -1);
+			if(checkemptyInput($('#limite'))==2){
+				var errorstring ='limitevuoto';
+				showInputError($('#limite'), errorstring);
+			}
+		 });
+		 function checkemptyInput(campo){
+			//se il campo è vuoto aggiungi l'errore sotto l'input
+			if($.trim(campo.val()).length === 0){
+				return 2;
+			}else{
+				return 1;
+			}
+		 }
+		 
+		 $(document).on('change', '#percentuale', function(){
+			checkPercentuale();
+		 });
+		 function checkPercentuale(){
+			removeInputError($('#percentuale'), -1);
+			//se il valore è vuoto
+			if(checkemptyInput($('#percentuale'))==2){
+				var errorstring ='percentualevuota';
+				showInputError($('#percentuale'), errorstring);
+			}
+			//se il valore non è compreso fra 0 e 99 segnala errore
+			if($('#percentuale').val() <0 || $('#percentuale').val()>99){
+				var errorstring ='rangepercentuale';
+				showInputError($('#percentuale'), errorstring);
+			}
+			
+		 }
+		 $(document).on('change', '.HsourceTable, .CsourceTable, .MsourceTable, .HsourceEt, .CsourceEt, select.HsourceDb, #coldsourcedb, #mixedsourcedb', function(){
+			checkMultipleField($(this));
+		 });
+		 
+		 function checkMultipleField(thisfield){
+			if(checkemptyInput(thisfield)==2){
+				var errorstring ='campovuoto';
+				showInputError(thisfield, errorstring);
+				thisfield.addClass('error-campovuoto');
+			}else{
+				if(thisfield.hasClass('error-campovuoto')){
+					thisfield.removeClass('error-campovuoto');
+					removeInputError(thisfield,'campovuoto');
+				}
+			}
+			var errore= checkInvalidC(thisfield);
+			if(errore>0){
+				var errorstring ='campocaratteri';
+				showInputError(thisfield, errorstring);
+				thisfield.addClass('error-campocaratteri');
+			}else{
+				if(thisfield.hasClass('error-campocaratteri')){
+					thisfield.removeClass('error-campocaratteri');
+					removeInputError(thisfield,'campocaratteri');
+				}
+			}
+		 }
+		 function checkInvalidC(campo){
+			//se il valore contiene spazi o " , ; \ / ? segna errore
+			var errore=0;
+			if(campo.val().indexOf(',') != -1){
+				errore++;
+			}
+			if(campo.val().indexOf('|') != -1){
+				errore++;
+			}
+			if(campo.val().indexOf('/') != -1){
+				errore++;
+			}
+			if(campo.val().indexOf(';') != -1){
+				errore++;
+			}
+			if(campo.val().indexOf('"') != -1){
+				errore++;
+			}
+			if(campo.val().indexOf('?') != -1){
+				errore++;
+			}
+			if(campo.val().indexOf("'") != -1){
+				errore++;
+			}
+			if(campo.val().indexOf(":") != -1){
+				errore++;
+			}
+			return errore;
+		 }
+		 function erroriPossibili(){
+		 var errpossibili=
+			{
+				'nomevuoto':'Il nome non pu&ograve essere vuoto',
+				'nomepresente':'Il nome scelto &egrave; gi&agrave; presente nel db',
+				'limitevuoto':'Il limite non pu&ograve essere vuoto',
+				'percentualevuota':'La percentuale di freddde non pu&ograve; essere vuota',
+				'rangepercentuale':'La percentuale di freddde deve essere un numero fra 0 e 99',
+				'campovuoto':'Il campo non pu&ograve; essere vuoto',
+				'campocaratteri':'Il campo non pu&ograve; contenere caratteri particolari come <i>, ; : / | ? " \'</i>'
+			}
+			return errpossibili;
+		 }
+		 function removeInputError(input, errorcode) {
+			if(errorcode==-1){
+				input.removeClass('inputerror');
+				if(input.closest('.form-group').find('.inputerror').length == 0){
+					input.closest('.form-group').find('.campo_errore').html('');
+				}
+			}else{
+				if(!input.hasClass('error-campovuoto') && !input.hasClass('error-campocaratteri')){
+					input.removeClass('inputerror');
+				}
+				var errori= erroriPossibili();
+				if(input.closest('.form-group').find('.campo_errore .'+errorcode).length>0){
+					var numberOfError=Number(input.closest('.form-group').find('.campo_errore .'+errorcode).attr('data-errorcount'));
+					if(numberOfError>1){
+						input.closest('.form-group').find('.campo_errore .'+errorcode).attr('data-errorcount',numberOfError-1);
+					}else{
+						input.closest('.form-group').find('.campo_errore .'+errorcode).remove();
+					}
+				}
+			}
+		 }
+		 
+		 function showInputError(input, errorcode) {
+			var errori= erroriPossibili();
+			/*if(input.prop('tagName')=='SELECT'){
+				input=input.prev('.select2-container');
+				alert (input.attr('id'));
+			}*/
+				input.addClass('inputerror');
+			if(input.closest('.form-group').find('.campo_errore .'+errorcode).length>0){
+				var numberOfError=Number(input.closest('.form-group').find('.campo_errore .'+errorcode).attr('data-errorcount'));
+				input.closest('.form-group').find('.campo_errore .'+errorcode).attr('data-errorcount',numberOfError+1);
+			}else{
+				input.closest('.form-group').find('.campo_errore').append('<p class="'+errorcode+'" data-errorcount="1">'+errori[errorcode]+'</p>')
+			}
+		 }
+		 /*<--- MISCELATE SCRIPTS ---*/
+		
+		
+		
+		 
+		 
+		 
+	
+		 
+		
+		 
+		 function hideMessage(){
+			$('.panel-message').slideUp();
+		 }
+		 /* --- FUNZIONI DI MODIFICA ---*/
+		 function m_initialize_hotsource(db,tb,et){
+			//se la prima hot source è vuota la popolo altrimenti creo un altra hotsource e la popolo
+			if($('#sourcedb1').val() ==''){
+				$('#sourcedb1').val(db).change();
+				$('#sourcetable1').val(tb).change();
+				$('#sourceetichetta1').val(et).change();
+			}else{
+				//clone hotsourceline1
+				var formgroup=$('#hotsourceline1').closest('.form-group');
+				var clonedLine=$('#hotsourceline1').clone();
+				var id_number=$('.hotsourceline').length+1;
+				clonedLine.attr('id','hotsourceline'+id_number);
+				clonedLine.find('input.HsourceTable').attr('id','sourcetable'+id_number).attr('name','sourcetable'+id_number).val('');
+				clonedLine.find('.select2-container').remove();
+				clonedLine.find('select.HsourceDb').attr('id','sourcedb'+id_number).attr('name','sourcedb'+id_number).prop('selectedIndex',0).css('display','inline-block').select2();
+				clonedLine.find('select.campagna-select').attr('id','campagna-select'+id_number).attr('name','campagna-select'+id_number).prop('selectedIndex',0).css('display','inline-block').select2();
+				clonedLine.find('.frommanual span').text('Seleziona una campagna');
+				clonedLine.find('.frommanual .fa').removeClass('fa-hand-o-right').addClass('fa-list');
+				clonedLine.find('.select2-container.campagna-select').css('display','none');
+				clonedLine.find('.select2-container.HsourceDb').css('display','inline-block');
+				clonedLine.find('.HsourceTable').css('display','inline-block');
+				clonedLine.find('.frommanual').removeClass('frommanual').addClass('fromdb');
+				clonedLine.find('input.HsourceEt').attr('id','sourceetichetta'+id_number).attr('name','sourceetichetta'+id_number).val('');
+				clonedLine.append('<div class="elimina-hotsource"><i class="fa fa-remove"></div>');
+				clonedLine.find('.show-campagna-selected').text('');
+				clonedLine.find('.inputerror').removeClass('inputerror');
+				formgroup.append(clonedLine);
+				formgroup.append(formgroup.find('.campo_errore'));
+				formgroup.append(formgroup.find('#hsHelp'));
+				clonedLine.find('.HsourceDb').val(db).change();
+				clonedLine.find('.HsourceTable').val(tb).change();
+				clonedLine.find('input.HsourceEt').val(et).change();
+			}
+		 }
+		 
+		 function m_initialize_coldsource(db,tb,et){
+			 $('#coldsourcedb').val(db).change();
+			 $('#coldsourcetable').val(tb).change();
+			 $('#coldsourceetichetta').val(et).change();
+		 }
+		 function m_initialize_mixeddestination(db,tb){
+			 $('#mixedsourcedb').val(db).change();
+			 $('#mixedsourcetable').val(tb).change();
+		 }
+		 function m_initialize_attiva(attiva){
+			$('#attiva').val(attiva).change();
+		 }
+		 function m_initialize_contatore(cliente, campagna, landing){
+			//cerco fra tutte le option del select #alanding-select quello che metcha le 3 vars
+			$('#alanding-select option').each(function(){
+				if($(this).attr('data-cliente')==cliente && $(this).attr('data-landing')==landing && $(this).attr('data-campagna')==campagna){
+					
+					$('#alanding-select').val($(this).attr('value')).change();
+					return false;
+				}
+			});
+		 }
+		 
+		
+		 </script>
+		 {% endblock %}
+

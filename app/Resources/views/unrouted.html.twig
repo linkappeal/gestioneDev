@@ -1,0 +1,339 @@
+{% extends base_template %}
+
+        {% block stylesheets %}
+            {{ parent() }}
+                {% stylesheets
+                        'css/style.css'
+                        'css/data_tables/style-table.css'
+                %}
+					<link href="{{ asset_url }}" type="text/css" rel="stylesheet"/>
+					<link href="https://gitcdn.github.io/bootstrap-toggle/2.2.2/css/bootstrap-toggle.min.css" rel="stylesheet">
+                {% endstylesheets %}
+			
+				<style>
+					.no-padding{padding:0!important;}
+					.selectable{width: 100%;padding:8px;position: relative;cursor:pointer;}
+					.btnover{ position: relative; margin: 10 auto;	}
+					.overbox{display: none; background: rgba(0, 136, 204, 0.5); position: absolute; top: 0; left: 0; width: 100%;text-align: center; padding:5px;}
+					.color-deactive{color: red;}
+					.color-active{color: green; }
+					.form-group input {width: 450;}
+					.form-group {margin-top: 10px;}
+					.principale{background: #fafafa;border: solid 1px #eee;padding:20px;}
+					.border-left{border-left: solid 2px #3498db;}
+					.box-submit{margin-top:20px;}
+					#listatoCC_wrapper{    margin-top: 20px;}
+					.btn-addnew {margin-top: 20px;}
+					table#listatoCC td{vertical-align: middle;}
+					.disattivo_label{ color: red; font-weight: bold;}
+					.attivo_label{ color: green;  font-weight: bold;}
+					.tail_screenshot{
+							-webkit-box-shadow: 0px 0px 30px 0px rgba(0,0,0,0.75);
+							-moz-box-shadow: 0px 0px 30px 0px rgba(0,0,0,0.75);
+							box-shadow: 0px 0px 30px 0px rgba(0,0,0,0.75);
+							position: absolute;
+							float: left;
+							z-index:9999;
+						}
+					.noLanding{
+							background-color: #fff;
+							padding: 10px; 
+							-webkit-box-shadow: 0px 0px 30px 0px rgba(0,0,0,0.75);
+							-moz-box-shadow: 0px 0px 30px 0px rgba(0,0,0,0.75);
+							box-shadow: 0px 0px 30px 0px rgba(0,0,0,0.75);
+						}
+					.mini-loader {
+							border: 10px solid #f3f3f3; /* Light grey */
+							border-top: 10px solid #3498db; /* Blue */
+							border-radius: 50%;
+							width: 50px;
+							height: 50px;
+							animation: spin 2s linear infinite;
+						}
+
+						@keyframes spin {
+							0% { transform: rotate(0deg); }
+							100% { transform: rotate(360deg); }
+						}
+						.hidden-tablehead{font-weight: bold;}
+						.hidden-tablehead.info-pup{font-weight: bold; background-color: #ececec;}
+						.gruppo_ordini{ position: absolute;	width: 350px; background-color: #FFF; padding: 15px; border: 1px solid #337ab7; z-index: 9999;	right: 0;
+										-webkit-box-shadow: 0px 0px 20px 0px rgba(0,0,0,0.75);
+										-moz-box-shadow: 0px 0px 20px 0px rgba(0,0,0,0.75);
+										box-shadow: 0px 0px 20px 0px rgba(0,0,0,0.75);
+										}
+										
+						.panel-message{padding: 15px; background-color: #00a66973; text-align: center; font-size: 18px; cursor: pointer;}
+						
+						tr.MisCrea {
+						  -webkit-animation-name: miscrea; /* Safari 4.0 - 8.0 */
+						  -webkit-animation-duration: 3s; /* Safari 4.0 - 8.0 */
+						  -webkit-animation-iteration-count: 1;
+						  -webkit-animation-delay: 0.4s;
+						  animation-name: miscrea;
+						  animation-duration: 3s;
+						  animation-iteration-count: 1;
+						  animation-delay: 0.4s;
+						}
+
+						/* Safari 4.0 - 8.0 */
+						@-webkit-keyframes miscrea {
+						  from {background-color:#00a669f2;}
+						  to {background-color: #00a66900;}
+						}
+
+						/* Standard syntax */
+						@keyframes miscrea {
+						  from {background-color:#00a669f2;}
+						  to {background-color: #00a66900;}
+						}
+						
+						@-webkit-keyframes mismod {
+						  from {background-color:#00a66973 rgba(196,45,45,1);}
+						  to {background-color: rgba(196,45,45,0);}
+						}
+
+						/* Standard mismod */
+						@keyframes mismod {
+						  from {background-color: red;}
+						  to {background-color: yellow;}
+						}
+						tr.MisDel {
+						  -webkit-animation-name: misdel; /* Safari 4.0 - 8.0 */
+						  -webkit-animation-duration: 2s; /* Safari 4.0 - 8.0 */
+						  -webkit-animation-iteration-count: 1;
+						  -webkit-animation-delay: 0.4s;
+						  animation-name: misdel;
+						  animation-duration: 2s;
+						  animation-iteration-count: 1;
+						  animation-delay: 0.4s;
+						}
+						@-webkit-keyframes misdel {
+						  from {background-color:rgba(196,45,45,1);}
+						  to {background-color: rgba(196,45,45,0);}
+						}
+
+						/* Standard misdel */
+						@keyframes misdel {
+						  from {background-color: rgba(196,45,45,1);}
+						  to {background-color: rgba(196,45,45,0);}
+						}
+						
+						tr.MisMod {
+						   -webkit-animation-name: mismod; /* Safari 4.0 - 8.0 */
+						  -webkit-animation-duration: 3s; /* Safari 4.0 - 8.0 */
+						  -webkit-animation-iteration-count: 1;
+						  -webkit-animation-delay: 0.4s;
+						  animation-name: mismod;
+						  animation-duration: 3s;
+						  animation-iteration-count: 1;
+						  animation-delay: 0.4s;
+						}
+						@-webkit-keyframes mismod {
+						  from {background-color:#ffa500;}
+						  to {background-color: #ffa50000;}
+						}
+
+						/* Standard mismod */
+						@keyframes mismod {
+						  from {background-color: #ffa500;}
+						  to {background-color: #ffa50000;}
+						}
+						.panel-message p {
+							text-align:center;
+						}
+						.panel-message table {
+							text-align:left;
+							margin:0 auto;
+						}
+				</style>
+        {% endblock %}
+        {% block content %}
+	<div class="container-fluid">
+
+		<div class="row">
+			<div class="row principale">
+				<div class="col-md-10">
+					<h2 class="title-box">Lista Anagrafiche non ruotate</h2>
+				</div>
+				<div class="col-md-2">
+
+				</div>
+					<div class="col-md-12 panel-message" onclick="hideMessage()" style="display: none;clear:left;"></div>
+			</div>
+			<table
+			   id="listatoCC" 
+			   class="table table-striped table-bordered table-hover" cellspacing="0" width="100%">
+				<thead>
+					<tr>
+						<th>ID</th>
+						<th>Data</th>
+						<th class="search_drop">Database</th>
+						<th class="search_drop">Tabella</th>
+						<th>Errori</th>
+						<th>Azioni</th>
+					</tr>
+				</thead>
+				<tbody>
+					
+						
+			{% for row in list %}
+					<tr id="cc_row_{{ row['id'] }}">
+					<td>
+						<div class="red-{{ row['id'] }}-id">{{ row['id'] }}</div>
+					</td>
+					<td>
+						{{ row['date_routing'] }}
+					</td>
+					<td>
+						{{ row['destination_schema'] }}
+					</td>
+					<td>
+						{{ row['destination_table'] }}
+					</td>
+					<td>
+						{{ row['errors'] }}
+					</td>
+					<td>
+						<a title="Esamina" href="{{ admin.generateUrl('unrouted', {'id': row['id'], 'route': row['id_route']}) }}" class="btn btn-sm btn-default"><i class="fa fa-search" aria-hidden="true"></i></a>
+						<a title="Candida per nuovo tentativo" href="{{ admin.generateUrl('unrouted', {'retry': row['retry_id']}) }}" class="btn btn-sm btn-default"><i class="fa fa-refresh" aria-hidden="true"></i></a>
+						<a title="Scarta" href="{{ admin.generateUrl('unrouted', {'trash': row['id']}) }}" class="btn btn-sm btn-default"><i class="fa fa-trash" aria-hidden="true"></i></a>
+					</td>
+				</tr>
+			{% endfor %}
+			</tbody>
+		</table>		
+	</div>
+	<script src="https://cdnjs.cloudflare.com/ajax/libs/datatables/1.10.12/js/jquery.dataTables.min.js"></script>
+	<script src="https://cdnjs.cloudflare.com/ajax/libs/datatables/1.10.12/js/dataTables.bootstrap.min.js"></script>
+	<script src="https://cdn.datatables.net/fixedcolumns/3.2.3/js/dataTables.fixedColumns.min.js"></script>
+	<script src="https://gitcdn.github.io/bootstrap-toggle/2.2.2/js/bootstrap-toggle.min.js"></script>
+	<script>
+		 function hideMessage(){
+			$('.panel-message').slideUp();
+		 }
+		 
+		
+		
+	$(function() {
+		var ajaxrun = false;
+	
+		// tabella
+		var table = $('#listatoCC').
+			DataTable( {
+				"order": [[ 4, "asc" ],[0, 'desc']],
+						
+				scrollY:        "800px",
+				scrollX:        true,
+				scrollCollapse: true,
+				paging:         true,
+				"scrollX": true,
+				fixedHeader: true,
+				 "lengthMenu": [[10, 25, 50, -1], [10, 25, 50, "All"]],
+				dom:
+						"<'row'<'col-sm-12'<'box box-primary'<'box-body'<'col-md-8 search_filter'><'col-md-4'f>>>>>" +
+						"<'row'<'col-sm-12'tr>>" +
+						"<'row'<'col-sm-6'i><'col-sm-6'l>>"+
+						"<'row'<'col-sm-12 text-center'p>>",
+				buttons: [
+						{ extend: 'csv', text: '<i class="fa fa-download"></i>  Esporta in CSV' }
+				],
+				language: {
+					search: "Cerca in tutte le colonne:"
+				},
+				language: {
+					search: "<strong>Cerca in tutte le colonne</strong>",
+					paginate: {
+								first:      "Prima",
+								previous:   "Predecente",
+								next:       "Successiva",
+								last:       "Ultima"
+							},
+					lengthMenu: "<strong>Risultati per pagina</strong> _MENU_",
+					info: "Pagina _PAGE_ di _PAGES_",
+				},
+			});
+				
+			// FILTRI RICERCA
+			var search_html_row = '<div class="col-md-12">';
+			$('#listatoCC thead th').each(function (index) {
+		
+				var title = $(this).text();
+				if($(this).hasClass('search')){
+					search_html_row += '<div class="col-md-4"><input class="form-control table_input_s sear_'+index+'" type="text" placeholder="Cerca '+title+'" /></div>';
+					
+				}else if($(this).hasClass('search_drop')){
+				
+					var options = table.column(index).data().unique();
+					var options_html = '';
+
+					$.each( options, function(indice, valore ){
+						options_html += '<option value="' + valore.replace(/<\/?[^>]+(>|$)/g, "") + '">'+valore.replace(/<\/?[^>]+(>|$)/g, "")+'</option>';
+					});
+
+					search_html_row += '<div class="col-md-3">'
+											+'<select class="table_select2 sear_'+index+'">'
+												+'<option value="">Filtra ' + title + '</option>'
+												+ options_html 												
+											+'</select>'
+										+'</div>';
+				}
+			} );
+			search_html_row += '</div>';
+			
+			$('.search_filter').html(search_html_row);
+	
+			 table.columns().every( function () {
+				var that = this;
+				$( '.sear_'+that[0]).on( 'keyup change', function () {
+					if ( that.search() !== this.value ) {
+						that.search( '^'+this.value,true).draw();
+					}
+				} );
+			} );
+			$('.table_select2').select2();
+			
+			{% if messaggio %}
+				show_message($('{{ messaggio[0] | raw}}'), "{{ messaggio[1] }}", {{ messaggio[2] }});
+			{% endif %}
+				
+			
+	})
+	
+	function show_message (htmlstring, classname, id){
+		//printo il messaggio
+		$('.panel-message').html(htmlstring).slideDown();
+		//effettuo modifiche grafiche al listato
+		if($('#cc_row_' + id).length>0){
+			$('#cc_row_' + id).addClass(classname);
+			if(classname=='MisDel'){
+				
+				setTimeout(function(){ $('#cc_row_' + id).fadeOut('slow').remove() }, 2400);
+			}
+		}
+		
+	}
+	</script>
+	<!-- finestra modale -->
+	<div class="modal fade" id="confirm">
+	  <div class="modal-dialog" role="document">
+		<div class="modal-content">
+		  <div class="modal-header">
+			<button type="button" class="close" data-dismiss="modal" aria-label="Close">
+			  <span aria-hidden="true">&times;</span>
+			</button>
+			<h5 class="modal-title">Conferma di eliminazione Cron: <span class="id_cc-modal"></span></h5>
+		  </div>
+		  <div class="modal-body">
+			<p>Sei sicuro di voler eliminare cron  <strong class="modal-nomemiscelata"></strong> (id: <span class="id_cc-modal"></span>)?</p>
+		  </div>
+		  <div class="modal-footer">
+			<button type="button" class="btn btn-primary" data-dismiss="modal" id="delete">Si, Elimina</button>
+			<button type="button" class="btn btn-secondary" data-dismiss="modal">Annulla</button>
+		  </div>
+		</div>
+	  </div>
+	</div>
+</div> <!-- /container-fluid -->
+{% endblock %}
+

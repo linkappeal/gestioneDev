@@ -1,0 +1,94 @@
+2020-06-10,16-26-00
+
+
+
+/************************************************/ 
+2020-06-10,16-26-00
+ File che lancia i test per le campagne sms che lo richiedono 
+
+
+ Connesso a gestione! 
+
+
+ Abbiamo recuperato la campagna: Test risposta Purebross con id 60.
+
+
+ update campagna-60 allo stato 1 RIUSCITO... info:   
+
+
+ Recuperiamo fornitore con id: 1  
+
+
+ messaggio gsm ok 
+
+
+ Preleviamo numeri di test.  
+
+
+ Abbiamo recuperato 1 numeri di test  divisi in 1 lanci.  
+
+
+ Lancio n. 1  
+
+
+ Lanciamo lo script del fornitore: purebross.php 
+
+
+ Il lancio è andato OK 
+
+
+ update stato numerii RIUSCITO  
+
+
+ update campagna stato a 2 RIUSCITO.  
+
+
+ Esco  
+
+2020-06-10,16-56-49
+
+
+
+/************************************************/ 
+2020-06-10,16-56-49
+ File che lancia i test per le campagne sms che lo richiedono 
+
+
+ Connesso a gestione! 
+
+
+ Abbiamo recuperato la campagna: Test risposta Purebross con id 60.
+
+
+ update campagna-60 allo stato 1 RIUSCITO... info:   
+
+
+ Recuperiamo fornitore con id: 1  
+
+
+ messaggio gsm ok 
+
+
+ Preleviamo numeri di test.  
+
+
+ Abbiamo recuperato 1 numeri di test  divisi in 1 lanci.  
+
+
+ Lancio n. 1  
+
+
+ Lanciamo lo script del fornitore: purebross.php 
+
+
+ Il lancio è andato OK 
+
+
+ update stato numerii RIUSCITO  
+
+
+ update campagna stato a 2 RIUSCITO.  
+
+
+ Esco  
+

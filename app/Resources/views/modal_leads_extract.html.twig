@@ -1,0 +1,62 @@
+<div class="modal-header">
+  <button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>
+  <h3 class="modal-title" id="myModalLabel">Attenzione</h3>
+</div>
+<div class="modal-body">
+                {% if is_granted('ROLE_ESTRAZIONE_LEAD') %}
+		{% form_theme form 'SonataAdminBundle:Form:form_admin_fields.html.twig' %}
+                <div id="inner_form_modal_extract">
+					{{ form_rest(form) }}
+					<div class="btn-addNewCustomer" onclick="showBoxNewCustomer()">Aggiungi Cliente</div>
+					
+					<div class="aggiungi_cliente_box_modal" style="display: none;">
+						<input type="text" name="nome_cliente" id="nome_cliente" placeholder="Nome cliente" class="input-boxNewCustomer" />
+						<button class="btn btn-primary" onclick="saveAjaxCustomer()">Salva e seleziona</button>
+					</div>
+               </div>                   
+               {% else %}
+                    <span>Attenzione! Non hai i permessi per effettuare l'estrazione.</span>
+               {% endif %}                      
+<script>
+
+function showBoxNewCustomer(){
+	$('.aggiungi_cliente_box_modal').toggle('slow');
+}
+
+function saveAjaxCustomer(){
+	
+	var urlAjax = "{{ admin.generateUrl('addcliente', {'cliente': 'tmp_cliente'})}}";
+	var nome_cliente = $('#nome_cliente').val();
+        urlAjax = urlAjax.replace("tmp_cliente", nome_cliente); 
+
+	$.ajax({
+		type: "post", url: urlAjax,
+		success: function (data) { // inserimento riuscito
+			
+			var id = data.id; // id restituito dalla chiamata ajax
+			$('select#form_cliente').append($('<option>', {value: id,text: nome_cliente}));
+			$('option:selected', 'select#form_cliente').removeAttr('selected');
+			$('select#form_cliente').find('option[value="' + id + '"]').attr("selected",true);
+			showBoxNewCustomer();
+			
+		},
+		error: function (request, status, error) { //errore chiamata ajax
+			console.log(request.responseText);
+		}
+	});
+	
+	
+}
+
+
+</script>
+  
+</div>  
+<div class="modal-footer">
+
+  <button type="button" class="btn btn-default" data-dismiss="modal">Annulla</button>
+  {% if is_granted('ROLE_ESTRAZIONE_LEAD') %}
+  <button type="button" class="btn btn-primary" onclick="submitExtract()">Prosegui</button>
+  {% endif %}
+</div>
+

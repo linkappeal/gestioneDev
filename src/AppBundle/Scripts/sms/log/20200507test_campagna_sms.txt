@@ -1,0 +1,146 @@
+2020-05-07,17-12-49
+
+
+
+/************************************************/ 
+2020-05-07,17-12-49
+ File che lancia i test per le campagne sms che lo richiedono 
+
+
+ Connesso a gestione! 
+
+
+ Esco  
+
+2020-05-07,17-13-38
+
+
+
+/************************************************/ 
+2020-05-07,17-13-38
+ File che lancia i test per le campagne sms che lo richiedono 
+
+
+ Connesso a gestione! 
+
+
+ Abbiamo recuperato la campagna: test_new_sms con id 54.
+
+
+ update campagna-54 allo stato 3 RIUSCITO.  
+
+
+ Recuperiamo fornitore con id: 1  
+
+
+ messaggio gsm ok 
+
+
+ Preleviamo numeri di test.  
+
+
+ Abbiamo recuperato 2 numeri di test  divisi in 1 lanci.  
+
+
+ Lancio n. 1  
+
+
+ Lanciamo lo script del fornitore: purebross.php 
+
+
+ Il lancio è andato OK 
+
+2020-05-07,17-19-05
+
+
+
+/************************************************/ 
+2020-05-07,17-19-05
+ File che lancia i test per le campagne sms che lo richiedono 
+
+
+ Connesso a gestione! 
+
+
+ Abbiamo recuperato la campagna: test_new_sms con id 54.
+
+
+ update campagna-54 allo stato 1 RIUSCITO.  
+
+
+ Recuperiamo fornitore con id: 1  
+
+
+ messaggio gsm ok 
+
+
+ Preleviamo numeri di test.  
+
+
+ Abbiamo recuperato 1 numeri di test  divisi in 1 lanci.  
+
+
+ Lancio n. 1  
+
+
+ Lanciamo lo script del fornitore: purebross.php 
+
+
+ Il lancio è andato OK 
+
+
+ update stato numerii RIUSCITO  
+
+
+ update campagna stato a 2 RIUSCITO.  
+
+
+ Esco  
+
+2020-05-07,17-19-43
+
+
+
+/************************************************/ 
+2020-05-07,17-19-43
+ File che lancia i test per le campagne sms che lo richiedono 
+
+
+ Connesso a gestione! 
+
+
+ Abbiamo recuperato la campagna: test_new_sms con id 54.
+
+
+ update campagna-54 allo stato 3 RIUSCITO.  
+
+
+ Recuperiamo fornitore con id: 1  
+
+
+ messaggio gsm ok 
+
+
+ Preleviamo numeri di test.  
+
+
+ Abbiamo recuperato 1 numeri di test  divisi in 1 lanci.  
+
+
+ Lancio n. 1  
+
+
+ Lanciamo lo script del fornitore: purebross.php 
+
+
+ Il lancio è andato OK 
+
+
+ update stato numerii RIUSCITO  
+
+
+ update campagna stato a 4 RIUSCITO.  
+
+
+ Esco  
+

@@ -1,0 +1,349 @@
+{% extends base_template %}
+
+        {% block stylesheets %}
+            {{ parent() }}
+                {% stylesheets
+                        'css/style.css'
+                        'css/data_tables/style-table.css'
+                %}
+					<link href="{{ asset_url }}" type="text/css" rel="stylesheet"/>
+					<link href="https://gitcdn.github.io/bootstrap-toggle/2.2.2/css/bootstrap-toggle.min.css" rel="stylesheet">
+                {% endstylesheets %}
+			
+				<style>
+					.no-padding{padding:0!important;}
+					.selectable{width: 100%;padding:8px;position: relative;cursor:pointer;}
+					.btnover{ position: relative; margin: 10 auto;	}
+					.overbox{display: none; background: rgba(0, 136, 204, 0.5); position: absolute; top: 0; left: 0; width: 100%;text-align: center; padding:5px;}
+					.color-deactive{color: red;}
+					.color-active{color: green; }
+					.form-group input {width: 450;}
+					.form-group {margin-top: 10px;}
+					.principale{background: #fafafa;border: solid 1px #eee;padding:20px;}
+					.border-left{border-left: solid 2px #3498db;}
+					.box-submit{margin-top:20px;}
+					#listatoCC_wrapper{    margin-top: 20px;}
+					.btn-addnew {margin-top: 20px;}
+					table#listatoCC td{vertical-align: middle;}
+					.disattivo_label{ color: red; font-weight: bold;}
+					.attivo_label{ color: green;  font-weight: bold;}
+					.tail_screenshot{
+							-webkit-box-shadow: 0px 0px 30px 0px rgba(0,0,0,0.75);
+							-moz-box-shadow: 0px 0px 30px 0px rgba(0,0,0,0.75);
+							box-shadow: 0px 0px 30px 0px rgba(0,0,0,0.75);
+							position: absolute;
+							float: left;
+							z-index:9999;
+						}
+					.noLanding{
+							background-color: #fff;
+							padding: 10px; 
+							-webkit-box-shadow: 0px 0px 30px 0px rgba(0,0,0,0.75);
+							-moz-box-shadow: 0px 0px 30px 0px rgba(0,0,0,0.75);
+							box-shadow: 0px 0px 30px 0px rgba(0,0,0,0.75);
+						}
+					.mini-loader {
+							border: 10px solid #f3f3f3; /* Light grey */
+							border-top: 10px solid #3498db; /* Blue */
+							border-radius: 50%;
+							width: 50px;
+							height: 50px;
+							animation: spin 2s linear infinite;
+						}
+
+						@keyframes spin {
+							0% { transform: rotate(0deg); }
+							100% { transform: rotate(360deg); }
+						}
+						.hidden-tablehead{font-weight: bold;}
+						.hidden-tablehead.info-pup{font-weight: bold; background-color: #ececec;}
+						.gruppo_ordini{ position: absolute;	width: 350px; background-color: #FFF; padding: 15px; border: 1px solid #337ab7; z-index: 9999;	right: 0;
+										-webkit-box-shadow: 0px 0px 20px 0px rgba(0,0,0,0.75);
+										-moz-box-shadow: 0px 0px 20px 0px rgba(0,0,0,0.75);
+										box-shadow: 0px 0px 20px 0px rgba(0,0,0,0.75);
+										}
+										
+										
+				</style>
+        {% endblock %}
+        {% block content %}
+	<div class="container-fluid">
+		<div class="row">
+			<div class="row principale">
+				<div class="col-md-10">
+					<h2 class="title-box">Lista ordini clienti</h2>
+				</div>
+				<div class="col-md-2">
+					<a href="{{admin.generateUrl('crea')}}">
+						<button id="crea-btn-action" class="btn btn-primary"><i class="fa fa-plus" aria-hidden="true"></i> Aggiungi Ordine</button>
+					</a>
+				</div>
+			</div>
+			<table 
+			   id="listatoCC" 
+			   class="table table-striped table-bordered table-hover" cellspacing="0" width="100%">
+				<thead>
+					<tr>
+						<th>ID</th><th class="search_drop">Cliente</th><th class="search_drop">Campagna</th><th>Landing</th><th class="search_drop">Stato</th><th>Descrizione</th><th>Payout</th><th>Budget</th><th>Trash</th><th>Data Creazione</th><th>Azioni</th>
+					</tr>
+				</thead>
+				<tbody>
+			{% for ordine in ordini %}
+					<tr id="cc_row_{{ ordine.id }}">
+					<td>
+						<div class="red-{{ ordine.id }}-id">{{ ordine.id }}</div>
+					</td>
+					<td>
+						{{ ordine.cliente.name }}
+					</td>
+					<td>
+						{{ ordine.campagna.NomeOfferta }}
+					</td>
+					<td>
+						<div class="red-{{ ordine.id }}-id_landing get-screenshot" data-url_landing="{{ordine.landing.url}}">
+							{{ ordine.landing.SlugLanding }}
+						</div>
+					</td>
+					<td>
+						{% if ordine.landing_cliente.clienteAttivo==1 %}
+							<span class="attivo_label">Attivo</span>
+						{% else %}
+							<span class="disattivo_label">Disattivo</span>
+						{% endif %}
+					</td>
+					<td>
+						{{ ordine.descrizione|length > 40 ? ordine.descrizione|slice(0, 40) ~ '...' : ordine.descrizione }}
+					</td>
+					<td>
+						{% if ordine.gruppi|length > 1 %}
+						<a href="javascript:void(0)" onclick="toggleGruppiPayout('{{ordine.id}}')">{{ ordine.payout }}€ <i class="fa fa-info-circle" aria-hidden="true"></i></a>
+						{% else %}
+							{{ ordine.payout }}€
+						{%endif%}
+						
+					</td>
+					<td class="no-padding">
+						{{ ordine.gruppi[ordine.id_gruppo].info.budget }}
+					</td>
+					<td class="no-padding">
+						{{ ordine.gruppi[ordine.id_gruppo].info.tettoTrash }}%
+					</td>
+					<td class="no-padding">
+						{{ ordine.data_creazione|date('d/m/Y')}}
+					</td>
+					<td>
+						<a title="Modifica"href="{{ admin.generateUrl('modifica', {'ordine_id': ordine.id}) }}" class="btn btn-sm btn-default"><i class="fa fa-pencil" aria-hidden="true"></i></a>
+						<a title="Elimina" href="javascript:void(0);" class="btn btn-sm btn-default" onclick="confermaEliminazione('{{ ordine.id }}')"><i class="fa fa-window-close" aria-hidden="true"></i></a>
+					</td>
+				
+				{% if ordine.gruppi|length > 1 %}
+				<div style="display:none;" class="gruppo-{{ ordine.id}} gruppo_ordini">
+						<div class="row hidden-tablehead" onclick="toggleGruppiPayout('{{ordine.id}}')">
+						<div class="col-md-1 pull-right"><i class="fa fa-times"></i></div>
+						</div>
+						<div class="row hidden-tablehead info-pup">
+							<div class="col-md-6"><i class="fa fa-user"></i> {{ordine.cliente.name}}</div>
+							<div class="col-md-6"><i class="fa fa-window-maximize"></i> {{ordine.campagna.NomeOfferta}}</div>
+						</div>
+						<div class="row hidden-tablehead">
+							<div class="col-md-4">Payout(s)		</div>
+							<div class="col-md-4">Data Inizio	</div>
+							<div class="col-md-4">Data Termine	</div>
+						</div>
+					{% for gruppo in ordine.gruppi %}
+						<div class="row">
+							<div class="col-md-4">
+							{% for subpayouts in gruppo.payouts %}
+								{{ subpayouts.payout }}€
+								 {% if not loop.last %}, {% endif %}
+							{% endfor %}
+							</div>
+							<div class="col-md-4">{{ gruppo.info.dataInizio|date('d/m/Y')}}</div>
+							<div class="col-md-4">{% if gruppo.info.dataFine is not empty %}{{ gruppo.info.dataFine  |date('d/m/Y')}}{%else%}Non definito{%endif%}</div>
+						</div>
+					{% endfor %}
+				</div>
+				{% endif %}
+				</tr>
+			{% endfor %}
+			</tbody>
+		</table>		
+	</div>
+	<script src="https://cdnjs.cloudflare.com/ajax/libs/datatables/1.10.12/js/jquery.dataTables.min.js"></script>
+	<script src="https://cdnjs.cloudflare.com/ajax/libs/datatables/1.10.12/js/dataTables.bootstrap.min.js"></script>
+	<script src="https://cdn.datatables.net/fixedcolumns/3.2.3/js/dataTables.fixedColumns.min.js"></script>
+	<script src="https://gitcdn.github.io/bootstrap-toggle/2.2.2/js/bootstrap-toggle.min.js"></script>
+	<script>
+	
+		function toggleGruppiPayout(ordine_id){
+			$('.gruppo-'+ ordine_id).toggle();
+		}
+		
+		function confermaEliminazione(id){
+			var url_del = '{{admin.generateUrl('deleteOrder')}}'; 
+			var cliente = $('.red-'+id+'-id_nomecliente').html();
+			var campagna = $('.red-'+id+'-id_campagna').html();
+			$('.id_cc-modal').html(id);
+			$('.modal-nomecliente').html(cliente);
+			$('.modal-campagna').html(campagna);
+			$('#confirm').modal({
+			  backdrop: 'static',
+			  keyboard: false
+			}).one('click', '#delete', function(e) {
+				$.ajax({url: url_del,
+				data: { id : id},
+				success: function(result){
+					if(result.eliminato==true){ // pixel non presente
+						$('#cc_row_' + id).fadeOut('slow').remove();
+					}
+				}});
+			});
+		}
+		
+	$(function() {
+		var ajaxrun = false;
+		//hover su link landing per screenshot---------------
+		var url_screenshot = '{{admin.generateUrl('getLandingScreenshot')}}'; 
+		
+		$('.get-screenshot').mouseenter(function(e) {
+			var link_landing = $(this).data('url_landing');
+			var sluglanding = $(this).html().trim().replace('.','');;
+			var element = 'screen-' + sluglanding;
+			
+			console.log(element, $('#'+element).length);
+			if($('#'+element).length==0 && ajaxrun==false){
+				ajaxrun = true;
+				$('body').append('<div id="'+element+'" class="tail_screenshot"><div class="mini-loader"></div></div>').css({left: e.pageX + 20,top: e.pageY});
+				$.ajax({
+						url: url_screenshot,
+						data: { urlsite : link_landing},
+						success: function(response){
+							if(response.status){
+								$('#'+element).html(response.img);
+							}else{
+								$('#'+element).html('<div class="noLanding">Landing non trovata</div>');
+							}
+							ajaxrun = false;
+						},
+						complete: function(){
+							ajaxrun = false;
+						},
+						 error: function(XMLHttpRequest, textStatus, errorThrown) {
+						 $('#'+element).html('<div class="noLanding">Landing non trovata</div>');
+						 ajaxrun = false;
+					  }
+					});
+			}else if($('#'+element).length>=1){
+				$('.tail_screenshot').fadeOut('fast');
+				$('#'+element).fadeIn();
+			}
+			$(document).bind('mousemove', function(e){
+				$('#'+element).css({
+				   left:  e.pageX + 20,
+				   top:   e.pageY
+				});
+			});
+		}).mouseleave(function() {
+			$('#screen-' + $(this).html().trim().replace('.','')).fadeOut();
+		  });;
+		// /hover su link landing per screenshot-------------------------------
+		
+		// tabella
+		var table = $('#listatoCC').
+			DataTable( {
+				"order": [[ 0, "desc" ]],
+						
+				scrollY:        "800px",
+				scrollX:        true,
+				scrollCollapse: true,
+				paging:         true,
+				"scrollX": true,
+				fixedHeader: true,
+				 "lengthMenu": [[10, 25, 50, -1], [10, 25, 50, "All"]],
+				dom:
+						"<'row'<'col-sm-12'<'box box-primary'<'box-body'<'col-md-6 search_filter'><'col-md-6'f>>>>>" +
+						"<'row'<'col-sm-12'tr>>" +
+						"<'row'<'col-sm-6'i><'col-sm-6'l>>"+
+						"<'row'<'col-sm-12 text-center'p>>",
+				buttons: [
+						{ extend: 'csv', text: '<i class="fa fa-download"></i>  Esporta in CSV' }
+				],
+				language: {
+					search: "Cerca in tutte le colonne:"
+				},
+				language: {
+					search: "<strong>Cerca in tutte le colonne</strong>",
+					paginate: {
+								first:      "Prima",
+								previous:   "Predecente",
+								next:       "Successiva",
+								last:       "Ultima"
+							},
+					lengthMenu: "<strong>Risultati per pagina</strong> _MENU_",
+					info: "Pagina _PAGE_ di _PAGES_",
+				},
+			});
+				
+			// FILTRI RICERCA
+			var search_html_row = '<div class="col-md-12">';
+			$('#listatoCC thead th').each(function (index) {
+		
+				var title = $(this).text();
+				if($(this).hasClass('search')){
+					search_html_row += '<div class="col-md-4"><input class="form-control table_input_s sear_'+index+'" type="text" placeholder="Cerca '+title+'" /></div>';
+					
+				}else if($(this).hasClass('search_drop')){
+				
+					var options = table.column(index).data().unique();
+					var options_html = '';
+
+					$.each( options, function(indice, valore ){
+						options_html += '<option value="' + valore.replace(/<\/?[^>]+(>|$)/g, "") + '">'+valore.replace(/<\/?[^>]+(>|$)/g, "")+'</option>';
+					});
+
+					search_html_row += '<div class="col-md-4">'
+											+'<select class="table_select2 sear_'+index+'">'
+												+'<option value="">Filtra ' + title + '</option>'
+												+ options_html 												
+											+'</select>'
+										+'</div>';
+				}
+			} );
+			search_html_row += '</div>';
+			
+			$('.search_filter').html(search_html_row);
+	
+			 table.columns().every( function () {
+				var that = this;
+				$( '.sear_'+that[0]).on( 'keyup change', function () {
+					if ( that.search() !== this.value ) {
+						that.search( '^'+this.value,true).draw();
+					}
+				} );
+			} );
+			$('.table_select2').select2();
+	})
+	</script>
+	<!-- finestra modale -->
+	<div class="modal fade" id="confirm">
+	  <div class="modal-dialog" role="document">
+		<div class="modal-content">
+		  <div class="modal-header">
+			<button type="button" class="close" data-dismiss="modal" aria-label="Close">
+			  <span aria-hidden="true">&times;</span>
+			</button>
+			<h5 class="modal-title">Conferma di eliminazione ordine ID: <span class="id_cc-modal"></span></h5>
+		  </div>
+		  <div class="modal-body">
+			<p>Sei sicuro di voler eliminare l'ordine sulla campagna <strong class="modal-campagna"></strong> del cliente <strong class="modal-nomecliente"></strong>con id: <span class="id_cc-modal"></span>?</p>
+		  </div>
+		  <div class="modal-footer">
+			<button type="button" class="btn btn-primary" data-dismiss="modal" id="delete">Si, Elimina</button>
+			<button type="button" class="btn btn-secondary" data-dismiss="modal">Annulla</button>
+		  </div>
+		</div>
+	  </div>
+	</div>
+</div> <!-- /container-fluid -->
+{% endblock %}
+

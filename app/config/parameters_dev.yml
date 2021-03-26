@@ -1,0 +1,53 @@
+# This file is auto-generated during the composer install
+parameters:
+    database_host: localhost # on dev 10.0.14.49
+    database_port: 3306
+    database_name: la_gestione
+    database_user: root
+    database_password: 
+   
+    src_database_host: 46.16.95.34
+    src_database_port: null
+    src_database_user: wscpl_utility
+    src_database_password: 0^5UZ+sX?8_gCL*H
+    
+    pxl_database_host: localhost
+    pxl_database_port: 3306
+    pxl_database_name: tracking_pixels
+    pxl_database_user: root
+    pxl_database_password:
+    
+    cnc_database_host: 46.254.38.137
+    cnc_database_port: null
+    cnc_database_name: premi365_db23
+    cnc_database_user: premi365_utente2
+    cnc_database_password: x?h{JoE3AC6W
+    
+    ws_database_host: localhost # on dev 10.0.14.49
+    ws_database_port: null
+    ws_database_name: wsl
+    ws_database_user: root
+    ws_database_password: 
+    ws_baseurl: https://127.0.0.1
+    ws_token: cdf1f7eada42b3ac68785326c1896b0f79e420c1
+    
+    utils_database_host: localhost
+    utils_database_port: null
+    utils_database_name: utilslinkappeal_cpl
+    utils_database_user: utilscpl_db
+    utils_database_password: FJg-23nHRNfzTmc7
+
+    mailer_transport: sendmail
+    mailer_host: 127.0.0.1
+    mailer_user: null
+    mailer_password: null
+    secret: cdf1f7eada42b3ac68785326c1896b0f79e420c1
+    sonata.admin.configuration.filters.persist: true
+    #ws_baseurl: https://10.26.29.9:8443
+    ws_baseurl: http://127.0.0.1
+    ws_token: plead
+
+    # aggiunta variabile per invio sms_recheck lead_uni e lead_uni_esterne
+    sms_send_lead_uni: true
+    sms_send_lead_uni_esterne: false
+

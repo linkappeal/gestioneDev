@@ -1,0 +1,195 @@
+2020-10-09,11-44-49
+
+
+
+/************************************************/ 
+2020-10-09,11-44-49
+ File che lancia i test per le campagne sms che lo richiedono 
+
+
+ Connesso a gestione! 
+
+
+ Esco  
+
+2020-10-09,11-46-39
+
+
+
+/************************************************/ 
+2020-10-09,11-46-39
+ File che lancia i test per le campagne sms che lo richiedono 
+
+
+ Connesso a gestione! 
+
+
+ Abbiamo recuperato la campagna: AMEX BAU test con id 91, risposta: 0.
+
+
+ update campagna-91 allo stato 1 RIUSCITO... info:   
+
+
+ Recuperiamo fornitore con id: 3  
+
+
+ Preleviamo numeri di test.  
+
+
+ Abbiamo recuperato 1 numeri di test  divisi in 1 lanci.  
+
+
+ Lancio n. 1  
+
+
+ Lanciamo lo script del fornitore: Crossing Bulk.php 
+
+
+ Il lancio è andato KO setto a 6 e esco 
+
+
+ Non abbiamo recuperato nessun numero di test. Settiamo la campagna con stato a 6 passo alla prossima campagna . Errore restituito dal fornitore: Possibly not a UTF-8 message text
+  
+
+
+ update campagna stato a 6 RIUSCITO.  
+
+
+ Esco  
+
+2020-10-09,12-01-49
+
+
+
+/************************************************/ 
+2020-10-09,12-01-49
+ File che lancia i test per le campagne sms che lo richiedono 
+
+
+ Connesso a gestione! 
+
+
+ Abbiamo recuperato la campagna: AMEX BAU test con id 91, risposta: 0.
+
+
+ update campagna-91 allo stato 1 RIUSCITO... info:   
+
+
+ Recuperiamo fornitore con id: 3  
+
+
+ Preleviamo numeri di test.  
+
+
+ Abbiamo recuperato 1 numeri di test  divisi in 1 lanci.  
+
+
+ Lancio n. 1  
+
+
+ Lanciamo lo script del fornitore: Crossing Bulk.php 
+
+2020-10-09,12-03-38
+
+
+
+/************************************************/ 
+2020-10-09,12-03-38
+ File che lancia i test per le campagne sms che lo richiedono 
+
+
+ Connesso a gestione! 
+
+
+ Esco  
+
+2020-10-09,12-04-03
+
+
+
+/************************************************/ 
+2020-10-09,12-04-03
+ File che lancia i test per le campagne sms che lo richiedono 
+
+
+ Connesso a gestione! 
+
+
+ Abbiamo recuperato la campagna: AMEX BAU test con id 91, risposta: 0.
+
+
+ update campagna-91 allo stato 1 RIUSCITO... info:   
+
+
+ Recuperiamo fornitore con id: 3  
+
+
+ Preleviamo numeri di test.  
+
+
+ Abbiamo recuperato 1 numeri di test  divisi in 1 lanci.  
+
+
+ Lancio n. 1  
+
+
+ Lanciamo lo script del fornitore: Crossing Bulk.php 
+
+
+ Il lancio è andato KO setto a 6 e esco 
+
+
+ Non abbiamo recuperato nessun numero di test. Settiamo la campagna con stato a 6 passo alla prossima campagna . Errore restituito dal fornitore: Possibly not a UTF-8 message text
+  
+
+
+ update campagna stato a 6 RIUSCITO.  
+
+
+ Esco  
+
+2020-10-09,12-07-18
+
+
+
+/************************************************/ 
+2020-10-09,12-07-18
+ File che lancia i test per le campagne sms che lo richiedono 
+
+
+ Connesso a gestione! 
+
+
+ Abbiamo recuperato la campagna: AMEX BAU test con id 91, risposta: 0.
+
+
+ update campagna-91 allo stato 1 RIUSCITO... info:   
+
+
+ Recuperiamo fornitore con id: 3  
+
+
+ Preleviamo numeri di test.  
+
+
+ Abbiamo recuperato 1 numeri di test  divisi in 1 lanci.  
+
+
+ Lancio n. 1  
+
+
+ Lanciamo lo script del fornitore: Crossing Bulk.php 
+
+
+ Il lancio è andato KO setto a 6 e esco 
+
+
+ Non abbiamo recuperato nessun numero di test. Settiamo la campagna con stato a 6 passo alla prossima campagna . Errore restituito dal fornitore: Possibly not a UTF-8 message text
+  
+
+
+ update campagna stato a 6 RIUSCITO.  
+
+
+ Esco  
+

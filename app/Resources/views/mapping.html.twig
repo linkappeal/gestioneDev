@@ -1,0 +1,384 @@
+{% extends base_template %}
+
+        {% block stylesheets %}
+            {{ parent() }}
+            {% stylesheets
+                'css/style.css'
+                'css/data_tables/style-table.css' %}
+                <link href="{{ asset_url }}" type="text/css" rel="stylesheet"/>
+                <link href="https://gitcdn.github.io/bootstrap-toggle/2.2.2/css/bootstrap-toggle.min.css"
+                      rel="stylesheet">
+            {% endstylesheets %}
+
+            <style>
+                .panel-message {
+                    padding: 15px;
+                    background-color: #00a66973;
+                    text-align: center;
+                    font-size: 18px;
+                    cursor: pointer;
+                }
+
+                #torna {
+                    position: absolute;
+                    right: 15px;
+                    top: 15px;
+                }
+
+                #report-options {
+                    float: right;
+                    margin-top: 12px;
+                    padding-bottom: 25px;
+                }
+
+                #report-options > div {
+                    display: inline-block;
+                    vertical-align: top;
+                    padding-left: 6px;
+                }
+
+                #report-options label {
+                    margin-bottom: 0px;
+                    font-weight: 600;
+                }
+
+                #reportTableContainer {
+                    clear: both;
+                    padding-top: 25px;
+                    width: 100%;
+                }
+
+                .table-bordered > thead > tr > th, .table-bordered > tbody > tr > th, .table-bordered > tfoot > tr > th, .table-bordered > thead > tr > td, .table-bordered > tbody > tr > td, .table-bordered > tfoot > tr > td {
+                    border: 1px solid #d8d8d8;
+                    text-align: left;
+                }
+
+                .Rbodytable:nth-child(odd) {
+                    background-color: #f1f1f1;
+                }
+
+                .Rbodytable.RbodytableTotals {
+                    background-color: #444444;
+                    color: #FFF;
+                    font-weight: bold;
+                }
+
+                .Rsuperheadtable, .Rheadtable {
+                    background-color: #225886;
+                    color: #FFF;
+                }
+
+                .Rheadtable {
+                    background-color: #5587b3;
+                }
+
+                .Rheadtable .Rgranulo, .Rsuperheadtable .Rtotali, .Rsuperheadtable .Rgranulo {
+                    background-color: #FFF;
+                    border-color: #FFF;
+                }
+
+                .Rsuperheadtable .Rtotali, .Rheadtable .Rgranulo {
+                    border-right-color: #d8d8d8;
+                }
+
+                td.Rgranulo {
+                    font-weight: bold;
+                    text-align: left !important;
+                }
+
+                .Rsuperheadtable {
+                    text-transform: uppercase;
+                    font-wheigth: bold;
+                }
+
+                #general-info {
+                    float: left;
+                    padding-top: 35px;
+                    padding-bottom: 35px;
+                    font-weight: bold;
+                }
+
+                #general-info span {
+                    font-weight: normal;
+                    text-transform: capitalize;
+                }
+
+                small.percvalue {
+                    font-weight: 300 !important;
+                }
+
+                .modal-body p b {
+                    text-transform: capitalize;
+                }
+            </style>
+        {% endblock %}
+        {% block content %}
+
+
+
+            <div class="container theme-showcase crea-miscelata" role="main" id="miscelata_maker_container">
+
+                <div class="row">
+                    <div class="col-sm-12">
+                        <div class="panel panel-default">
+                            <div class="panel-heading col-md-12">
+                                <div class="col-md-12">
+                                    <h3><i class="fa fa-bar-chart" aria-hidden="true"></i>
+                                        Mappatura per la rotta: {{ standard.schema }} - {{ standard.table }}
+                                    </h3>
+                                    <a id="torna" href="{{ admin.generateUrl('routes') }}" class="btn btn-primary">Torna
+                                        al listato</a>
+                                </div>
+                            </div>
+                            <div class="col-md-12 panel-message" onclick="hideMessage()" style="display: none;"></div>
+                            <div class="panel-body">
+                                <form id="mapping-form" action="" method="post" style="margin-top:20px;clear:left;">
+
+                                    <input id="schema" name="schema" type="hidden" value="{{ standard.schema }}"/>
+                                    <input id="table" name="table" type="hidden" value="{{ standard.table }}"/>
+
+                                    <div id="general-info">
+                                        <span></span><br>
+                                    </div>
+                                    <div id="report-options">
+                                        <div>
+
+                                        </div>
+
+                                    </div>
+                                    <div id="reportTableContainer">
+                                        <table class="table table-bordered">
+                                            <tr class="Rheadtable">
+                                                <th>Campo Standard</th>
+                                                <th>Campo Rotta</th>
+                                            </tr>
+                                            <tr>
+                                                <td><label for="nome">nome</label></td>
+                                                <td><input id="nome" name="nome" type="text"
+                                                           value="{{ standard.nome }}"/>
+                                                </td>
+                                            </tr>
+                                            <tr>
+                                                <td><label for="cognome">cognome</label></td>
+                                                <td><input id="cognome" name="cognome" type="text"
+                                                           value="{{ standard.cognome }}"/>
+                                                </td>
+                                            </tr>
+                                            <tr>
+                                                <td><label for="email">email</label></td>
+                                                <td><input id="email" name="email" type="text"
+                                                           value="{{ standard.email }}"/>
+                                                </td>
+                                            </tr>
+                                            <tr>
+                                                <td><label for="cellulare">cellulare</label></td>
+                                                <td><input id="cellulare" name="cellulare" type="text"
+                                                           value="{{ standard.cellulare }}"/></td>
+                                            </tr>
+                                            <tr>
+                                                <td><label for="tel_fisso">tel_fisso</label></td>
+                                                <td><input id="tel_fisso" name="tel_fisso" type="text"
+                                                           value="{{ standard.tel_fisso }}"/></td>
+                                            </tr>
+                                            <tr>
+                                                <td><label for="sesso">sesso</label></td>
+                                                <td><input id="sesso" name="sesso" type="text"
+                                                           value="{{ standard.sesso }}"/>
+                                                </td>
+                                            </tr>
+                                            <tr>
+                                                <td><label for="anno_nascita">anno_nascita</label></td>
+                                                <td><input id="anno_nascita" name="anno_nascita" type="text"
+                                                           value="{{ standard.anno_nascita }}"/></td>
+                                            </tr>
+                                            <tr>
+                                                <td><label for="data_nascita">data_nascita</label></td>
+                                                <td><input id="data_nascita" name="data_nascita" type="text"
+                                                           value="{{ standard.data_nascita }}"/></td>
+                                            </tr>
+                                            <tr>
+                                                <td><label for="eta">eta</label></td>
+                                                <td><input id="eta" name="eta" type="text" value="{{ standard.eta }}"/>
+                                                </td>
+                                            </tr>
+                                            <tr>
+                                                <td><label for="luogo_nascita">luogo_nascita</label></td>
+                                                <td><input id="luogo_nascita" name="luogo_nascita" type="text"
+                                                           value="{{ standard.luogo_nascita }}"/></td>
+                                            </tr>
+                                            <tr>
+                                                <td><label for="citta">citta</label></td>
+                                                <td><input id="citta" name="citta" type="text"
+                                                           value="{{ standard.citta }}"/>
+                                                </td>
+                                            </tr>
+                                            <tr>
+                                                <td><label for="provincia">provincia</label></td>
+                                                <td><input id="provincia" name="provincia" type="text"
+                                                           value="{{ standard.provincia }}"/></td>
+                                            </tr>
+                                            <tr>
+                                                <td><label for="indirizzo">indirizzo</label></td>
+                                                <td><input id="indirizzo" name="indirizzo" type="text"
+                                                           value="{{ standard.indirizzo }}"/></td>
+                                            </tr>
+                                            <tr>
+                                                <td><label for="quartiere">quartiere</label></td>
+                                                <td><input id="quartiere" name="quartiere" type="text"
+                                                           value="{{ standard.quartiere }}"/></td>
+                                            </tr>
+                                            <tr>
+                                                <td><label for="regione">regione</label></td>
+                                                <td><input id="regione" name="regione" type="text"
+                                                           value="{{ standard.regione }}"/>
+                                                </td>
+                                            </tr>
+                                            <tr>
+                                                <td><label for="nazione">nazione</label></td>
+                                                <td><input id="nazione" name="nazione" type="text"
+                                                           value="{{ standard.nazione }}"/>
+                                                </td>
+                                            </tr>
+                                            <tr>
+                                                <td><label for="cap">cap</label></td>
+                                                <td><input id="cap" name="cap" type="text" value="{{ standard.cap }}"/>
+                                                </td>
+                                            </tr>
+                                            <tr>
+                                                <td><label for="forma_giuridica">forma_giuridica</label></td>
+                                                <td><input id="forma_giuridica" name="forma_giuridica" type="text"
+                                                           value="{{ standard.forma_giuridica }}"/></td>
+                                            </tr>
+                                            <tr>
+                                                <td><label for="ragione_sociale">ragione_sociale</label></td>
+                                                <td><input id="ragione_sociale" name="ragione_sociale" type="text"
+                                                           value="{{ standard.ragione_sociale }}"/></td>
+                                            </tr>
+                                            <tr>
+                                                <td><label for="partita_iva">partita_iva</label></td>
+                                                <td><input id="partita_iva" name="partita_iva" type="text"
+                                                           value="{{ standard.partita_iva }}"/></td>
+                                            </tr>
+                                            <tr>
+                                                <td><label for="tipo_partita_iva">tipo_partita_iva</label></td>
+                                                <td><input id="tipo_partita_iva" name="tipo_partita_iva" type="text"
+                                                           value="{{ standard.tipo_partita_iva }}"/></td>
+                                            </tr>
+                                            <tr>
+                                                <td><label for="codice_fiscale">codice_fiscale</label></td>
+                                                <td><input id="codice_fiscale" name="codice_fiscale" type="text"
+                                                           value="{{ standard.codice_fiscale }}"/></td>
+                                            </tr>
+                                            <tr>
+                                                <td><label for="iban">iban</label></td>
+                                                <td><input id="iban" name="iban" type="text"
+                                                           value="{{ standard.iban }}"/>
+                                                </td>
+                                            </tr>
+                                            <tr>
+                                                <td><label for="professione">professione</label></td>
+                                                <td><input id="professione" name="professione" type="text"
+                                                           value="{{ standard.professione }}"/></td>
+                                            </tr>
+                                            <tr>
+                                                <td><label for="titolo_di_studio">titolo_di_studio</label></td>
+                                                <td><input id="titolo_di_studio" name="titolo_di_studio" type="text"
+                                                           value="{{ standard.titolo_di_studio }}"/></td>
+                                            </tr>
+                                            <tr>
+                                                <td><label for="data_profilazione">data_profilazione</label></td>
+                                                <td><input id="data_profilazione" name="data_profilazione" type="text"
+                                                           value="{{ standard.data_profilazione }}"/></td>
+                                            </tr>
+                                            <tr>
+                                                <td><label for="ip_profilazione">ip_profilazione</label></td>
+                                                <td><input id="ip_profilazione" name="ip_profilazione" type="text"
+                                                           value="{{ standard.ip_profilazione }}"/></td>
+                                            </tr>
+                                            <tr>
+                                                <td><label for="url_profilazione">url_profilazione</label></td>
+                                                <td><input id="url_profilazione" name="url_profilazione" type="text"
+                                                           value="{{ standard.url_profilazione }}"/></td>
+                                            </tr>
+                                            <tr>
+                                                <td><label for="privacy">privacy</label></td>
+                                                <td><input id="privacy" name="privacy" type="text"
+                                                           value="{{ standard.privacy }}"/></td>
+                                            </tr>
+                                            <tr class="Rheadtable">
+                                                <th>Campo Specifico</th>
+                                                <th>Campo Rotta</th>
+                                            </tr>
+                                            {% for field in specific %}
+                                                <tr>
+                                                    <td><label for="specific[{{ field.specific_field_id }}]">{{ field.slug }} ({{ field.specific_field_id }}) ({{ field.tipo }})</label></td>
+                                                    <td><input id="specific[{{ field.specific_field_id }}]" name="specific[{{ field.specific_field_id }}]" type="text"
+                                                               value="{{ field.destination_slug }}"/></td>
+                                                </tr>
+                                            {% endfor %}
+                                        </table>
+                                        <div class="form-group col-md-12">
+                                            <button type="button" onclick="saveEntity()" id="creaws"
+                                                    class="btn btn-primary">Aggiorna mappatura
+                                            </button>
+                                            <button type="button" onclick="saveEntity2()" id="creawsetorna"
+                                                    class="btn btn-primary">Aggiorna mappatura e torna al listato
+                                            </button>
+                                        </div>
+                                    </div>
+                                </form>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div> <!-- /container-fluid -->
+
+            <script src="https://gitcdn.github.io/bootstrap-toggle/2.2.2/js/bootstrap-toggle.min.js"></script>
+
+            <script type="text/javascript" src="/js/datepicker/moment.js"></script>
+            <script>
+                function hideMessage() {
+                    $('.panel-message').slideUp();
+                }
+
+                //-- saving and processing
+                function saveEntity2() {
+                    $('#torna').addClass('autoback');
+                    saveEntity();
+                }
+
+                function saveEntity() {
+                    $('#creaws').prop('disabled', true);
+                    $('#creawsetorna').prop('disabled', true);
+                    const schema = $.trim($('#schema').val());
+                    const table = $.trim($('#table').val());
+
+                    const data_send = $('#mapping-form').serialize();
+
+                    const url_save = '{{ admin.generateUrl('saveMapping') }}';
+                    const url_listato = '{{ admin.generateUrl('routes') }}';
+
+                    $.ajax({
+                        url: url_save,
+                        data: data_send + '&schema=' + schema + '&table=' + table,
+                        success: function (inserito) {
+                            if ($('#torna').hasClass('autoback')) {
+                                window.location.href = url_listato + '?message=editMap';
+                            } else {
+                                $('.panel-message').html('<h3><i class="fa fa-check-circle-o" aria-hidden="true"></i> Mappatura modificata (rotta: ' + schema + ' - ' + table + ')</h3>').slideDown();
+                                $("html, body").animate({scrollTop: 0}, "fast");
+                            }
+                        },
+                        complete: function () {
+                        }
+                    });
+
+                    $('#creaws').prop('disabled', false);
+                    $('#creawsetorna').prop('disabled', false);
+                }
+
+
+            </script>
+
+        {% endblock %}
+

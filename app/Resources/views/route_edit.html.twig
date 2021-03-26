@@ -1,0 +1,357 @@
+{% extends base_template %}
+
+        {% block stylesheets %}
+            {{ parent() }}
+            {% stylesheets 'css/style.css' %}
+                <link href="{{ asset_url }}" type="text/css" rel="stylesheet"/>
+            {% endstylesheets %}
+            <style>
+                .panel-message {
+                    padding: 15px;
+                    background-color: #00a66973;
+                    text-align: center;
+                    font-size: 18px;
+                    cursor: pointer;
+                }
+
+                /*miscelate*/
+                label {
+                    margin-bottom: 0;
+                }
+
+                .campo-help {
+                    margin-bottom: 8px;
+                    display: block;
+                }
+
+                form {
+                    padding-top: 44px;
+                }
+
+                input.inputerror, .inputerror {
+                    border-color: #c42d2d !important;
+                }
+
+                .select2-container.inputerror {
+                    border: 1px solid;
+                }
+
+                .campo_errore {
+                    color: #c42d2d;
+                    font-size: 90%;
+                    line-height: 90%;
+                    margin-top: 4px;
+                }
+
+                .campo_errore p {
+                    margin-bottom: 5px;
+                }
+
+                .limit-number, .deduplica-campi {
+                    display: none;
+                    margin-top: 18px;
+                }
+
+                #torna {
+                    position: absolute;
+                    right: 15px;
+                    top: 15px;
+                }
+
+                #creaws, #creawsetorna, #modificamiscelata, #modificamiscelataetorna {
+                    display: none;
+                }
+
+                .crea-ws #creaws, .crea-ws #creawsetorna {
+                    display: inline-block;
+                }
+
+                .modifica-ws #modificamiscelata, .modifica-ws #modificamiscelataetorna {
+                    display: inline-block;
+                }
+            </style>
+        {% endblock %}
+        {% block javascripts %}
+            {{ parent() }}
+            {% javascripts 'js/main.js' %}
+                <script src="{{ asset_url }}"></script>
+            {% endjavascripts %}
+        {% endblock %}
+
+		{% block content %}
+		{% if entity %}
+<div class="container theme-showcase modifica-ws" data-idws="{{ entity.id }}" role="main" id="ws_maker_container">
+    {% else %}
+    <div class="container theme-showcase crea-ws" role="main" id="ws_maker_container">
+        {% endif %}
+        <div class="row">
+            <div class="col-sm-12">
+                <div class="panel panel-default">
+                    <div class="panel-heading col-md-12">
+                        <div class="col-md-12">
+                            <h3 id="titolo-pagina">
+                                {% if entity %}
+                                <i class="fa fa-pencil" aria-hidden="true"></i> Modifica Rotta (id: {{ entity.id }})
+                            </h3>
+                            {% else %}
+                                <i class="fa fa-pencil-square-o" aria-hidden="true"></i> Crea nuova Rotta
+                            {% endif %}
+                            </h3>
+
+                            <a id="torna" href="{{ admin.generateUrl('routes') }}" class="btn btn-primary">Torna al
+                                listato</a>
+                        </div>
+                    </div>
+                    <div class="col-md-12 panel-message" onclick="hideMessage()" style="display: none;"></div>
+                    <div class="panel-body">
+                        <form name="login" action="" method="post" id="insert-pixel-form"
+                              style="margin-top:20px;clear:left;">
+                            <input type="hidden" name="id" value="{{ entity.id }}">
+                            <div class="form-group col-md-12">
+                                <label for="nome">Nome</label>
+                                <small class="form-text text-muted campo-help">Inserire il nome per la Rotta.</small>
+                                {% if entity %}
+                                    <input type="text" value="{{ entity.name }}" name="nome" class="form-control"
+                                           id="nome" placeholder="Nome"/>
+                                {% else %}
+                                    <input type="text" name="nome" class="form-control" id="nome" placeholder="Nome"/>
+                                {% endif %}
+                                <div class="campo_errore"></div>
+                            </div>
+
+                            <div class="form-group col-md-12">
+                                <label for="schema">Schema</label>
+                                <small class="form-text text-muted campo-help">Inserire lo schema di destinazione della
+                                    Rotta.</small>
+                                {% if entity %}
+                                    <input type="text" value="{{ entity.schema }}" name="schema" class="form-control"
+                                           id="schema" placeholder="Schema"/>
+                                {% else %}
+                                    <input type="text" name="schema" class="form-control" id="schema"
+                                           placeholder="Schema"/>
+                                {% endif %}
+                                <div class="campo_errore"></div>
+                            </div>
+
+                            <div class="form-group col-md-12">
+                                <label for="table">Tabella</label>
+                                <small class="form-text text-muted campo-help">Inserire la tabella di destinazione della
+                                    Rotta.</small>
+                                {% if entity %}
+                                    <input type="text" value="{{ entity.table }}" name="table" class="form-control"
+                                           id="table" placeholder="Tabella"/>
+                                {% else %}
+                                    <input type="text" name="table" class="form-control" id="table"
+                                           placeholder="Tabella"/>
+                                {% endif %}
+                                <div class="campo_errore"></div>
+                            </div>
+
+                            <div class="form-group col-md-12">
+                                <label for="enabled">Stato</label>
+                                <small class="form-text text-muted campo-help">Scegli se attivare la Rotta.</small>
+                                <select class="enabled-select" id="enabled" name="enabled">
+                                    <option value="1" {% if entity.enabled == 1 %}selected{% endif %}>Attivo</option>
+                                    <option value="0" {% if entity.enabled == 0 %}selected{% endif %}>Non attivo
+                                    </option>
+                                </select>
+                                <div class="campo_errore"></div>
+                            </div>
+
+                            <div class="form-group col-md-12">
+                                <button type="button" onclick="saveEntity()" id="creaws" class="btn btn-primary">Crea
+                                    Rotta
+                                </button>
+                                <button type="button" onclick="saveEntity2()" id="creawsetorna"
+                                        class="btn btn-primary">Crea Rotta e torna al listato
+                                </button>
+
+                                <button type="button" onclick="saveEntity()" id="modificamiscelata"
+                                        class="btn btn-primary">Modifica Rotta
+                                </button>
+                                <button type="button" onclick="saveEntity2()" id="modificamiscelataetorna"
+                                        class="btn btn-primary">Modifica Rotta e torna al listato
+                                </button>
+                            </div>
+                        </form>
+                    </div>
+                </div>
+            </div>
+        </div> <!-- row -->
+    </div>
+
+    <script>
+        //-- saving and processing
+        function saveEntity2() {
+            $('#torna').addClass('autoback');
+            saveEntity();
+        }
+
+        function saveEntity() {
+            $('#creaws').prop('disabled', true);
+            $('#creawsetorna').prop('disabled', true);
+            if (controlla_ws()) {
+                var name = $.trim($('#nome').val());
+                var schema = $.trim($('#schema').val());
+                var table = $.trim($('#table').val());
+                var enabled = $('#enabled').val();
+
+                data_send = {
+                    name: name,
+                    schema: schema,
+                    table: table,
+                    enabled: enabled,
+                };
+                console.log(data_send);
+                _saveEntity(data_send);
+            } else {
+                $("html, body").animate({scrollTop: 0}, "fast");
+            }
+            $('#creaws').prop('disabled', false);
+            $('#creawsetorna').prop('disabled', false);
+        }
+
+        function _saveEntity(data_send) {
+            var ok = 0;
+            if ($('#ws_maker_container').hasClass('crea-ws')) {
+                var url_save = '{{ admin.generateUrl('saveRoute') }}';
+                ok = 1;
+            } else {
+                var url_save = '{{ admin.generateUrl('saveRoute') }}';
+                //get the id
+
+                if ($('#ws_maker_container').attr('data-idws') > 0) {
+                    data_send["id"] = $('#ws_maker_container').attr('data-idws');
+                    ok = 1;
+                }
+
+            }
+            if (ok === 1) {
+                var url_listato = '{{ admin.generateUrl('routes') }}';
+                var message = "";
+                $.ajax({
+                    url: url_save,
+                    data: data_send,
+                    success: function (inserito) {
+                        if ($('#torna').hasClass('autoback')) {
+                            if ($('#ws_maker_container').hasClass('crea-ws')) {
+                                window.location.href = url_listato + '?message=new&id=' + inserito['result'];
+                            } else {
+                                window.location.href = url_listato + '?message=edit&id=' + $('#ws_maker_container').attr('data-idws');
+                            }
+                        } else {
+                            //salva nuova
+                            if ($('#ws_maker_container').hasClass('crea-ws')) {
+                                $('.panel-message').html('<h3><i class="fa fa-check-circle-o" aria-hidden="true"></i> Rotta creata (id: ' + inserito['result'] + ')</h3>').slideDown();
+                                $("html, body").animate({scrollTop: 0}, "fast");
+                                //change to modifica
+                                $('#ws_maker_container').removeClass('crea-ws').addClass('modifica-ws').attr('data-idws', inserito['result']);
+                                $('#titolo-pagina').html('<i class="fa fa-pencil" aria-hidden="true"></i> Rotta modificata (id: ' + inserito['result'] + ')</h3>');
+                            } else {
+                                $('.panel-message').html('<h3><i class="fa fa-check-circle-o" aria-hidden="true"></i> Rotta modificata (id: ' + inserito['result'] + ')</h3>').slideDown();
+                                $("html, body").animate({scrollTop: 0}, "fast");
+                            }
+
+                        }
+                        $('#creawsetorna').remove();
+                        $('#creaws').remove();
+                    },
+                    complete: function () {
+                    }
+                });
+            } else {
+                alert('Si &egrave; verificato un problema durante il salvataggio');
+            }
+        }
+
+
+        //controll on inputs
+        function controlla_ws() {
+            //azzero gli errori
+            $('.campo_errore').html('');
+            $('.inputerror').removeClass('inputerror');
+            $('.nomevuoto').removeClass('nomevuoto');
+            $('.limitevuoto').removeClass('limitevuoto');
+            $('.percentualevuota').removeClass('percentualevuota');
+            $('.rangepercentuale').removeClass('rangepercentuale');
+            $('.campovuoto').removeClass('campovuoto');
+            $('.campocaratteri').removeClass('campocaratteri');
+
+            if ($.trim($('#nome').val()).length === 0) {
+                showInputError($('#nome'), 'campovuoto');
+            }
+            if ($.trim($('#schema').val()).length === 0) {
+                showInputError($('#schema'), 'campovuoto');
+            }
+            if ($.trim($('#table').val()).length === 0) {
+                showInputError($('#table'), 'campovuoto');
+            }
+            if ($.trim($('#enabled').val()).length === 0) {
+                showInputError($('#enabled'), 'campovuoto');
+            }
+
+            //if inputerror are present return false else return true
+            if ($('.inputerror').length > 0) {
+                return false;
+            } else {
+                return true;
+            }
+
+        }
+
+        function erroriPossibili() {
+            var errpossibili =
+                {
+                    'nomevuoto': 'Il nome non pu&ograve essere vuoto',
+                    'nomepresente': 'Il nome scelto &egrave; gi&agrave; presente nel db',
+                    'limitevuoto': 'Il limite non pu&ograve essere vuoto',
+                    'percentualevuota': 'La percentuale di freddde non pu&ograve; essere vuota',
+                    'rangepercentuale': 'La percentuale di freddde deve essere un numero fra 0 e 99',
+                    'campovuoto': 'Il campo non pu&ograve; essere vuoto',
+                    'campocaratteri': 'Il campo non pu&ograve; contenere caratteri particolari come <i>, ; : / | ? " \'</i>'
+                }
+            return errpossibili;
+        }
+
+        function removeInputError(input, errorcode) {
+            if (errorcode == -1) {
+                input.removeClass('inputerror');
+                if (input.closest('.form-group').find('.inputerror').length == 0) {
+                    input.closest('.form-group').find('.campo_errore').html('');
+                }
+            } else {
+                if (!input.hasClass('error-campovuoto') && !input.hasClass('error-campocaratteri')) {
+                    input.removeClass('inputerror');
+                }
+                if (input.closest('.form-group').find('.campo_errore .' + errorcode).length > 0) {
+                    var numberOfError = Number(input.closest('.form-group').find('.campo_errore .' + errorcode).attr('data-errorcount'));
+                    if (numberOfError > 1) {
+                        input.closest('.form-group').find('.campo_errore .' + errorcode).attr('data-errorcount', numberOfError - 1);
+                    } else {
+                        input.closest('.form-group').find('.campo_errore .' + errorcode).remove();
+                    }
+                }
+            }
+        }
+
+        function showInputError(input, errorcode) {
+            var errori = erroriPossibili();
+
+            input.addClass('inputerror');
+            if (input.closest('.form-group').find('.campo_errore .' + errorcode).length > 0) {
+                var numberOfError = Number(input.closest('.form-group').find('.campo_errore .' + errorcode).attr('data-errorcount'));
+                input.closest('.form-group').find('.campo_errore .' + errorcode).attr('data-errorcount', numberOfError + 1);
+            } else {
+                input.closest('.form-group').find('.campo_errore').append('<p class="' + errorcode + '" data-errorcount="1">' + errori[errorcode] + '</p>')
+            }
+        }
+
+        /*<--- WS SCRIPTS ---*/
+
+        function hideMessage() {
+            $('.panel-message').slideUp();
+        }
+
+    </script>
+    {% endblock %}
+

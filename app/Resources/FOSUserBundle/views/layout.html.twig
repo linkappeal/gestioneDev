@@ -1,0 +1,46 @@
+<!DOCTYPE html>
+<html>
+    <head>
+        <meta charset="UTF-8" />
+		{% block stylesheets %}
+            {% for stylesheet in sonata_admin.adminPool.getOption('stylesheets', []) %}
+                    <link rel="stylesheet" href="{{ asset(stylesheet) }}">
+            {% endfor %}
+					<link rel="stylesheet" href="/bundles/app/css/login.css">
+        {% endblock %}
+    </head>
+    <body>
+		<div class="container">
+			<div class="row">
+			<div class="col-md-2">
+			</div>
+				{% if is_granted("IS_AUTHENTICATED_REMEMBERED") %}
+					<div>
+						{{ 'layout.logged_in_as'|trans({'%username%': app.user.username}, 'FOSUserBundle') }} |
+						<a href="{{ path('fos_user_security_logout') }}">
+							{{ 'layout.logout'|trans({}, 'FOSUserBundle') }}
+						</a>
+					</div>
+				{% endif %}
+				{% for type, messages in app.session.flashBag.all %}
+					{% for message in messages %}
+						<div class="{{ type }}">
+							{{ message|trans({}, 'FOSUserBundle') }}
+						</div>
+					{% endfor %}
+				{% endfor %}
+				<div class="col-md-8 text-center">
+					<img class="logo-login" src="/bundles/app/images/logo_linkappeal.png" />
+					<div class="login">
+					{% block fos_user_content %}
+					{% endblock fos_user_content %}
+						
+					</div>
+					<div class="shadow"></div>
+				</div>
+				<div class="col-md-2">
+			</div>
+			</div>
+		</div>
+    </body>
+</html>

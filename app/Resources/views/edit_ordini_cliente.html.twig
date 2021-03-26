@@ -1,0 +1,1098 @@
+{% extends base_template %}
+
+        {% block stylesheets %}
+            {{ parent() }}
+			{% stylesheets 'css/style.css'	%}
+				<link href="{{ asset_url }}" type="text/css" rel="stylesheet"/>
+				<link href="/css/datepicker/daterangepicker.css" type="text/css" rel="stylesheet"/>
+			{% endstylesheets %}
+			<style>
+			.subbox-payout_multipli {
+				margin-bottom: 10px;
+			}
+			.btn-payoutmultipli{cursor: pointer;}
+			.addPayout-icon{cursor: pointer; font-size: 16px;}
+			.removePayout-icon{cursor: pointer; font-size: 16px;margin-top: 5px;display: block;}
+			.panel-message{padding: 15px; background-color: #00a66973; text-align: center; font-size: 18px; cursor: pointer;}
+			.subbox-payout_multipli{padding: 10px; background-color: #eee; margin-bottom: 5px; border-bottom: 2px solid #367FA9;}
+			.subbox-payout_multipli input { margin-bottom: 10px; }
+			.payoutmultiplo-check{font-size: 18px;margin-left: 5px;}
+			
+			.addPayout-icon .fa{float: left;}
+			.addPayout-icon .addPayout-label {
+				float: left;
+				display: block;
+				opacity: 0;
+				margin-left: -30px;
+				padding-left: 7px;
+				font-size: 14px;
+				padding-top: 0px;
+				margin-top: -2px;
+			}
+			.addPayout-icon:hover .addPayout-label {
+				opacity: 1;
+				animation: fadeInOpacity 300ms linear forwards;
+			}
+			@keyframes fadeInOpacity {
+				0% { opacity: 0;}
+				30% { opacity: 0;}
+				100% { margin-left: 0px; opacity: 1; }
+			}
+			
+			.select2-container{width: 100%;}
+			.segno_uguale{font-size: 25px; font-weight: bold; text-align: center;}
+			.cliente_label{font-size: 16px; font-weight: bold; margin-top: 10px; display: block;}
+			.cliente_label .fa{margin-right: 15px;}
+			.blocco-payouts{padding: 10px; border: #eee; background-color: #ccc;}
+			.datapayout{margin-bottom: 15px}
+			.calendar-icon{cursor: pointer; font-size: 25px; padding-top: 5px;}
+			.data_fine_label span{font-size: 15px;padding-top: 6px; display: block;}
+			.blocco-payout, .ordine-payout-box{border-bottom: 2px solid #afafaf; padding-top: 5px; padding-bottom: 10px; line-height: 25px;}
+			.blocchi-payout{max-height: 200px; overflow-y: scroll;margin-bottom: 15px;}
+			.blocchi-payout>div:nth-child(even){background-color: #FFF;}
+			.blocchi-payout>div:nth-child(odd){background-color: #ececec;}
+			.storico-payout h3 i.fa{cursor: pointer; font-size: 13px;}
+			button i.fa{border-right: 1px solid #666; padding-right: 10px; margin-right: 10px;}
+			button.btn-primary i.fa{border-right: 1px solid #FFF; padding-right: 10px; margin-right: 10px;}
+			.gruppo-actions a{margin-top: 10px;}
+			.inner-ordine-payout-box{border: 2px solid #666;padding: 5px;}
+			/* #edit-save-payout-btn{margin-top: 13px; font-size: 25px; display: block;}*/ 
+			.blocco_pays:nth-child(even) {background: #ececec;}
+			.blocco_pays:nth-child(odd) {background: #fbfbfb;}
+			.blocco_times{padding: 10px; margin-bottom: 15px; border-bottom: 2px solid #000;}
+			.blocco_pays_info{border-right: 2px solid #ccc;}
+			.blocco_pays_payout{}
+			.date_toggle_btn{margin-right: 5px; cursor:pointer;}
+			.box-blocco_pays{    border-left: 1px solid #e0e0e0;}
+			.header-blocco_pays {border-bottom: 1px solid #000}
+			</style>
+		{% endblock %}
+        {% block javascripts %}
+                {{ parent() }}
+			{% javascripts 'js/main.js' %}
+				<script src="{{ asset_url }}"></script>
+			{% endjavascripts %}
+		{% endblock %}
+
+		{% block content %}
+		<div class="container theme-showcase" role="main">
+			<div class="row">
+				<div class="col-sm-12">
+					<div class="panel panel-default">
+						<div class="panel-heading col-md-12">
+							<div class="col-md-6">
+							<h3><i class="fa fa-pencil"></i> Modifica Ordine</h3>
+							</div>
+						</div>
+						<div class="col-md-12 panel-message" onclick="hideMessage()" style="display: none;"></div>
+						<div class="panel-body">
+								<div class="form-group col-md-12">
+									<span class="cliente_label"><i class="fa fa-user"></i>{{ cliente_nome }}</span>
+								</div>
+								<div class="form-group col-md-12" id="select-box-landingslug">
+									<input type="hidden" id="clienteCampagna" name="clienteCampagna" value="{{ordine.id_landing_cliente}}" />
+									<input type="hidden" id="id_ordine" name="id_ordine" value="{{ordine.id}}" />
+									<span class="cliente_label"><i class="fa fa-window-maximize"></i>{{ landing_cliente }}</span>
+								</div>
+								<div class="form-group col-md-12">
+									 <button id="add-new-payout" class="pull-right btn"><i class="fa fa-plus" aria-hidden="true"></i>Aggiungi/Modifica payout</button>
+								</div>
+								<div class="form-group col-md-12 add-new-payout-box" style="display: none;">
+									<div class="row">
+										<div class="col-md-6">
+											<label for="payout_code"><i class="fa fa-plus"></i> Nuovo Payout <span class="payout_switch_label"></span></label>
+										</div>
+										<div class="col-md-6">
+											<span class="btn-payoutmultipli pull-right" id="payout_switch_action" onclick="payoutMultipli()">
+												<i class="fa fa-list"></i>
+												<span>Payout Multipli</span>
+												<i class="fa payoutmultiplo-check fa-square-o"></i>
+											</span>
+										</div>
+									</div>
+									
+									<div class="col-md-12 blocco-payouts">
+										<div class="row datapayout">
+											<div class="col-md-2"><label>Data di validità</label></div>
+											<div class="col-md-3">
+												<div class="col-md-1"><i class="fa fa-calendar-check-o calendar-icon" ></i></div>
+												<div class="col-md-10"><input type="text" id="data_inizio" class="form-control" /></div>
+											</div>
+											<div class="col-md-3">
+												<div class="col-md-12 data_fine_label" onclick="showDataFine()">
+													<div class="col-md-1"><i class="fa fa-square-o calendar-icon"></i></div>
+													<div class="col-md-10"><span>Data di fine</span></div>
+												</div>
+												<div class="col-md-12 data_fine_box" style="display:none;" >
+													<div class="col-md-1"><i class="fa fa-check-square-o calendar-icon" onclick="hideDataFine()"></i></div>
+													<div class="col-md-10">
+														<input  value="" type="text" id="data_fine" class="form-control" />
+													</div>
+												</div>
+											</div>
+										</div>
+										<div class="row datapayout">
+											<div class="col-md-2"><label>Tetto Trash (%)</label></div>
+											<div class="col-md-3">
+												<div class="col-md-1"><i class="fa fa-trash-o calendar-icon" aria-hidden="true"></i></div>
+												<div class="col-md-10"><input type="text" name="trash" class="form-control" id="trash" placeholder="Percentuale di trash" value="" /></div>
+											</div>
+										</div>
+										<div class="row datapayout">
+											<div class="col-md-2"><label>Budget</label></div>
+											<div class="col-md-3">
+												<div class="col-md-1"><i class="fa fa-server calendar-icon" aria-hidden="true"></i></div>
+												<div class="col-md-10">
+														<input type="text" name="budget" class="form-control" id="budget" placeholder="Budget" value=""/>
+													</div>
+											</div>
+										</div>
+										<input type="hidden" name="tipo_payout" id="tipo_payout" value="singolo" />
+										
+										
+										<div class="row" id="payout_singolo_box">
+											<div class="col-md-2">
+												<label>Valore payout</label>
+											</div>
+											<div class="col-md-3">
+												<div class="col-md-1"><i class="fa fa-money calendar-icon" aria-hidden="true"></i></div>
+												<div class="col-md-10"><input type="text"  id="payout_singolo" name="payout" class="form-control"  placeholder="Payout" /></div>
+											</div>
+										</div>
+										<div id="payout_multipli" class="col-md-12 box_payout_multipli" style="display: none;">
+
+									<!-- <div class="box-payout_multipli row" id="box-payout_multipli"> 
+
+												<div class="subbox-payout_multipli col-md-12" id="subbox-payout_multiplo-1">
+													<div class="row">
+														<div class="col-md-1">
+														</div>
+														<div class="col-md-11">
+															<div class="row">
+																<div class="col-md-6">
+																	<select name="campo_multiplo[]" class="campo_multiplo" id="select-payout-1">
+																		{% for colonna in colonne %}
+																			<option value="{{ colonna }}">{{ colonna }}</option>
+																		{% endfor %}
+																	</select>
+																</div>
+																<div class="col-md-1 text-center"><span class="segno_uguale">=</span></div>
+																<div class="col-md-5">
+																	<input type="text" class="form-control valore_campo_multiplo" 
+																						name="valore_campo_multiplo[]" 	
+																						id="valore_campo_multiplo-1" 
+																						placeholder="valore del campo" 	
+																	/>
+																</div>
+																<div class="col-md-12">
+																	<input type="text" class="form-control payout_multiplo" 
+																						name="payout_multiplo[]" 		
+																						id="payout_multiplo-1" 		
+																						placeholder="valore payout" 	
+																	/>
+																</div>
+																<div class="col-md-12">
+																	<input type="text" class="form-control payout_descrizione" 
+																						name="payout_descrizione[]" 		
+																						id="payout_descrizione-1" 		
+																						placeholder="Descrizione breve del payout" 	
+																	/>
+																</div>
+															</div>
+														</div>
+													</div>
+												</div>
+												
+											</div> -->
+											
+											
+											
+											
+												<div class="box-payout_multipli row" id="box-payout_multipli"> 
+
+												<div class="subbox-payout_multipli col-md-12" id="subbox-payout_multiplo-1">
+													<div class="row">
+														<div class="col-md-1">
+														</div>
+														<div class="col-md-11">
+															<div class="row">
+																
+															<!-- BLOCCO CAMPO MULTIPLO IN PAYOUT MULTIPLO -->
+																<div class="blocco-campi-payoutmultiplo-1">
+																	
+																	<!-- SINGOLO CAMPO IN PAYOUT MULTIPLO -->
+																	<div id="payout_multiplo-1-1" class="paymultiplo-newcampo-1">
+																		<div class="col-md-5">
+																			<select name="campo_multiplo[]" class="campo_multiplo" id="select-payout-1-1">
+																			{{ colonne | raw }}
+																			</select>
+																		</div>
+																		<div class="col-md-1 text-center"><span class="segno_uguale">=</span></div>
+																		<div class="col-md-5">
+																			<input type="text" class="form-control valore_campo_multiplo" 
+																								name="valore_campo_multiplo[]" 	
+																								id="valore_campo_multiplo-1-1" 
+																								placeholder="valore del campo" 	
+																			/>
+																		</div>
+																	</div>
+																	
+																	
+																</div>
+																
+																<div class="col-md-12">
+																	<div class="col-md-1">
+																		<span class="addPayout-icon" onclick="addNewCampo(1)"><i class="fa fa-plus-square"></i> <span class="addPayout-label">Aggiungi Campo</span></span>
+																	</div>
+																</div>
+															<!-- FINE BLOCCO CAMPO MULTIPLO IN PAYOUT MULTIPLO -->
+																
+																<div class="col-md-12">
+																	<input type="text" class="form-control payout_multiplo" 
+																						name="payout_multiplo[]" 		
+																						id="payout_multiplo-1" 		
+																						placeholder="valore payout" 	
+																	/>
+																</div>
+																<div class="col-md-12">
+																	<input type="text" class="form-control payout_descrizione" 
+																						name="payout_descrizione[]" 		
+																						id="payout_descrizione-1" 		
+																						placeholder="Descrizione breve del payout" 	
+																	/>
+																</div>
+															</div>
+														</div>
+													</div>
+												</div>
+											</div>
+											
+											
+											<div class="row">
+												<div class="col-md-12">
+													<span class="addPayout-icon" onclick="addPayoutMultiplo()"><i class="fa fa-plus-square"></i> <span class="addPayout-label">Aggiungi payout</span></span>
+												</div>
+											</div>
+										</div>
+									</div> <!-- /blocco payouts -->
+								</div>
+								
+								<div class="col-md-12 ordine-payout-box">
+									<label>Payout attuale</label>
+									<div class="row inner-ordine-payout-box">
+										{% set gruppo_ordine = ordine.gruppi[ordine.id_gruppo] %}
+										
+										<div class="col-md-10" id="gruppo-{{ordine.id_gruppo}}">
+											<input type="hidden" id="edit_id_gruppo" value="{{ordine.id_gruppo}}" />
+											
+											<div class="col-md-4">
+												<div class="col-md-12 text-left">
+													<h5><i class="fa fa-calendar"></i> Periodo</h5>
+												</div>
+												<div class="col-md-12 blocco_times">
+													<div class="row">
+														<div class="col-md-6 text-left">
+															<i class="fa fa-calendar-check-o"></i>Inizio: 
+														</div>
+														<div class="col-md-6 text-right">
+															<span class="editable" data-tipo="datepicker" id="edit_data_inizio"><strong>{{gruppo_ordine.info.dataInizio|date("d/m/Y")}}</strong></span><br>
+														</div>
+													</div>
+													<div class="row">
+														<div class="col-md-6 text-left">
+															<i class="fa fa-calendar-times-o"></i>Termine: 
+														</div>
+														<div class="col-md-6 text-right">
+															{% if gruppo_ordine.info.dataFine is not empty %}
+																<span class="editable" data-tipo="datepicker" data-datatoggle="active" id="edit_data_fine"><strong>{{gruppo_ordine.info.dataFine|date("d/m/Y")}}</strong></span>
+															{% else%}
+																<span class="editable" data-tipo="datepicker" data-datatoggle="deactive" id="edit_data_fine"><strong>Non definito</strong></span>
+															{% endif %}	
+														</div>
+													</div>
+												</div>
+												<div class="col-md-12">
+													<div class="row">
+														<div class="col-md-6 text-left">
+															<i class="fa fa-trash-o"></i>Tetto Trash: 
+														</div>
+														<div class="col-md-6 text-right">
+															<span class="editable" id="edit_tetto_trash"><strong>{{gruppo_ordine.info.tettoTrash }}%</strong></span>
+														</div>
+													</div>
+													<div class="row">
+														<div class="col-md-6 text-left">
+															<i class="fa fa-server"></i>Budget: 
+														</div>
+														<div class="col-md-6 text-right">
+															<span class="editable" id="edit_budget"><strong>{{gruppo_ordine.info.budget }}</strong></span>
+														</div>
+													</div>
+												</div>
+											</div>
+											
+											<div class="col-md-8 box-blocco_pays">
+												<div class="col-md-12">
+													<h5><i class="fa fa-info"></i> Pay</h5>
+												</div>
+												<div class="col-md-12 header-blocco_pays">
+													<div class="col-md-4 text-left">
+														Descrizione
+													</div>
+													<div class="col-md-8 text-left ">
+														Condizioni
+													</div>
+												</div>
+											{%  for payout in gruppo_ordine.payouts %}
+												<div class="col-md-12 blocco_pays">
+												{% if payout.campo is not empty %} 
+													<div class="col-md-4 blocco_pays_info">
+														<strong>{{payout.descrizione}}</strong><br>
+														<i class="fa fa-money"></i> Payout: <span data-payid="{{payout.id}}" class="edit_payout editable" id="edit_payout"><strong>{{ payout.payout }}€</strong></span>
+													</div>
+													<div class="col-md-8 blocco_pays_payout">
+													{%  for id_campo, campi_payout in payout.campo %}
+														<strong>{{campi_payout.nomecampo}}</strong>: 
+														<span 	data-payid="{{payout.id}}" 
+																data-indice="{{id_campo}}" 
+																data-tipo="testo" 
+																class="editable valorecampo-{{payout.id}}" 
+																id="edit_valorecampo">
+																	<strong>{{campi_payout.valorecampo}}</strong>
+														</span>
+														<br>
+													{% endfor %}
+													</div>
+												{% endif %}	
+												</div>
+											{% endfor %}
+											</div>
+										</div>
+										<div class="col-md-2 text-center">
+											<button type="button" id="edit-save-payout-btn" onclick="editPay()" class="btn btn-primary"><i class="fa fa-pencil"></i> Modifica Payout</button>
+										</div>
+									</div>
+								</div>
+								
+								<!-- gruppi payout -->
+								{%  if ordine.gruppi|length>1 %} 
+
+									<div class="storico-payout col-md-12">
+										<h3 onclick="toggleStorico()">Storico Payouts <i class="fa fa-eye-slash"></i></h3>
+										<div class="row blocchi-payout">
+
+										
+										
+										{%  for id_gruppo, gruppo in ordine.gruppi if id_gruppo != ordine.id_gruppo %}
+											<div class="col-md-12 blocco-payout" id="gruppo-{{id_gruppo}}">
+												<div class="col-md-1">
+													{{id_gruppo}}
+												</div>
+												<div class="col-md-2">
+													<i class="fa fa-calendar-check-o"></i>Inizio: <strong>{{gruppo.info.dataInizio|date("d/m/Y")}}</strong><br>
+													<i class="fa fa-calendar-times-o"></i>Termine: 
+														{% if gruppo.info.dataFine is not empty %}
+															<strong>{{gruppo.info.dataFine|date("d/m/Y")}}</strong>
+														{% else%}
+															<strong>Non definito</strong>
+														{% endif %}	
+												</div>
+												<div class="col-md-7">
+												{%  for payout in gruppo.payouts %}
+													<div class="col-md-12">
+													{%  for campi_payout in payout.campo %}
+													
+															Campo: <strong>{{campi_payout.nomecampo}}</strong> => {{campi_payout.valorecampo}}
+
+														{% endfor %}
+														 - Payout: <strong>{{ payout.payout }}€</strong>
+													</div>
+												{% endfor %}
+												</div>
+												<div class="col-md-2 gruppo-actions">
+												<!-- <a href="javascript:void(0)" class="btn btn-sm btn-default" onclick="modificaPayout('{{id_gruppo}}')"><i class="fa fa-pencil"></i></a> -->
+												<a href="javascript:void(0)" class="btn btn-sm btn-default" title="Elimina" onclick="rimuoviGruppo('{{id_gruppo}}')"><i class="fa fa-times"></i> </a>
+												</div>
+											</div>
+										{%  endfor %}
+									
+									
+									
+										</div>
+									</div>
+								{%  endif %}
+								
+								<div class="form-group col-md-12">
+									<label for="descrizione">Descrizione</label>
+									<input type="text" name="descrizione" class="form-control" id="descrizione" placeholder="Descrizione breve" value="{{ordine.descrizione}}"/>
+									<small id="emailHelp" class="form-text text-muted">Breve descrizione dell'ordine.</small>
+								</div>
+								<div class="form-group col-md-12">
+									<div class="col-md-6">
+										<button type="button" onclick="salvaOrdine()" class="btn btn-primary creaordine"><i class="fa fa-pencil"></i> Modifica</button>
+									</div>
+									<div class="col-md-6 text-right">
+										<button type="button" onclick="confermaEliminazione({{ ordine.id}})" class="btn btn-delete delete"><i class="fa fa-times"></i> Elimina</button>
+									</div>
+								</div>
+
+						</div>
+					</div>
+				</div>
+			</div> <!-- row -->
+		</div>
+		 
+		 
+		 	<div class="modal fade" id="confirm">
+			  <div class="modal-dialog" role="document">
+				<div class="modal-content">
+				  <div class="modal-header">
+					<button type="button" class="close" data-dismiss="modal" aria-label="Close">
+					  <span aria-hidden="true">&times;</span>
+					</button>
+					<h5 class="modal-title">Conferma di eliminazione ordine ID: <span class="id_cc-modal"></span></h5>
+				  </div>
+				  <div class="modal-body">
+					<p>Sei sicuro di voler eliminare l'ordine sulla campagna <strong class="modal-campagna"></strong> del cliente <strong class="modal-nomecliente"></strong>con id: <span class="id_cc-modal"></span>?</p>
+				  </div>
+				  <div class="modal-footer">
+					<button type="button" class="btn btn-primary" data-dismiss="modal" id="delete">Si, Elimina</button>
+					<button type="button" class="btn btn-secondary" data-dismiss="modal">Annulla</button>
+				  </div>
+				</div>
+			  </div>
+			</div>
+	<!-- fine finestra modale -->
+		<script type="text/javascript" 	src="/js/datepicker/moment.js"></script>
+		<script type="text/javascript" 	src="/js/datepicker/daterangepicker.js"></script>
+		 <script>
+		 var picker_language = {
+					"direction": "ltr","format": "DD/MM/YYYY","separator": " - ","applyLabel": "Apply","cancelLabel": "Cancel","fromLabel": "Dal","toLabel": "al","customRangeLabel": "Custom",
+					"daysOfWeek": ["Do","Lu","Ma","Me","Gi","Ve","Sa"],
+					"monthNames": ["Gennaio","Febbraio","Marzo","Aprile","Maggio","Giugno","Luglio","Agosto","Settembre","Ottobre","Novembre","Dicembre"],
+					"firstDay": 1
+				};
+		
+		function editPay(){
+			$('.creaordine').prop("disabled",true).fadeOut();
+			$('.editable').each(function(){
+			
+				var valore = $(this).find('strong').text()=='Non definito' ? '' : $(this).find('strong').text();
+				var classe ='';
+				var style = 'width:75px; height: 24px;';
+				var attributi = {
+								'type': 'text',
+								'name'	: $(this).attr('id'),
+								'id'	: $(this).attr('id'),
+								};
+				if($(this).data('tipo')=='datepicker'){
+					classe = 'new_datepicker';
+					valore = (valore=='Non definito') ? '' : valore;
+				}else if($(this).data('tipo')=='testo'){ // campo di testo
+					$(this).removeClass('editable');
+					classe = $(this).attr("class");
+					
+					if($(this).data('payid')){
+						attributi['data-payid'] = $(this).data('payid');
+					}
+
+					var attr = $(this).data('indice');
+
+					// For some browsers, 'attr' is undefined; for others,
+					// 'attr' is false.  Check for both.
+					if (typeof attr !== typeof undefined && attr !== false) {
+						attributi['data-indice'] = $(this).data('indice');
+					}
+				}else{ // campo numerico
+					if (valore.indexOf('/') <= -1){
+						valore = parseFloat(valore);
+					}
+					$(this).removeClass('editable');
+					classe = $(this).attr("class");
+					
+					if($(this).data('payid')){
+						attributi['data-payid'] = $(this).data('payid');
+						style = 'width:30px; height: 24px;';
+					}
+				}
+								
+				attributi.class = classe;
+				attributi.value = valore;
+				attributi.style = style;
+					
+				
+				var input = $('<input />', attributi);
+
+				$(this).replaceWith(input);
+				
+				if($(this).data('tipo')=='datepicker'){
+					var data = moment(valore, 'DD/MM/YYYY').isValid() ? moment(valore, 'DD/MM/YYYY') : moment();
+					input.daterangepicker({
+						"startDate": 		data,
+						"autoApply": 		true,
+						"singleDatePicker": true,
+						"locale": 			picker_language,
+					});
+				}
+				//if($('.date_toggle_btn').length){
+				//	$('.date_toggle_btn').remove();
+				//}
+				if($(this).data('datatoggle')=='deactive'){
+					$('#' + $(this).attr('id')).before('<span class="date_toggle_btn" onclick="abilitaDataFine()"><i class="fa fa-check-square"></i></span>');
+				}else if ($(this).data('datatoggle')=='active'){
+					$('#' + $(this).attr('id')).before('<span class="date_toggle_btn" onclick="disabilitaDataFine()"><i class="fa fa-times"></i></span>');
+				}
+				
+			});
+			//$('#edit-save-payout-btn').attr('onclick','savePay()').find('.fa').removeClass('fa-pencil').addClass('fa-check-square').attr('title','Salva modifiche');
+			$('#edit-save-payout-btn').attr('onclick','savePay()').html('<i class="fa fa-check-square"></i> Salva Modifiche');
+		}
+		
+		function abilitaDataFine(){
+			$('#edit_data_fine').daterangepicker({
+						"startDate": moment(),
+						"autoApply": true,
+						"singleDatePicker": true,
+						"locale": picker_language,
+					});
+			$('.date_toggle_btn').attr('onclick','disabilitaDataFine()').html('<i class="fa fa-times"></i>'); //find('fa').removeClass('fa-check-square').addClass('fa-times');
+		}
+		
+		function disabilitaDataFine(){
+			$('.date_toggle_btn').attr('onclick','abilitaDataFine()').html('<i class="fa fa-check-square"></i>');
+			var input = $('<input />', {
+						'type': 'text',
+						'name'	: 'edit_data_fine',
+						'id'	: 'edit_data_fine',
+						'style'	: 'width:75px; height: 24px;',
+						'class'	: '',
+						'value'	: '',
+						'disable': 'true',
+						'readonly' : 'readonly'
+					});
+			$('#edit_data_fine').replaceWith(input);
+		}
+		
+		
+		function savePay(){
+		
+			var payout = [];
+			
+			
+			if($('.edit_payout').length>1){
+				
+				// itero tutti i payout
+				$('.edit_payout').each(function(){
+					
+					var obj 	 	= {};
+					var arr_campi	= []
+					
+					var pay_val 	= $(this).val();
+					var payid 		= $(this).data('payid');
+					
+					// itero i valori del payout se esistono campi in più
+					$('.valorecampo-' + payid).each(function(){
+						var valorecampo = $(this).val(); // valore del campo
+						var indicecampo = $(this).data('indice');
+						
+						console.log('valorecampo', valorecampo);
+						arr_campi[indicecampo] = {valorecampo: valorecampo};
+					});
+					
+					obj = {
+							id		: payid,
+							payout	: pay_val,
+							campi	: arr_campi
+						}
+					
+					payout.push(obj);
+					
+				});
+
+				payout = JSON.stringify(payout);
+			}
+			
+			//console.log(payout);
+			
+			var data_save = {
+								id_gruppo 	: 	$('#edit_id_gruppo').val(),
+								data_inizio	: 	$('#edit_data_inizio').val(),
+								data_fine	: 	$('#edit_data_fine').val(),
+								budget		: 	$('#edit_budget').val(),
+								tetto_trash	: 	$('#edit_tetto_trash').val(),
+								payout		: 	payout,
+								target		:	'0',
+								//id_payout	:	$('#edit_id_payouts').val(),
+			}
+			var url_savePay = '{{admin.generateUrl('salvaPay')}}'; 
+			
+			$.ajax({url: url_savePay,
+				data: data_save,
+				success: function(result){
+					if(result.result){
+						$("html, body").animate({ scrollTop: 0 }, "slow");
+						$('.panel-message').html('<h3><i class="fa fa-info-circle"></i> Payout modificato</h3>').slideDown();
+						setTimeout(function () { location.reload(true); }, 1000);
+					}
+				},
+				 complete: function(){
+					//$('.mini-loader-box').fadeOut('fast');
+					//$('.start-title').fadeOut('fast');
+				}
+			});
+			$('.creaordine').prop("disabled",false).fadeIn();
+		}
+		
+		function showDataFine(){
+			$('#data_fine').daterangepicker({ 
+					"minDate": $('#data_inizio').val(),
+					"autoApply": true,
+					"singleDatePicker": true,
+					"locale": picker_language,
+				}, function(start, end, label) {}
+			);
+			$('.data_fine_label').fadeOut('fast',function(){
+				$('.data_fine_box').fadeIn();
+			});
+		}
+		
+		function hideDataFine(){
+			$('.data_fine_box').fadeOut('fast', function(){
+				$('.data_fine_label').fadeIn();
+				});
+			$('#data_fine').val('');
+		}
+		
+		 $(document).ready(function(){
+			
+			var dominio = '{{ dominio }}';
+			var tabmail = '{{ tabmail }}';
+			getColumn(dominio, tabmail);
+				
+			$('#add-new-payout').on('click', function(){
+				$('.add-new-payout-box').slideToggle();
+			});
+			// datepicker range
+			$('#data_inizio').daterangepicker({
+				"autoApply": true,
+				"maxDate": moment(),
+				"singleDatePicker": true,
+				"locale": picker_language,
+			}
+			, function(start, end, label) {
+				if($('.data_fine_box').is(':visible')){
+					var fin = $("#data_fine").datepicker("getDate");
+					if(fin<start){
+						$('#data_fine').daterangepicker({ 
+							"minDate": start.format('DD/MM/YYYY'),
+							"autoApply": true,
+							"singleDatePicker": true,
+							"locale": picker_language,
+						});
+					}
+				}
+			});
+			
+			$('#crea-btn-action').on('click', function(){
+				cleanForm();
+			});
+			
+		 });
+		 
+		 function removePayoutMultiplo(index){
+			$('#subbox-payout_multiplo-'+index).slideUp(function(){
+				$(this).remove();
+			});
+		 }
+		 
+		 function addPayoutMultiplo(){
+			var blocco_html = '';
+			// relevo le opzioni dal blocco 0
+			var options = $('#select-payout-1-1').html();
+			if(options!=''){  // se le opzioni non sono vuote posso generare un nuovo blocco
+				// prelevo il numero attuale di blocchi
+				var index = parseInt($('.subbox-payout_multipli').length);
+				index++;
+				blocco_html ='<div style="display:none" class="subbox-payout_multipli col-md-12" id="subbox-payout_multiplo-'+index+'">' +
+								'<div class="row">'+
+									'<div class="col-md-1">'+
+										'<span class="addPayout-icon" onclick="removePayoutMultiplo('+index+')"><i class="fa fa-minus-square"></i></span>'+
+									'</div>'+
+									'<div class="col-md-11">'+
+										'<div class="row">'+
+											'<!-- BLOCCO CAMPO MULTIPLO IN PAYOUT MULTIPLO '+index+' --> '+
+											'<div class="blocco-campi-payoutmultiplo-'+index+'">'+
+												'<!-- SINGOLO CAMPO IN PAYOUT MULTIPLO --> '+
+												'<div id="payout_multiplo-'+index+'-1" class="paymultiplo-newcampo-'+index+'">'+
+													'<div class="col-md-5">'+
+														'<select name="campo_multiplo[]" class="campo_multiplo" id="select-payout-'+index+'-1">' + options + '</select>'+
+													'</div>'+
+													'<div class="col-md-1 text-center"><span class="segno_uguale">=</span></div>'+
+													'<div class="col-md-5">'+
+														'<input type="text" class="form-control valore_campo_multiplo" name="valore_campo_multiplo[]" id="valore_campo_multiplo-'+index+'-1" placeholder="valore del campo" />'+
+													'</div>'+
+												'</div>'+
+											'</div>'+
+											'<div class="col-md-12">'+
+												'<div class="col-md-1">'+
+													'<span class="addPayout-icon" onclick="addNewCampo('+index+')"><i class="fa fa-plus-square"></i> <span class="addPayout-label">Aggiungi Campo</span></span>'+
+												'</div>'+
+											'</div>'+
+											'<div class="col-md-12">'+
+												'<input type="text" class="form-control payout_multiplo" name="payout_multiplo[]" id="payout_multiplo-'+index+'" placeholder="valore payout" />'+
+											'</div>'+
+											'<div class="col-md-12">'+
+												'<input type="text" class="form-control payout_descrizione" name="payout_descrizione[]" id="payout_descrizione-'+index+'" placeholder="Descrizione breve del payout" 	/>'+
+											'</div>'+
+										'</div>'+
+									'</div>'+
+								'</div>'+
+							'</div>';
+				$('#box-payout_multipli').append(blocco_html);
+				$('#subbox-payout_multiplo-'+index).slideDown();
+				$('#select-payout-'+index+'-1').select2();
+			}
+			
+		 }
+		 
+		 /*
+		 function addPayoutMultiplo(){
+			var blocco_html = '';
+			// relevo le opzioni dal blocco 0
+			var options = $('#select-payout-1').html();
+			if(options!=''){  // se le opzioni non sono vuote posso generare un nuovo blocco
+				// prelevo il numero attuale di blocchi
+				var index = parseInt($('.subbox-payout_multipli').length);
+				index++;
+				blocco_html = '<div style="display:none" class="subbox-payout_multipli col-md-12" id="subbox-payout_multiplo-'+index+'">' +
+								'<div class="row">'+
+									'<div class="col-md-1">'+
+										'<span class="addPayout-icon" onclick="removePayoutMultiplo('+index+')"><i class="fa fa-minus-square"></i></span>'+
+									'</div>'+
+									'<div class="col-md-11">'+
+										'<div class="row">'+
+											'<div class="col-md-6">'+
+												'<select name="campo_multiplo[]" class="campo_multiplo" id="select-payout-'+index+'">' + options + '</select>'+
+											'</div>'+
+											'<div class="col-md-1 text-center"><span class="segno_uguale">=</span></div>'+
+											'<div class="col-md-5">'+
+												'<input type="text" class="form-control valore_campo_multiplo" name="valore_campo_multiplo[]" id="valore_campo_multiplo-'+index+'" placeholder="valore del campo" 	/>'+
+											'</div>'+
+											'<div class="col-md-12">'+
+												'<input type="text" class="form-control payout_multiplo" name="payout_multiplo[]" id="payout_multiplo-'+index+'" placeholder="valore payout" 	/>'+
+											'</div>'+
+											'<div class="col-md-12">'+
+												'<input type="text" class="form-control payout_descrizione" name="payout_descrizione[]" id="payout_descrizione-'+index+'" placeholder="Descrizione breve del payout" 	/>'+
+											'</div>'+
+										'</div>'+
+									'</div>'+
+								'</div>'+
+							'</div>';
+				$('#box-payout_multipli').append(blocco_html);
+				$('#subbox-payout_multiplo-'+index).slideDown();
+				$('#select-payout-'+index).select2();
+			}
+			
+		 }
+		 */
+		 function payoutMultipli(){
+			$('#tipo_payout').val('multiplo');
+			$('.payout_switch_label').html('Multiplo');
+			$('.payoutmultiplo-check').removeClass('fa-square-o').addClass('fa-check-square-o');
+			$('#payout_switch_action').attr('onclick', 'payoutSingolo()');
+			$('#payout_singolo_box').slideUp();
+			$('#payout_multipli').slideDown();
+		 }
+		 function payoutSingolo(){
+			$('#tipo_payout').val('singolo');
+			$('.payout_switch_label').html('Singolo');
+			$('.payoutmultiplo-check').removeClass('fa-check-square-o').addClass('fa-square-o');
+			$('#payout_switch_action').attr('onclick', 'payoutMultipli()');
+			$('#payout_multipli').slideUp();
+			$('#payout_singolo_box').slideDown();
+		 }
+		 
+		 
+		 function getColumn(dominio, tabmail){
+			var url_get_col = '{{admin.generateUrl('getCampaignColumns')}}'; 
+			$.ajax({url: url_get_col,
+				data: { dominio : dominio, 
+						tabmail: tabmail
+					},
+				success: function(result){
+				console.log(result);
+					$('#select-payout-1').html(result.html);
+					$("#select-payout-1").select2();
+				},
+				 complete: function(){
+					//$('.mini-loader-box').fadeOut('fast');
+					//$('.start-title').fadeOut('fast');
+				}
+			});
+		 }
+		 
+		 function salvaOrdine(){
+			var id_ordine		 	= $('#id_ordine').val();
+			var clienteCampagna 	= $('#clienteCampagna').val();
+			var tipo_payout 		= $('#tipo_payout').val();
+			var budget 				= $('#budget').val();
+			var trash 				= $('#trash').val();
+			var ordine_descrizione 	= $('#descrizione').val();
+			var nuovo_payout		= 0;
+			var data_send 			= { 
+										id_ordine 				: id_ordine,
+										clienteCampagna 		: clienteCampagna,
+										budget 					: budget,
+										trash 					: trash,
+										ordine_descrizione 		: ordine_descrizione,
+										nuovo_payout			: nuovo_payout,
+									  };
+			
+			if(clienteCampagna ==''){
+				return false;
+			}
+			
+			if($('.add-new-payout-box').is(':visible')){
+				nuovo_payout = 1;
+
+				var data_inizio		 	= $('#data_inizio').val();
+				var data_fine		 	= $('#data_fine').val();
+				
+				
+				var payouts = [];
+				
+				if(tipo_payout=='multiplo'){
+					var tot_pay = $('.subbox-payout_multipli').length;
+				
+					for(var i=1;i<=tot_pay;i++){
+						var campi = [];
+						
+						var payout 		= $('#payout_multiplo-'+i).val();
+						var descrizione = $('#payout_descrizione-'+i).val();
+
+						
+						
+						var tot_campi = $('.paymultiplo-newcampo-'+i).length;
+						var campi = [];
+						for(var j=1;j<=tot_campi;j++){
+							var nomecampo = $('#select-payout-'+i+'-'+j).val();
+							var tipocampo = $('#select-payout-'+i+'-'+j+' option:selected').attr('data-target');
+							var valorecampo = $('#valore_campo_multiplo-'+i+'-'+j).val();
+							
+							//console.log('nomecampo',nomecampo);
+							//console.log('tipocampo',tipocampo);
+							//console.log('valorecampo',valorecampo);
+							
+							 campi[j-1] = {'nomecampo' 	: nomecampo, 
+										 'valorecampo'	: valorecampo, 
+										 'tipocampo' 	: tipocampo,
+											};
+						};
+						payouts[i-1] = {'campi' : campi, 'payout':  payout, 'descrizione': descrizione};
+					
+					}
+				
+				
+				
+				/*
+					var valori_campi_multipli 	= $('.valore_campo_multiplo').serialize();
+					var payout_multipli 		= $('.payout_multiplo').serialize();
+					var campi_multipli		 	= $('.campo_multiplo').serialize();
+					var target_campi_multipli	= serializeSelect('campo_multiplo');																   
+					var payout_descrizioni 		= $('.payout_descrizione').serialize();
+				
+					data_send = {	
+									id_ordine 				: id_ordine,
+									nuovo_payout 			: nuovo_payout,
+									tipo_payout				: tipo_payout, 
+									valori_campi_multipli 	: valori_campi_multipli,
+									payout_multipli 		: payout_multipli,
+									campi_multipli 			: campi_multipli,
+									target_campi_multipli 	: target_campi_multipli,														
+									payout_descrizioni 		: payout_descrizioni,
+									budget 					: budget,
+									trash 					: trash,
+									ordine_descrizione 		: ordine_descrizione,
+									clienteCampagna 		: clienteCampagna,
+									data_inizio				: data_inizio,
+									data_fine				: data_fine,
+								}; */
+				}else{	
+				
+					var payout_singolo 		= $('#payout_singolo').val();
+					var payout_descrizione 	= 'Payout Singolo';
+					
+					if(payout_singolo==''){
+						return false;
+					}
+					
+					var campi = [];
+					campi[0] = {'nomecampo' : '', 'valorecampo'	: '', 'tipocampo' 	: ''};
+					payouts[0] =  {'campi' : campi, 'payout':  payout_singolo, 'descrizione': payout_descrizione};
+				
+				}
+				
+			
+				/*
+					var payout_singolo 		= $('#payout_singolo').val();
+					
+					if(payout_singolo==''){
+						return false;
+					}
+					var payout_descrizione 	= 'Payout Singolo';
+					data_send = {	
+									id_ordine 			: id_ordine,
+									nuovo_payout		: nuovo_payout, 
+									tipo_payout			: tipo_payout, 
+									payout_singolo 		: payout_singolo,
+									payout_descrizione 	: payout_descrizione,
+									budget 				: budget,
+									trash 				: trash,
+									ordine_descrizione 	: ordine_descrizione,
+									clienteCampagna 	: clienteCampagna,
+									data_inizio				: data_inizio,
+									data_fine				: data_fine,
+								};
+				}
+				
+			 }
+			*/
+			
+			var serialized_payouts = JSON.stringify(payouts);
+				
+			data_send = {	
+							id_ordine 			: id_ordine,
+							tipo_payout				: tipo_payout, 
+							nuovo_payout		: nuovo_payout, 
+							payouts					: serialized_payouts,
+							budget 					: budget,
+							trash 					: trash,
+							ordine_descrizione 		: ordine_descrizione,
+							clienteCampagna 		: clienteCampagna,
+							data_inizio 			: data_inizio,
+							data_fine 				: data_fine,
+						};
+			
+			saveOrdine(data_send);
+			}
+		 }
+		 
+		 function saveOrdine(data_send){
+			var url_save = '{{admin.generateUrl('editOrdine')}}';
+			$.ajax({url: url_save,
+					data: data_send,
+					success: function(data){
+						if(data.result){
+							$("html, body").animate({ scrollTop: 0 }, "slow");
+							$('.panel-message').html('<h3><i class="fa fa-info-circle"></i> Ordine modificato</h3>').slideDown();
+							$("html, body").animate({ scrollTop: 0 }, "fast");
+						}else{
+							alert(data.message);
+						}
+					},
+					 complete: function(){
+					}
+				});
+		 }
+		 
+		 function hideMessage(){
+			$('.panel-message').slideUp();
+		 }
+		 
+		 function toggleStorico(){
+			$('.blocchi-payout').slideToggle();
+		 }
+		 
+		function serializeSelect(selectObjClass){
+			var data_array = new Array();
+			$('.'+selectObjClass).each(function(index){
+        		var item = {};
+				var val = $("option:selected", this).val();
+				console.log(val);
+				if(val!='' && val!='undefined' && val!=null){
+					item['target'] = $("option:selected", this).data('target');
+					item['value']  = val;
+	
+					data_array.push(item);
+				}
+
+			});
+			var serialized = JSON.stringify(data_array);
+
+			return serialized;
+		 
+		 }
+		 
+		 function confermaEliminazione(id){
+			var url_del = '{{admin.generateUrl('deleteOrder')}}'; 
+			var cliente = $('.red-'+id+'-id_nomecliente').html();
+			var campagna = $('.red-'+id+'-id_campagna').html();
+			$('.id_cc-modal').html(id);
+			$('#confirm').modal({
+			  backdrop: 'static',
+			  keyboard: false
+			}).one('click', '#delete', function(e) {
+				$.ajax({url: url_del,
+				data: { id : id},
+				success: function(result){
+					if(result.eliminato==true){ // pixel non presente
+							window.location.href = "{{ path('ordini_clienti')}}";
+					}
+				}
+				});
+			});
+		}
+		function rimuoviGruppo(id_gruppo){
+			 
+		 $('.modal-title').html("<h4>Eliminazione Gruppo-Payout " + id_gruppo + "</h4>");
+			$('.modal-body').html("<p>Sei sicuro di voler eliminare il gruppo payout con ID: " + id_gruppo + "?</p>");
+			$('#confirm-conferma-si').html("Si, elimina");
+			$('#confirm').modal({
+								backdrop: 'static',
+								keyboard: false
+							})
+							.one('click', '#delete', function(e) {
+								var url_removeGrp = '{{admin.generateUrl('removeSingleGroup')}}';
+								$.ajax({url: url_removeGrp,
+										data: {id_gruppo: id_gruppo },
+										success: function(data){
+										},
+										 complete: function(){
+										}
+									});
+								$('#gruppo-' + id_gruppo).slideUp().remove();
+								$('#confirm').modal('hide');
+								$('.panel-message').html('<h3>Gruppo id: ' + id_gruppo + ' eliminato</h3>').slideDown();
+								$("html, body").animate({ scrollTop: 0 }, "slow");
+							});
+		 }
+				 
+		 function addNewCampo(indice_multipay){
+			var indicecampo = $('.paymultiplo-newcampo-'+indice_multipay).length;
+			indicecampo++;
+			var options = $('#select-payout-'+indice_multipay+'-1').html();
+			
+			if(options!=''){  // se le opzioni non sono vuote posso generare un nuovo blocco
+				var html = '<div id="payout_multiplo-'+indice_multipay+'-'+indicecampo+'" class="paymultiplo-newcampo-'+indice_multipay+'">'+
+							'<div class="col-md-5">'+
+							'	<select name="campo_multiplo[]" class="campo_multiplo" id="select-payout-'+indice_multipay+'-'+indicecampo+'">'+
+								options +
+							'	</select>'+
+							'</div>'+
+							'<div class="col-md-1 text-center"><span class="segno_uguale">=</span></div>'+
+							'<div class="col-md-5">'+
+							'	<input type="text" class="form-control valore_campo_multiplo" '+
+							'						name="valore_campo_multiplo[]" 	'+
+							'						id="valore_campo_multiplo-'+indice_multipay+'-'+indicecampo+'" '+
+							'						placeholder="valore del campo"'+ 	
+							'	/>'+
+							'</div>'+
+						'</div>';
+				console.log('.blocco-campi-payoutmultiplo-'+ indice_multipay);
+				$('.blocco-campi-payoutmultiplo-'+ indice_multipay).append(html);
+				$('#select-payout-'+indice_multipay+'-'+indicecampo).select2();
+			}
+		 }
+		 </script>
+		 {% endblock %}
+

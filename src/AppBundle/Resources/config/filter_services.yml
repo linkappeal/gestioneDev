@@ -1,0 +1,16 @@
+parameters:
+    app.admin.filter.multiselect: AppBundle\Filter\MultiSelectFilter
+    app.admin.form.multiselect: AppBundle\Form\MultiSelectType
+
+services:
+    app.admin.filter.type.multiselect:
+        class: %app.admin.filter.multiselect%
+        arguments:
+            entityManager: "@doctrine.orm.entity_manager"
+        tags:
+            - { name: sonata.admin.filter.type, alias: doctrine_orm_multiselect }
+           
+    app.admin.form.type.multiselect:
+        class: %app.admin.form.multiselect%
+        tags:
+            - { name: form.type }

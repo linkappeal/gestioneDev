@@ -1,0 +1,181 @@
+2020-10-14,10-27-02
+
+
+
+/************************************************/ 
+2020-10-14,10-27-02
+ File che lancia i test per le campagne sms che lo richiedono 
+
+
+ Connesso a gestione! 
+
+
+ Esco  
+
+2020-10-14,10-27-19
+
+
+
+/************************************************/ 
+2020-10-14,10-27-19
+ File che lancia i test per le campagne sms che lo richiedono 
+
+
+ Connesso a gestione! 
+
+
+ Abbiamo recuperato la campagna: AMEX BAU test con id 91, risposta: 0.
+
+
+ update campagna-91 allo stato 1 RIUSCITO... info:   
+
+
+ Recuperiamo fornitore con id: 3  
+
+
+ Preleviamo numeri di test.  
+
+
+ Abbiamo recuperato 1 numeri di test  divisi in 1 lanci.  
+
+
+ Lancio n. 1  
+
+
+ Lanciamo lo script del fornitore: Crossing Bulk.php 
+
+2020-10-14,10-29-52
+
+
+
+/************************************************/ 
+2020-10-14,10-29-52
+ File che lancia i test per le campagne sms che lo richiedono 
+
+
+ Connesso a gestione! 
+
+
+ Abbiamo recuperato la campagna: AMEX BAU test con id 91, risposta: 0.
+
+
+ update campagna-91 allo stato 1 RIUSCITO... info:   
+
+
+ Recuperiamo fornitore con id: 3  
+
+
+ Preleviamo numeri di test.  
+
+
+ Abbiamo recuperato 1 numeri di test  divisi in 1 lanci.  
+
+
+ Lancio n. 1  
+
+
+ Lanciamo lo script del fornitore: Crossing Bulk.php 
+
+
+ Il lancio è andato OK 
+
+
+ update stato numero RIUSCITO per il numero con id: 3104643, id del fornitore: CRONET-71d4cb054aaa-d453ed2c5de1  
+
+
+ update campagna stato a 2 RIUSCITO.  
+
+
+ Esco  
+
+2020-10-14,10-32-01
+
+
+
+/************************************************/ 
+2020-10-14,10-32-01
+ File che lancia i test per le campagne sms che lo richiedono 
+
+
+ Connesso a gestione! 
+
+
+ Abbiamo recuperato la campagna: AMEX BAU test con id 91, risposta: 0.
+
+
+ update campagna-91 allo stato 1 RIUSCITO... info:   
+
+
+ Recuperiamo fornitore con id: 2  
+
+
+ Preleviamo numeri di test.  
+
+
+ Abbiamo recuperato 1 numeri di test  divisi in 1 lanci.  
+
+
+ Lancio n. 1  
+
+
+ Lanciamo lo script del fornitore: CrossingDirect.php 
+
+
+ Il lancio è andato OK 
+
+
+ update stato numero RIUSCITO per il numero con id: 3104644, id del fornitore: CRONET-1153be0c1efb-23291eb160bc  
+
+
+ update campagna stato a 2 RIUSCITO.  
+
+
+ Esco  
+
+2020-10-14,11-04-25
+
+
+
+/************************************************/ 
+2020-10-14,11-04-25
+ File che lancia i test per le campagne sms che lo richiedono 
+
+
+ Connesso a gestione! 
+
+
+ Abbiamo recuperato la campagna: AMEX BAU test con id 91, risposta: 0.
+
+
+ update campagna-91 allo stato 4 RIUSCITO... info:   
+
+
+ Ho settato lo stato campagna a 4  
+
+
+ Recuperiamo fornitore con id: 3  
+
+
+ Preleviamo numeri di test.  
+
+
+ Abbiamo recuperato 1 numeri di test  divisi in 1 lanci.  
+
+
+ Lancio n. 1  
+
+
+ Lanciamo lo script del fornitore: Crossing Bulk.php 
+
+
+ Il lancio è andato OK 
+
+
+ update stato numero RIUSCITO per il numero con id: 3104644, id del fornitore: CRONET-223bb7aa19c0-479cd21180a7  
+
+
+ update campagna stato a 5 RIUSCITO.  
+
+
+ Esco  
+

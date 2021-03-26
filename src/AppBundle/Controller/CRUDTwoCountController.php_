@@ -1,0 +1,325 @@
+<?php
+
+namespace AppBundle\Controller;
+
+use Sonata\AdminBundle\Controller\CRUDController as Controller;
+use Sonata\AdminBundle\Datagrid\ProxyQueryInterface;
+
+use Symfony\Component\HttpKernel\Exception\NotFoundHttpException;
+use Symfony\Component\HttpFoundation\RedirectResponse;
+use Symfony\Component\HttpFoundation\Request;
+use Symfony\Component\HttpFoundation\Response;
+use Symfony\Component\HttpFoundation\Session\Session;
+
+use Sensio\Bundle\FrameworkExtraBundle\Configuration\Route;
+
+use Doctrine\Common\Util\Debug;
+use Doctrine\DBAL\DriverManager;
+use Exporter\Source\DoctrineORMQuerySourceIterator;
+
+use DoctrineORMEntityManager;
+
+use Symfony\Component\HttpFoundation\StreamedResponse;
+
+use AppBundle\CustomFunc\Handler as Handler;
+use AppBundle\Entity\Extraction as Extraction;
+use AppBundle\Entity\Extraction_history as Extraction_history;
+use AppBundle\Entity\Campagna as Campagna;
+use AppBundle\Entity\Cliente as Cliente;
+
+use Sonata\AdminBundle\Route\RouteCollection;
+
+use Symfony\Component\Form\Extension\Core\Type\ChoiceType;
+use Symfony\Component\Form\Extension\Core\Type\CollectionType;
+//use AppBundle\CustomFunc\Pager as Pager;
+
+class CRUDTwoCountController extends Controller
+{
+    
+    
+    public function twocountersAction(){
+        
+            $date = new \DateTime(); 
+            $date->setTime(0, 0);
+            
+            $today = $this->getDateNumberLeads($date);
+            $todayLeadsNum = $today['passed'];
+            $todayLeadsNumNotPassed = $today['not_passed'];
+            $todayLeadsNumIndir = $today['indirette'];
+            $todayLeadsCampaign = $today['passed_by_cmpg'];
+            $todayLeadsOffTargetCampaign = $today['not_passed_by_cmpg'];
+           
+            $date->modify('-1 days');
+            $yesterday = $this->getDateNumberLeads($date);
+            $yesterdayLeadsNum = $yesterday['passed'];
+            $yesterdayLeadsNumNotPassed = $yesterday['not_passed'];
+            $yesterdayLeadsNumIndir = $yesterday['indirette'];
+            $yesterdayLeadsCampaign = $yesterday['passed_by_cmpg'];
+            $yesterdayLeadsOffTargetCampaign = $yesterday['not_passed_by_cmpg'];
+            
+	    $date->modify('-1 days');
+            $postyesterday = $this->getDateNumberLeads($date);
+            $postYesterdayLeadsNum = $postyesterday['passed'];
+            $postYesterdayLeadsNumNotPassed = $postyesterday['not_passed'];
+            $postYesterdayLeadsNumIndir = $postyesterday['indirette'];
+            
+            $dataScript = $this->getLastScriptLaunch();
+        
+            return $this->render('two_counters_lead.html.twig', array(
+                'action' => 'counters',
+                'csrf_token' => $this->getCsrfToken('sonata.batch'),
+                'today' => $todayLeadsNum,
+                'data_script' => $dataScript,
+                'yesterday' => $yesterdayLeadsNum,
+                'postyesterday' => $postYesterdayLeadsNum,
+                'today_notpassed' => $todayLeadsNumNotPassed,
+                'yesterday_notpassed' => $yesterdayLeadsNumNotPassed,
+                'postyesterday_notpassed' => $postYesterdayLeadsNumNotPassed,
+                'today_indirette' => $todayLeadsNumIndir,
+                'yesterday_indirette' => $yesterdayLeadsNumIndir,
+                'postyesterday_indirette' => $postYesterdayLeadsNumIndir,
+                'today_campaign' => $todayLeadsCampaign,
+                'today_offtarget' => $todayLeadsOffTargetCampaign,
+                'yesterday_campaign' => $yesterdayLeadsCampaign,
+                'yesterday_offtarget' => $yesterdayLeadsOffTargetCampaign
+
+            ), null); 
+    }
+    
+    public function getDateNumberLeads($date){
+        
+        $count = array();
+        $count['passed'] = 0;
+        $count['not_passed'] = 0;
+        $count['passed_by_cmpg'] = array();
+        $count['not_passed_by_cmpg'] = array();
+
+        $date2 = new \DateTime($date->format('Y-m-d H:i:s'));
+        $date2->add(new \DateInterval('P1D'));
+        
+        $qb= $this->getDoctrine()->getManager()->createQueryBuilder();
+        $qbn= $this->getDoctrine()->getManager()->createQueryBuilder();
+        
+        //Conteggio per le anagrafiche passed
+        $res =  $qb->select('count(o.id) as cnt, o.source_tbl, o.source_db, c.nome_offerta, cl.name')
+            ->from('AppBundle:Lead_uni', 'o')
+            ->leftJoin('AppBundle:Campagna', 'c', \Doctrine\ORM\Query\Expr\Join::WITH, 'c.id = o.campagna') 
+            ->leftJoin('AppBundle:Landing', 'l', \Doctrine\ORM\Query\Expr\Join::WITH, 'l.campagna = c.id')
+            ->leftJoin('AppBundle:A_landing_cliente', 'a', \Doctrine\ORM\Query\Expr\Join::WITH, 'l.id = a.landing')
+            ->leftJoin('AppBundle:Cliente', 'cl', \Doctrine\ORM\Query\Expr\Join::WITH, 'cl.id = a.cliente')
+            ->where('o.data >= :date1')
+            ->andWhere('o.data < :date2')
+            ->andWhere("o.source_tbl not like '%_notpassed%' ")
+            ->andWhere("o.email not like '%prova%' ")    
+            ->andWhere("o.email not like '%test%' ")   
+            ->andWhere("o.nome not like 'tester%' ")
+            ->andWhere("o.nome not like 'prova%' ")                
+            ->groupBy('o.source_tbl, o.source_db')
+            ->setParameter('date1', $date->format('Y-m-d H:i:s'))
+            ->setParameter('date2', $date2->format('Y-m-d H:i:s'));
+
+        $retval = $qb->getQuery()->getArrayResult();
+        
+        foreach($retval as $key => $val){
+                        
+            $count['passed'] += $val['cnt'];
+            $count['passed_by_cmpg'][] = array('name' => $val['nome_offerta'], 'num' => $val['cnt'], 'cliente' => $val['name'] );
+                        
+        }
+         
+        
+        //Conteggio per le anagrafiche off-target
+        $res =  $qbn->select('count(o.id) as cnt, o.source_tbl, o.source_db, c.nome_offerta, cl.name')
+            ->from('AppBundle:Lead_uni', 'o')
+            ->leftJoin('AppBundle:Campagna', 'c', \Doctrine\ORM\Query\Expr\Join::WITH, 'c.id = o.campagna') 
+            ->leftJoin('AppBundle:Landing', 'l', \Doctrine\ORM\Query\Expr\Join::WITH, 'l.campagna = c.id')
+            ->leftJoin('AppBundle:A_landing_cliente', 'a', \Doctrine\ORM\Query\Expr\Join::WITH, 'l.id = a.landing')
+            ->leftJoin('AppBundle:Cliente', 'cl', \Doctrine\ORM\Query\Expr\Join::WITH, 'cl.id = a.cliente')                
+            ->where('o.data >= :date1')
+            ->andWhere('o.data < :date2')
+            ->andWhere("o.source_tbl like '%_notpassed%' ")  
+            ->andWhere("o.email not like '%prova%' ")    
+            ->andWhere("o.email not like '%test%' ")
+            ->andWhere("o.nome not like 'tester%' ")
+            ->andWhere("o.nome not like 'prova%' ")
+            ->groupBy('o.source_tbl, o.source_db')                
+            ->setParameter('date1', $date->format('Y-m-d H:i:s'))
+            ->setParameter('date2', $date2->format('Y-m-d H:i:s'));
+
+        $retval = $qbn->getQuery()->getArrayResult(); 
+        
+        foreach($retval as $key => $val){
+                        
+            $count['not_passed'] += $val['cnt'];
+            $count['not_passed_by_cmpg'][] = array('name' =>  $val['nome_offerta'], 'num' => $val['cnt'], 'cliente' => $val['name'] );
+                        
+        }        
+        
+        $config = new \Doctrine\DBAL\Configuration();
+        
+        $conn = $this->get('doctrine.dbal.pixel_connection');
+        
+        //$conn = DriverManager::getConnection($pm, $config);
+        
+        $sql  = "SELECT count(*) as cnt FROM pixel_trace ";
+        $sql .= " where indiretta = 1 ";
+        $sql .= " and dt >= '".$date->format('Y-m-d H:i:s')."'";
+        $sql .= " and dt < '".$date2->format('Y-m-d H:i:s')."'";
+        
+        $stmt = $conn->query($sql);
+        $row = $stmt->fetch();
+        
+        $count['indirette'] = $row['cnt'];
+        $count['passed'] += $count['indirette'];
+                
+        return $count;
+        
+    }
+    
+	public function countbyrangedataAction(Request $request){
+            
+            $data = $request->get('data');
+
+            $dates = explode(' - ', $data);
+            
+            $date_min = \DateTime::createFromFormat('d/m/y', $dates[0]);
+            $date_min->setTime(0, 0);
+            
+            $date_max = \DateTime::createFromFormat('d/m/y', $dates[1]);
+            $date_max->setTime(0, 0);
+            
+            if ($date_min == $date_max){
+                $dateNum = $this->getDateNumberLeads ($date_min);
+            }
+            else {            
+                $dateNum = $this->getRangeDateNumberLeads($date_min, $date_max);
+            }
+            
+//            $date_selected->modify('-1 days');
+//            $dateYesterdayNum = $this->getDateNumberLeads($date_selected);
+//            
+//	    $date_selected->modify('-2 days');
+//            $dateBeforeYesterdayNum = $this->getDateNumberLeads($date);
+            
+            $result['totale'] = $dateNum['passed'];
+            $result['totale_notpassed'] = $dateNum['not_passed'];
+            $result['totale_indirette'] = $dateNum['indirette'];
+            $result['stato'] = true;
+            
+            $response = new Response();
+            $response->setContent(json_encode($result));
+
+            $response->headers->set('Content-Type', 'application/json');
+
+            return  $response;
+        
+	}
+        
+        function getLastScriptLaunch(){
+            
+            $qb= $this->getDoctrine()->getManager()->createQueryBuilder();
+            
+            $qb->select('max(s.launch_date)')
+            ->from('AppBundle:Scripts_history', 's');
+        
+            $retval = $qb->getQuery()->getSingleScalarResult(); 
+            
+            return $retval;
+            
+        }
+        
+
+
+    public function getRangeDateNumberLeads($date1, $date2){
+        
+        $count = array();
+        $count['passed'] = 0;
+        $count['not_passed'] = 0;
+        $count['passed_by_cmpg'] = array();
+        $count['not_passed_by_cmpg'] = array();
+
+        $date1 = new \DateTime($date1->format('Y-m-d H:i:s'));
+        
+        $date2 = new \DateTime($date2->format('Y-m-d H:i:s'));
+        $date2->add(new \DateInterval('P1D'));
+        
+        $qb= $this->getDoctrine()->getManager()->createQueryBuilder();
+        $qbn= $this->getDoctrine()->getManager()->createQueryBuilder();
+        
+        //Conteggio per le anagrafiche passed
+        $res =  $qb->select('count(o.id) as cnt, o.source_tbl, o.source_db, c.nome_offerta, cl.name')
+            ->from('AppBundle:Lead_uni', 'o')
+            ->leftJoin('AppBundle:Campagna', 'c', \Doctrine\ORM\Query\Expr\Join::WITH, 'c.id = o.campagna')  
+            ->leftJoin('AppBundle:Landing', 'l', \Doctrine\ORM\Query\Expr\Join::WITH, 'l.campagna = c.id')
+            ->leftJoin('AppBundle:A_landing_cliente', 'a', \Doctrine\ORM\Query\Expr\Join::WITH, 'l.id = a.landing')
+            ->leftJoin('AppBundle:Cliente', 'cl', \Doctrine\ORM\Query\Expr\Join::WITH, 'cl.id = a.cliente')                
+            ->where('o.data >= :date1')
+            ->andWhere('o.data <= :date2')
+            ->andWhere("o.source_tbl not like '%_notpassed%' ")
+            ->andWhere("o.email not like '%prova%' ")    
+            ->andWhere("o.email not like '%test%' ") 
+            ->andWhere("o.nome not like 'tester%' ")
+            ->andWhere("o.nome not like 'prova%' ")                
+            ->groupBy('o.source_tbl, o.source_db')
+            ->setParameter('date1', $date1->format('Y-m-d H:i:s'))
+            ->setParameter('date2', $date2->format('Y-m-d H:i:s'));
+
+        $retval = $qb->getQuery()->getArrayResult();
+        
+        foreach($retval as $key => $val){
+                        
+            $count['passed'] += $val['cnt'];
+            $count['passed_by_cmpg'][] = array('name' =>  $val['nome_offerta'], 'num' => $val['cnt'], 'cliente' => $val['name'] );
+                        
+        }
+         
+        
+        //Conteggio per le anagrafiche off-target
+        $res =  $qbn->select('count(o.id) as cnt, o.source_tbl, o.source_db, c.nome_offerta, cl.name')
+            ->from('AppBundle:Lead_uni', 'o')
+            ->leftJoin('AppBundle:Campagna', 'c', \Doctrine\ORM\Query\Expr\Join::WITH, 'c.id = o.campagna')      
+            ->leftJoin('AppBundle:Landing', 'l', \Doctrine\ORM\Query\Expr\Join::WITH, 'l.campagna = c.id')
+            ->leftJoin('AppBundle:A_landing_cliente', 'a', \Doctrine\ORM\Query\Expr\Join::WITH, 'l.id = a.landing')
+            ->leftJoin('AppBundle:Cliente', 'cl', \Doctrine\ORM\Query\Expr\Join::WITH, 'cl.id = a.cliente')                
+            ->where('o.data >= :date1')
+            ->andWhere('o.data <= :date2')
+            ->andWhere("o.source_tbl like '%_notpassed%' ")  
+            ->andWhere("o.email not like '%prova%' ")    
+            ->andWhere("o.email not like '%test%' ")   
+            ->andWhere("o.nome not like 'tester%' ")
+            ->andWhere("o.nome not like 'prova%' ")                
+            ->groupBy('o.source_tbl, o.source_db')                
+            ->setParameter('date1', $date1->format('Y-m-d H:i:s'))
+            ->setParameter('date2', $date2->format('Y-m-d H:i:s'));
+
+        $retval = $qbn->getQuery()->getArrayResult(); 
+        
+        foreach($retval as $key => $val){
+                        
+            $count['not_passed'] += $val['cnt'];
+            $count['not_passed_by_cmpg'][] = array('name' =>  $val['nome_offerta'], 'num' => $val['cnt'], 'cliente' => $val['name'] );
+                        
+        }        
+        
+        $config = new \Doctrine\DBAL\Configuration();
+        
+        $conn = $this->get('doctrine.dbal.pixel_connection');
+        
+        //$conn = DriverManager::getConnection($pm, $config);
+        
+        $sql  = "SELECT count(*) as cnt FROM pixel_trace ";
+        $sql .= " where indiretta = 1 ";
+        $sql .= " and dt >= '".$date1->format('Y-m-d H:i:s')."'";
+        $sql .= " and dt <= '".$date2->format('Y-m-d H:i:s')."'";
+        
+        $stmt = $conn->query($sql);
+        $row = $stmt->fetch();
+        
+        $count['indirette'] = $row['cnt'];
+        $count['passed'] += $count['indirette'];
+                
+        return $count;
+        
+    }
+    
+}

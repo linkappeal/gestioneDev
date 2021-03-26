@@ -1,0 +1,297 @@
+{% extends base_template %}
+
+        {% block stylesheets %}
+            {{ parent() }}
+                {% stylesheets
+                        'css/style.css'
+                        'css/data_tables/style-table.css'
+                %}
+					<link href="{{ asset_url }}" type="text/css" rel="stylesheet"/>
+					<link href="https://gitcdn.github.io/bootstrap-toggle/2.2.2/css/bootstrap-toggle.min.css" rel="stylesheet">
+					<link href="/css/datepicker/daterangepicker.css" type="text/css" rel="stylesheet"/>
+                {% endstylesheets %}
+			
+			<style>
+				.panel-message{padding: 15px; background-color: #00a66973; text-align: center; font-size: 18px; cursor: pointer;}
+				#torna{
+					position:absolute;
+					right:15px;
+					top:15px;
+				}
+			
+				.select2-container{width: 100%;}
+				.calendar-icon{cursor: pointer; font-size: 25px; padding-top: 5px;}
+				
+				#report-options {
+					float:right;
+					margin-top: 12px;
+					padding-bottom:25px;
+				}
+				#report-options > div {
+					display:inline-block;
+					vertical-align: top;
+					padding-left:6px;
+				}
+				.personal-interval-piker {
+					margin-top: 6px;
+					display:none;
+				}
+				.show-data-piker .personal-interval-piker {
+					display:block;
+				}
+				.personal-interval-piker input{
+					margin-left:5px;
+					padding: 5px 10px;
+				}
+				#data_inizio{
+					margin-right:10px;
+				}
+				#data_inizio,#data_fine {
+					width:90px;
+				}
+				#report-options label {
+					margin-bottom:0px;
+					font-weight:600;
+				}
+				#reportTableContainer.reloading {
+					transition: opacity 0.2s ease-in;
+					opacity:0.5;
+					pointer-events:none;
+					clear:both;
+					padding-top25px;
+					width:100%;
+				}
+				#reportTableContainer {
+					clear:both;
+					padding-top25px;
+					width:100%;
+				}
+				.table-bordered >thead>tr>th, .table-bordered >tbody >tr >th, .table-bordered >tfoot >tr > th, .table-bordered > thead > tr > td, .table-bordered > tbody >tr > td, .table-bordered > tfoot > tr > td {border: 1px solid #d8d8d8;text-align:center;}
+				.Rbodytable:nth-child(odd) {background-color:#f1f1f1;}
+				.Rbodytable.RbodytableTotals {background-color: #444444;color: #FFF; font-weight: bold;}
+				.Rsuperheadtable, .Rheadtable {background-color: #225886;color: #FFF;}
+				.Rheadtable {background-color: #5587b3;}
+				.Rheadtable .Rgranulo, .Rsuperheadtable .Rtotali, .Rsuperheadtable .Rgranulo {background-color:#FFF; border-color:#FFF;}
+				.Rsuperheadtable .Rtotali, .Rheadtable .Rgranulo{border-right-color: #d8d8d8;}
+				td.Rgranulo {font-weight:bold;text-align:left !important;}
+				.Rsuperheadtable {text-transform:uppercase;font-wheigth:bold;}
+				
+				#general-info{
+					float:left;
+					padding-top:35px;
+					padding-bottom:35px;
+					font-weight:bold;
+				}
+				#general-info span{
+					font-weight:normal;
+					text-transform:capitalize;
+				}
+				small.percvalue {
+					font-weight:300 !important;
+				}
+				.get-cpl{
+					cursor:pointer;
+				}
+				.modal-body p b {
+					text-transform:capitalize;
+				}
+			</style>
+        {% endblock %}
+        {% block content %}
+		
+
+		
+<div class="container theme-showcase crea-miscelata" role="main" id="miscelata_maker_container">
+	
+	<div class="row">
+		<div class="col-sm-12">
+			<div class="panel panel-default">
+				<div class="panel-heading col-md-12">
+					<div class="col-md-12">
+						<h3><i class="fa fa-bar-chart" aria-hidden="true"></i>
+						Report Web Service id: {{ ws.id }}
+						</h3>
+						<a id="torna" href="{{admin.generateUrl('webservices')}}" class="btn btn-primary">Torna al listato</a>
+					</div>
+				</div>
+				<div class="col-md-12 panel-message" onclick="hideMessage()" style="display: none;"></div>
+				<div class="panel-body">
+					<div id="general-info">
+					<span>Nome Web Service:</span> {{ ws.nome }} <br>
+					<span>Totale ricevute:</span> {{ totals.ricevute }}<br>
+					<span>Totale accettate:</span> {{ totals.accettate }}<br>
+					<span>Totale rifiutate:</span> {{ totals.rifiutate }}<br>
+					<span>Totale duplicate:</span> {{ totals.duplicate }}<br>
+					</div>
+					<div id="report-options">
+						<div>
+							<label for="visualizzazioneperiodo">Mostra dati per</label>
+							<select name="visualizzazioneperiodo"  id="visualizzazioneperiodo">
+								<option value="mese" selected="selected">Mesi</option>
+								<option value="giorno">Giorni</option>
+							</select>
+						</div>
+						<div>
+							<label for="preselectedinterval">Periodo</label>
+							<select name="preselectedinterval"  id="preselectedinterval">
+								<option value="completo" selected="selected">Completo</option>
+								<option value="sette">Ultimi 7 giorni</option>
+								<option value="trenta">Ultimi 30 giorni</option>
+								<option value="mese">Questo mese</option>
+								<option value="mesepre">Mese precedente</option>
+								<option value="personale">Personalizzato</option>
+							</select>
+							<div class="personal-interval-piker">
+								<span style="font-weight:600;">Dal</span><input id="data_inizio" name="data_inizio" ><span style="font-weight:600;">Al</span><input id="data_fine" name="data_fine" >
+							</div>
+						</div>
+					
+					</div>
+					<div id="reportTableContainer">
+					{{ report | raw}}
+					</div>
+				</div>
+			</div>
+		</div>
+	</div>
+	<script src="https://cdnjs.cloudflare.com/ajax/libs/datatables/1.10.12/js/jquery.dataTables.min.js"></script>
+	<script src="https://cdnjs.cloudflare.com/ajax/libs/datatables/1.10.12/js/dataTables.bootstrap.min.js"></script>
+	<script src="https://cdn.datatables.net/fixedcolumns/3.2.3/js/dataTables.fixedColumns.min.js"></script>
+	<script src="https://gitcdn.github.io/bootstrap-toggle/2.2.2/js/bootstrap-toggle.min.js"></script>
+	
+	<script type="text/javascript" 	src="/js/datepicker/moment.js"></script>
+	<script type="text/javascript" 	src="/js/datepicker/daterangepicker.js"></script>
+	<script>
+		var picker_language = {
+					"direction" : "ltr","format": "YYYY-MM-DD","separator": " - ","applyLabel": "Apply","cancelLabel": "Cancel","fromLabel": "Dal","toLabel": "al","customRangeLabel": "Custom",
+					"daysOfWeek": ["Do","Lu","Ma","Me","Gi","Ve","Sa"],
+					"monthNames": ["Gennaio","Febbraio","Marzo","Aprile","Maggio","Giugno","Luglio","Agosto","Settembre","Ottobre","Novembre","Dicembre"],
+					"firstDay"	: 1
+				};
+		
+		$(document).ready(function(){
+		
+				
+			// datepicker range
+			$('#data_inizio').daterangepicker({
+				"autoApply": true,
+				"singleDatePicker": true,
+				"locale": picker_language,
+			}
+			, function(start, end, label) {});
+			
+			$('#data_fine').daterangepicker({ 
+					"maxDate": $('#data_inizio').val(),
+					"autoApply": true,
+					"singleDatePicker": true,
+					"locale": picker_language,
+				}, function(start, end, label) {}
+			);
+		});
+		
+		//show data piker on custom range data and eentualy start ajax
+		 $(document).on('change', '#preselectedinterval', function(){
+			if($(this).val()=='personale'){
+				$('#report-options').addClass('show-data-piker');
+			}else{
+				$('#report-options').removeClass('show-data-piker');
+				$('.daterangepicker').css('display','none');
+				get_ajax_report();
+			}
+		 });
+		 //start ajax report
+		 $(document).on('change', '#visualizzazioneperiodo', function(){
+			get_ajax_report(); 
+		 });
+		 
+		 
+		
+		  $(document).on('change', '#data_inizio', function(){
+			  if(!$('.personal-interval-piker').hasClass('change-end')){
+				$('.personal-interval-piker').addClass('change-start');
+				var data_fine=$('#data_fine').val();
+				$('#data_fine').daterangepicker({ 
+						"minDate": $('#data_inizio').val(),
+						"maxDate":$.datepicker.formatDate('yy-mm-dd', new Date()),
+						"autoApply": true,
+						"singleDatePicker": true,
+						"locale": picker_language,
+					}, function(start, end, label) {}
+				);
+				$('#data_fine').val(data_fine);
+				$('.personal-interval-piker').removeClass('change-start');
+				if($('#data_inizio').val() < $('#data_fine').val()){
+					get_ajax_report();
+				}
+			  }
+		 });
+		 $(document).on('change', '#data_fine', function(){
+			if(!$('.personal-interval-piker').hasClass('change-start')){
+				$('.personal-interval-piker').addClass('change-end');
+				var data_inizio=$('#data_inizio').val();
+				$('#data_inizio').daterangepicker({ 
+						"maxDate": $('#data_fine').val(),
+						"autoApply": true,
+						"singleDatePicker": true,
+						"locale": picker_language,
+					}, function(start, end, label) {}
+				);
+				$('#data_inizio').val(data_inizio);
+				$('.personal-interval-piker').removeClass('change-end');
+				if($('#data_inizio').val() < $('#data_fine').val()){
+					get_ajax_report();
+				}
+			}
+		 });
+		 
+		 //ajax report
+		 function get_ajax_report(){
+			var grano=$('#visualizzazioneperiodo').val();
+			var datapreset=$('#preselectedinterval').val();
+			var datastart=$('#data_inizio').val();
+			var dataend=$('#data_fine').val();
+			data_send = {	ws_id		: {{ ws.id }},
+							granulosita			: grano,
+							presetdata			: datapreset,
+							start				: datastart,
+							end 				: dataend,
+							ajax 				: 1,
+						};
+			var url_report = '{{admin.generateUrl('getWebserviceReport')}}';
+			$('#reportTableContainer').addClass('reloading');
+			$.ajax({url: url_report,
+					data: data_send,
+					success: function(report){
+						$('#reportTableContainer').html(report['report']);
+						$('#reportTableContainer').removeClass('reloading');
+					},
+					 complete: function(){
+					}
+			});
+		 }
+		 
+		function hideMessage(){
+			$('.panel-message').slideUp();
+		 }
+		get_ajax_report();
+	</script>
+	
+	<!-- finestra modale -->
+	<div class="modal fade" id="dettail">
+	  <div class="modal-dialog" role="document">
+		<div class="modal-content">
+		  <div class="modal-header">
+			<button type="button" class="close" data-dismiss="modal" aria-label="Close">
+			  <span aria-hidden="true">&times;</span>
+			</button>
+			<h5 class="modal-title">Dettagli</h5>
+		  </div>
+		  <div class="modal-body">
+			
+		  </div>
+		</div>
+	  </div>
+	</div>
+</div> <!-- /container-fluid -->
+{% endblock %}
+

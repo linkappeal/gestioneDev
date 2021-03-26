@@ -1,0 +1,935 @@
+{% extends base_template %}
+
+        {% block stylesheets %}
+            {{ parent() }}
+                {% stylesheets
+                        'css/style.css'
+                %}
+					<link href="{{ asset_url }}" type="text/css" rel="stylesheet"/>
+					<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/bootstrap-daterangepicker/2.1.27/daterangepicker.min.css" />
+					<link href="https://cdnjs.cloudflare.com/ajax/libs/datatables/1.10.12/css/dataTables.bootstrap.min.css" rel="stylesheet"/>
+                {% endstylesheets %}
+			
+				<style>
+				
+					.checkbox-change-trace{padding-right: 10px; border-right: 1px solid #fff; margin-right: 10px;font-size: 15px;}
+					.btn-change-trace-selected{border: 3px solid #aaa;}
+					.title-change-trace .fa{margin-left: 10px;}
+					.singola-selezione-ricerca{cursor: pointer; padding: 0px 10px;font-size:15px;}
+					.titolo-filtro .fa{font-size: 20px; padding: 6px;}
+					.icona .fa{    font-size: 20px; padding: 2px;}
+					.riga-filtro{margin-bottom: 15px; font-size:17px; text-align: left;}
+					.filtri-box{    border-left: 2px solid #3c8dbc; min-height: 100px;}
+					.loader { border: 16px solid #f3f3f3; border-radius: 50%; border-top: 16px solid #3498db; width: 120px; height: 120px; 
+					-webkit-animation: spin 2s linear infinite; /* Safari */  animation: spin 2s linear infinite; }
+					.title-underbox{border-bottom: 2px solid #3c8dbc; margin-bottom: 15px; padding-bottom: 11px;}
+					.mini-loader { position: absolute; top: 10px; margin: 5px auto; display: inline; border: 7px solid #f3f3f3; border-radius: 50%; border-top: 7px solid #3498db; width: 30px; height: 30px; -webkit-animation: spin 2s linear infinite; animation: spin 2s linear infinite;}
+					.info-subbox {font-size: 20px; margin-bottom: 5px;}
+					.info-subbox .fa{margin-right: 15px;}
+					.strong{font-weight: bold;}
+					.select-boxes-btn{margin-bottom: 15px;}
+					.footer_totals{font-weight: bold; }
+					.tabella_storni tbody tr{cursor: pointer;}
+					/*.fix_foot_totals{ border-top: 1px solid #3c8dbc;display: block;background: #ececec;}*/
+								
+				/*	.dt-button{
+						margin-bottom: 10px;
+						color: #FFF;
+					    display: inline-block;
+						padding: 6px 12px;
+						font-size: 14px;
+						font-weight: 400;
+						line-height: 1.42857143;
+						text-align: center;
+						white-space: nowrap;
+						vertical-align: middle;
+						-ms-touch-action: manipulation;
+						touch-action: manipulation;
+						cursor: pointer;
+						-webkit-user-select: none;
+						-moz-user-select: none;
+						-ms-user-select: none;
+						user-select: none;
+						background-image: none;
+						border: 1px solid transparent;
+						border-radius: 4px;
+						background-color: #3c8dbc;
+						border-color: #367fa9;
+					} */
+					/* tooltipls */
+					.tooltipl .fa{
+						margin-left: 15px;
+						color: #337AB7;
+					}
+					.tooltipl {
+						position: relative;
+						display: inline-block;
+						text-align: center;
+
+					}
+
+					.tooltipl .tooltipltext {
+						visibility: hidden;
+						width: 120px;
+						top: 100%;
+						left: 50%; 
+						margin-left: -60px; /* Use half of the width (120/2 = 60), to center the tooltip */
+						background-color: #337AB7;
+						color: #fff;
+						text-align: center;
+						border-radius: 6px;
+						padding: 5px 0;
+
+						/* Position the tooltipl */
+						position: absolute;
+						z-index: 1;
+						
+					}
+
+					.tooltipl:hover .tooltipltext {
+						visibility: visible;
+					}
+					/* /tooltipls */
+					
+					/** storni tables **/
+					.storni-box{ z-index:9999; position: fixed; top: 50px; width: 83%;	margin: 0 auto;	background: #FFFFFF; padding: 25px;	border: 2px solid #3c8dbc; box-shadow: 0 0 15px 0px black; }
+					.backinblack{width: 100%; height: 100%; background: rgba(185, 185, 185, 0.5); z-index: 9980; position: fixed; top: 0; left: 0;}
+					.close-table-storni {text-align: right;cursor: pointer; }
+					.close-table-storni .fa{font-size: 16px; padding: 15px;}
+					.giastornata{color:#f39c12;}
+					/* /storni */
+					/* loader */
+					.loader {
+					    border: 10px solid #f3f3f3;
+						border-top: 10px solid #3498db;
+						border-radius: 50%;
+						width: 50px;
+						height: 50px;
+						margin: 0 auto;
+						margin-bottom: 25px;
+						animation: spin 2s linear infinite;
+					}
+
+					@keyframes spin {
+						0% { transform: rotate(0deg); }
+						100% { transform: rotate(360deg);}
+					}
+			/* fine loader */
+			/* addLead */
+				.addL-box {float: right; width: 60px;}
+				.addL-box .fa{cursor: pointer;color: #3c8dbc;}
+				.addL-box .addLead-input, .addL-box .addLeadTrash-input{width: 70%;float: left;}
+				.addL-box .confermaAddLead{float: left;width: 30%;padding-top: 5px;text-align: center;}
+			.tooltip-addedLead.tooltipl .fa { margin-left: 0px;}
+			.tooltip-addedLead.tooltipl .tooltipltext{ width: 30px!important;
+								top: -2px!important;
+								left: -5px!important;
+								margin-left: 4px!important;
+								border-radius: 5px!important;
+								padding: 2px 0!important;
+							}
+			/* /addLead */
+			
+			</style>
+        {% endblock %}
+        {% block content %}
+	<div class="container-fluid">
+		<section class="content">
+			<div class="sonata-ba-content">  
+				<div class="row">
+					<div class="col-md-12">
+						<div class="box box-primary">
+							<div class="box-header">	
+								<h2 class="title-box">Conteggi Fornitori</h2>
+							</div>
+							<div class="box-body">	
+								<div class="col-md-12">
+									<div class="row">
+										<div class="col-md-12 select-boxes">
+											<div class="row riga-filtro box-filtro-periodo"> <!-- row fornitori -->
+												<div class="col-md-2  titolo-filtro">
+													<i class="fa fa-users"></i> Fornitore
+												</div>
+												<div class="col-md-10">
+													<select class="fornitore-select" id="fornitore-select" name="fornitori-select">
+														<option value="" data-codice="">Seleziona un fornitore...</option>
+														<option value="all" data-codice="">Tutti i fornitori</option>
+														{% for fornitore in fornitori %}
+															<option value="{{fornitore.id}}" data-codice="{{fornitore.id}}">{{fornitore.nome}}{% if fornitore.media is not empty %} - {{fornitore.media}}{% endif %}</option>
+														{% endfor %}
+													</select>
+												</div>
+											</div>  <!-- row fornitori -->
+											<div class="row riga-filtro box-filtro-periodo" id="select-box-affiliati" style="display: none;">
+												<div class="col-md-2 titolo-filtro">
+													<i class="fa fa-address-book"></i> Affiliato
+												</div>
+												<div class="col-md-10">
+													<select class="affiliato-select" name="affiliatoCampagna" id="affiliatoCampagna">
+														<option value="">Seleziona prima un fornitore...</option>
+													</select>
+												</div>
+											</div>
+											
+											<div class="row riga-filtro box-filtro-periodo" id="select-box-landingslug" style="display: none;">
+												<div class="col-md-2 titolo-filtro">
+													<i class="fa fa-window-maximize"></i> Campagna
+												</div>
+												<div class="col-md-10">
+													<select class="fornitoreCampagna-select" name="fornitoreCampagna" id="fornitoreCampagna">
+														<option value="">Seleziona una campagna...</option>
+														<option value="all">Tutte le campagne</option>
+														{% for landing in landingClienti %}
+															<option 
+															data-dominio="{{landing.dbCliente}}" 
+															data-tabmail="{{landing.mailCliente}}" 
+															data-campagna_id="{{landing.campagna.id}}" 
+															value="{{landing.id}}">{{landing.campagna.nomeOfferta}} - {{landing.cliente.name}} -  Landing: {{landing.landing.slugLanding}}</option>
+														{% endfor %}
+													</select>
+												</div>
+											</div>
+											<div class="row riga-filtro box-filtro-periodo">
+												<div class="col-md-2 titolo-filtro">
+													<i class="fa fa-calendar" aria-hidden="true"></i>
+													Seleziona un periodo
+												</div>
+												<div class="col-md-10">
+													<div class="row">
+														<div class="col-md-6">
+															{{datepicker.mesi | raw}}
+														</div>
+														<div class="col-md-6">
+															{{datepicker.anni | raw}}
+														</div>
+													</div>
+												</div>
+											</div>
+										</div>
+									</div>
+									<div class="row">
+									<!--
+										<div class="col-md-12 select-boxes-btn">
+											<div class="row">
+												<div class="col-md-2">
+													<input type="checkbox" name="esclusioni" onclick="toggleEsclusioni()" id="esclusioni" value="1" /> Esclusioni
+												</div>
+												<div class="col-md-10">
+													<div class="row box-esclusioni" style="display: none;">
+														<div class="col-md-12">
+															<div class="control-form">
+																<textarea class="form-control" id="esclusioniString">Inserisci i codici delle lead da escludere divisi da una virgola.</textarea>
+															</div>
+														</div>
+													</div>
+												</div>
+												</div>
+											</div>
+										</div>
+									<div class="row">
+									<div class="col-md-6 select-boxes-btn">
+											<input type="checkbox" name="nospam" id="nospam" value="1" /> Non contare i test
+										</div>
+									-->
+										<div class="col-md-6 select-boxes-btn">
+											<button id="trace-btn-action" onclick="conteggiaFornitore()" class="btn btn-primary"><i class="fa fa-calculator" aria-hidden="true"></i> Conteggia</button>
+										</div>
+									</div>
+								</div>
+							</div>
+
+							</div>
+						</div>
+						
+					</div>
+				</div>
+				<div class="row">	
+					<div class="col-md-12">
+						<div class="box-header">	
+								<div class="row">
+									<div class="col-md-12 title-underbox">
+										<div class="start-title"><strong><i class="fa fa-search"></i> Seleziona una campagna per visualizzare i risultati</strong></div>
+									</div>
+								</div>
+						</div>
+						<!-- left col-->
+					</div>
+				</div><!-- row -->
+				<div class="loader" style="display:none;"></div>
+				<div class="tabellaRisultati"></div>
+	
+
+	<script src="https://cdnjs.cloudflare.com/ajax/libs/bootstrap-daterangepicker/2.1.27/moment.min.js"></script>
+	<script src="https://cdnjs.cloudflare.com/ajax/libs/bootstrap-daterangepicker/2.1.27/daterangepicker.min.js"></script>
+	<script src="https://cdnjs.cloudflare.com/ajax/libs/datatables/1.10.12/js/jquery.dataTables.min.js"></script>
+	<script src="https://cdnjs.cloudflare.com/ajax/libs/datatables/1.10.12/js/dataTables.bootstrap.min.js"></script>
+	<script src="https://cdn.datatables.net/buttons/1.5.1/js/dataTables.buttons.min.js"></script>
+	<script src="https://cdn.datatables.net/buttons/1.5.1/js/buttons.html5.min.js"     ></script>
+	<script src="https://cdn.datatables.net/buttons/1.5.1/js/buttons.colVis.min.js"     ></script>
+	
+				<!-- finestra modale -->
+				<div class="modal fade" id="confirm">
+				  <div class="modal-dialog" role="document">
+					<div class="modal-content">
+					  <div class="modal-header">
+						<button type="button" class="close" data-dismiss="modal" aria-label="Close">
+						  <span aria-hidden="true">&times;</span>
+						</button>
+						<h3 class="modal-title"><i class="fa fa-info-circle" aria-hidden="true"></i> Informazioni media: <span class="media_cc-modal"></span></h3>
+						<h5 class="modal-title">Concorso di riferimento: <span class="concorso_cc-modal"></span></h5>
+					  </div>
+					  <div class="modal-body">
+					  </div>
+					  <div class="modal-footer">
+						<button type="button" class="btn btn-secondary" data-dismiss="modal">Ok</button>
+					  </div>
+					</div>
+				  </div>
+				</div>
+			
+			<div class="backinblack" style="display:none"></div>
+			
+			<div class="storni-all">
+			</div>
+			
+			</div> <!-- row -->
+		</section> <!-- row -->
+	</div> <!-- row -->
+	<script>
+		var $chkboxes = $('.chkbox');
+		var lastChecked = null;
+		var loader = $('.loader');
+		var traduzione_tabella = {
+								search: "<strong>Cerca in tutte le colonne</strong>",
+								paginate: {
+											first:      "Prima",
+											previous:   "Predecente",
+											next:       "Successiva",
+											last:       "Ultima"
+										},
+								lengthMenu: "<strong>Risultati per pagina</strong> _MENU_",
+								info: "Pagina _PAGE_ di _PAGES_",
+								emptyTable: "Nessun dato trovato o ordine non configurato",
+							};
+	var buttonCommon = {
+						exportOptions: {
+							
+							format: {
+								body: function ( data, row, column, node ) {
+									// stampo solo le colonne da 0 a 11 e pulisco il testo
+										if(column === 3 || column === 5){
+											var new_txt = data.replace(/\r?\n|\r/g, "");
+											new_txt = new_txt.replace(/<([^>]+?)([^>]*?)>(.*?)<\/\1>/igs, "");
+											return new_txt;
+										}else{
+											return data;
+										}
+								}
+							},
+							columns: [ 0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11 ]	
+						}
+					  };
+		var tabella_opzioni = {
+								retrieve: true,
+								fixedHeader: {
+									header: false,
+									footer: true
+								},
+							"order"			: [[ 0, "desc" ]],
+							"pageLength"	: 50,
+							"order": [],
+							"columnDefs": [ {
+											"targets"  : 'no-sort',
+											"orderable": false,
+											}],
+							scrollY:        "350px",
+							scrollX:        true,
+							scrollCollapse: true,
+							paging:         true,
+							"scrollX": true,
+							//fixedHeader: true,
+							 "lengthMenu": [[10, 25, 50, -1], [10, 25, 50, "All"]],
+							dom:
+									"<'row'<'col-sm-12'<'box box-primary'<'box-body'<'col-md-6'B><'col-md-6'f>>>>>" +
+									"<'row'<'col-sm-12'tr>>" +
+									"<'row'<'col-sm-12 totale_conteggi'>>" +
+									"<'row'<'col-sm-6'i><'col-sm-6'l>>"+
+									"<'row'<'col-sm-12 text-center'p>>",
+							buttons: [ 
+									$.extend( true, {}, buttonCommon, {
+											extend: 'csv', 
+											text: '<i class="fa fa-download"></i>  Esporta in CSV' 
+										} ),
+									],
+							language: traduzione_tabella,
+						}
+						
+	$(document).ready(function(){
+		
+		
+		
+		$('#fornitore-select').on('change', function(){
+		
+			$('#select-box-affiliati').slideUp();
+			$('.affiliato-select').html('<option value="">Seleziona un fornitore</option>');
+											
+			var getaffiliati	= '{{admin.generateUrl('getAffilitatiFornitore')}}'; 
+			var getLandCampUrl 	= '{{admin.generateUrl('getCampagneByFornitore')}}'; 
+			var id_fornitore 	= $('#fornitore-select option:selected').val();
+			
+			if(id_fornitore!=''){
+				
+				$.ajax({url: getaffiliati,
+						data: { id_fornitore : id_fornitore},
+						success: function(affiliati_op){
+						
+							if(affiliati_op.trim()!=''){ // mostro la select degli affiliati
+								
+								// nascondo la select delle campagne se visibile
+								if($('#select-box-landingslug').is(':visible')){
+									$('#select-box-landingslug').slideUp();
+								}
+								
+								//mostro la select degli affiliati
+								$('#affiliatoCampagna').html(affiliati_op);
+								$('#affiliatoCampagna').select2();
+								$('#select-box-affiliati').slideDown();
+											
+							}else{
+								// mostro le campagne
+								$.ajax({
+										url: getLandCampUrl,
+										data: { id_fornitore : id_fornitore},
+										success: function(result){
+											$('#fornitoreCampagna').html(result);
+											$('#fornitoreCampagna').select2();
+											$('#select-box-landingslug').slideDown();
+											
+										},
+										 complete: function(){}
+								});
+
+							}
+						},
+						 complete: function(){
+							
+						}
+				});
+			}else{
+				if($('#select-box-landingslug').is(':visible')){
+					$('#select-box-landingslug').slideUp();
+				}
+			}
+		});
+		
+		$('.affiliato-select').on('change', 
+					function(){
+							var getLandCampUrl 	= '{{admin.generateUrl('getCampagneByFornitoreAndAffiliato')}}'; 
+							var id_fornitore 	= $('#fornitore-select option:selected').val();
+							var id_affiliato 	= $('.affiliato-select option:selected').val();
+							
+							if(id_fornitore!=''){
+							
+							$.ajax({url: getLandCampUrl,
+										data: { 
+												id_fornitore : id_fornitore,
+												id_affiliato : id_affiliato,
+												
+												},
+										success: function(result){
+											$('#fornitoreCampagna').html(result);
+											$('#fornitoreCampagna').select2();
+											$('#select-box-landingslug').slideDown();
+											
+										},
+										 complete: function(){
+											
+										}
+								});
+							}else{
+								if($('#select-box-landingslug').is(':visible')){
+									$('#select-box-landingslug').slideUp();
+								}
+							}
+						}
+		);
+		
+	});
+	
+	function conteggiaFornitore(){
+		loader.fadeIn('fast');
+		$('#trace-btn-action').prop('disabled', true);
+		$('.storni-all').html('');
+		var id_fornitore 			= $('#fornitore-select option:selected').val();
+		var id_landing_cliente		= $('#fornitoreCampagna option:selected').val();
+		var id_affiliato 			= '';
+		
+		if($('#select-box-affiliati').is(':visible')){
+			id_affiliato 	= $('.affiliato-select option:selected').val();
+			if(id_affiliato==''){
+				loader.fadeOut('fast');
+				return false;
+			}
+		}
+		
+		var campagna_id 			= $('#fornitoreCampagna option:selected').attr('data-campagna_id');
+		var mese 					= $('#mese option:selected').val();
+		var nomemese 				= $('#mese option:selected').text();
+		var anno 					= $('#anno option:selected').val(); 
+		
+		if(id_fornitore=='' || id_landing_cliente==''){
+			loader.fadeOut('fast');
+			$('#trace-btn-action').prop('disabled', false);
+			return false;
+		}
+		
+		
+		var cnt_cli_url = '{{admin.generateUrl('conteggiaFornitore')}}'; 
+		
+		$('.start-title').html('<i class="fa fa-search"></i>  Conteggi per la campagna <strong>' + $('#fornitoreCampagna option:selected').text() + '</strong> per il periodo <strong>'+ nomemese +' '+ anno +'</strong>');
+		
+		$.ajax({url: cnt_cli_url,
+				data: { 
+						id_fornitore 			: id_fornitore,
+						id_affiliato 			: id_affiliato,
+						id_landing_cliente 		: id_landing_cliente,
+						campagna_id 			: campagna_id,
+						mese 					: mese,
+						anno 					: anno,
+
+						},
+				success: function(calcolo){
+					console.log(calcolo);
+						$('.tabellaRisultati').html(calcolo.html);
+						$('#listatoConteggi').append(calcolo.footer);
+						$('#listatoConteggi').DataTable(tabella_opzioni);
+
+							
+							},
+							 complete: function(){
+								loader.fadeOut('fast');
+								$('#trace-btn-action').prop('disabled', false);
+							}
+					});
+	}
+	// storni
+	function getStornoFornitoriTable(id_ordine,id_payout, id_landing_cliente,media,falsemedia, refid, mese,anno,data_min,data_max,campo,valore_campo,nospam,indice){
+		loader.fadeIn('fast');		
+		var gettab_url = '{{admin.generateUrl('getStornoFornitoriTable')}}';
+
+		
+		if($('.storni-box-'+indice).length){
+			showTableStorni();
+		}else{
+		
+			$.ajax({url: gettab_url,
+				data: { 
+						id_landing_cliente	: id_landing_cliente,
+						media 				: media,
+						falsemedia 			: falsemedia,
+						refid 				: refid,
+						mese 				: mese,
+						anno 				: anno,
+						data_min 			: data_min,
+						data_max 			: data_max,
+						campo 				: campo,
+						valore_campo 		: valore_campo,
+						indice				: indice,
+						id_ordine			: id_ordine,
+						id_payout			: id_payout,
+					 },
+				success: function(result){
+					console.log('debug',result);
+					
+					if(result.table){
+						var base_html = getBaseHtmlStorniAll(indice);
+						$('.storni-all').html(base_html);
+						$('.storni-box-table-' + indice).html(result.table);
+						$('.storni-box-table-' + indice).attr('data-indice',indice);
+						$('.storni-box-actions-'+ indice).html(result.footer_box);
+						showTableStorni();
+						$('#table_storni_box-' + indice).DataTable(tabella_opzioni);
+						// ABILITO IL CLICK SU SINGOLA RIGA
+						$('#table_storni_box-' + indice + ' tbody').on('click', 'tr', function () {
+							var indc = $(this).attr('data-indice');
+							var checkBoxes = $('#chkbox-' + indc);
+							checkBoxes.prop("checked", !checkBoxes.prop("checked"));
+						} );
+					}
+				},
+				complete: function(){
+					
+				},
+			});
+		} // fine else
+	
+	}
+	
+	function getBaseHtmlStorniAll(indice){
+		var html = '<div class="storni-box storni-box-'+indice+'" style="display:none">' +
+				'<div class="row">'+
+					'<div class="col-md-12">'+
+						'<div class="storni-box-table-'+indice+'"></div>'+
+					'</div>'+
+					'<div class="col-md-12">'+
+						'<div class="storni-box-actions-'+ indice + '"></div>'+
+					'</div>'+
+				'</div>'+
+				'</div>';
+		
+		return html;
+	}
+
+	function showTableStorni(){
+		$('.backinblack').fadeIn('fast');
+		$('.storni-box').fadeIn('fast');
+		var $chkboxes = $('.chkbox');
+		var lastChecked = null;
+	
+			$(document).ready(function(){
+				$chkboxes.click(function(e) {
+					if(!lastChecked) {
+						lastChecked = this;
+						return;
+					}
+
+					if(e.shiftKey) {
+						var start = $chkboxes.index(this);
+						var end = $chkboxes.index(lastChecked);
+						$chkboxes.slice(Math.min(start,end), Math.max(start,end)+ 1).prop("checked", lastChecked.checked);
+
+					}
+					lastChecked = this;
+				});
+			});
+		loader.fadeOut('fast');
+	}
+	
+	function closeTableStorni(){
+		$('.backinblack').fadeOut('fast');
+		$('.storni-box').fadeOut('fast');
+	}
+	
+	function updateTableAfterStorni(indice){
+		
+		// prelevo il totale base senza modifiche storni e manuali
+		var lead_totali 	  = $('#riga-' + indice).attr('data-totali-lead-base');
+		var lead_da_sottrarre = 0;
+		var arr_codes  = [];
+		var data_codes = '';
+		
+		var id_ordine  = '';
+		var id_payout  = '';
+		var target 	   = '1'; // storno per fornitore
+		
+		var table = $('#table_storni_box-'+ indice).DataTable();
+		table.column(0).nodes().to$().each(function(index) {  
+				if ($(this).find('.chkbox').prop('checked')){
+					//lead_totali++;
+				}else{
+					var code = $(this).find('.chkbox').val();
+					arr_codes.push(code);
+					lead_da_sottrarre++;
+				}
+			}); 
+			
+		lead_totali = parseInt(lead_totali)-parseInt(lead_da_sottrarre);
+
+		var tetto_trash 	= $('#tetto_trash-' 	 + indice).attr('data-val');
+		var budget			= $('#budget-' 			 + indice).attr('data-val');
+		var valore_payout   = $('#valore_payout-'	 + indice).attr('data-val');
+		var id_ordine   	= $('#table_storni_box-' + indice).attr('data-ordine');
+		var id_payout   	= $('#table_storni_box-' + indice).attr('data-payout');
+		var mese			= $('#table_storni_box-' + indice).attr('data-mese');
+		var anno			= $('#table_storni_box-' + indice).attr('data-anno');
+		
+		// array valori codes 
+		if(arr_codes.length){
+			data_codes = JSON.stringify(arr_codes);
+		}
+		
+		var upstorni_url = '{{admin.generateUrl('updateTableAfterStorni')}}';
+		$.ajax({url: upstorni_url,
+				data: { 
+						lead_totali   : lead_totali,
+						tetto_trash   : tetto_trash,
+				        budget		  : budget,
+				        valore_payout : valore_payout,
+						codes		  : data_codes,
+				        target		  : target,
+						id_ordine	  : id_ordine,
+				        id_payout	  : id_payout,
+				        mese		  : mese,
+				        anno		  : anno,
+					 },
+				success: function(results){
+						updateTableRow(indice, lead_totali, results.lead_trash, results.tetto_trash, results.perc_lead_trash_rouded, results.lead_nette, results.delta_budget,results.totale);
+						updateTableTotalRow();
+						closeTableStorni();
+
+				},
+			complete: function(){
+					
+				},
+		});
+	}
+	function updateTableRow(indice, lead_totali, lead_trash, tetto_trash, perc_lead_trash_rouded, lead_nette, delta_budget,totale){
+	
+		var html_btn	 	= generateAddLeadBtn(indice,'');
+		var html_btn_trash 	= generateAddLeadBtn(indice,'Trash');
+		var html_lead_lorde = lead_totali +  html_btn;
+		var html_lead_trash = lead_trash  +  html_btn_trash;
+			
+		$('#lead_totali-' 		+ indice).attr('data-val', lead_totali)				.html(html_lead_lorde);
+		$('#lead_trash-' 		+ indice).attr('data-val', lead_trash)				.html(html_lead_trash);
+		$('#perc_lead_trash-' 	+ indice).attr('data-val', perc_lead_trash_rouded)	.text(perc_lead_trash_rouded + '%');
+		$('#lead_nette-' 		+ indice).attr('data-val', lead_nette)				.text(lead_nette); 
+		$('#delta_budget-' 		+ indice).attr('data-val', delta_budget)				.text(delta_budget);
+		$('#totale-' 			+ indice).attr('data-val', totale)					.text(totale + '€');
+	}
+	
+	function updateTableTotalRow(){
+		// setto a 0 i contatori
+		var _grand_totale_lead_totali 	= 0;
+	    var _grand_totale_lead_trash	= 0;
+	    var _grand_totale_lead_nette  	= 0;
+	    var _grand_totale_delta_budget	= 0;
+	    var _grand_totale_totale		= 0;
+	
+		// prelevo gli oggetti riga totali attuali
+		var grand_totale_lead_totali 	= $('.dataTables_scrollFootInner .table .fix_foot_totals #grand_totale-lead_totali'); 
+		var grand_totale_lead_trash	 	= $('.dataTables_scrollFootInner .table .fix_foot_totals #grand_totale-lead_trash'); 
+		var grand_totale_lead_nette  	= $('.dataTables_scrollFootInner .table .fix_foot_totals #grand_totale-lead_nette'); 
+		var grand_totale_delta_budget	= $('.dataTables_scrollFootInner .table .fix_foot_totals #grand_totale-delta_budget'); 
+		var grand_totale_totale		 	= $('.dataTables_scrollFootInner .table .fix_foot_totals #grand_totale-totale'); 	
+		
+		var basetable = $('#listatoConteggi').DataTable();
+		
+		basetable.rows().every( function ( rowIdx, tableLoop, rowLoop ) {
+			
+			_grand_totale_lead_totali 	+= (parseFloat($(this.node()).find('#lead_totali-' 	+ rowIdx).attr('data-val'))!='') ? parseFloat($(this.node()).find('#lead_totali-' + rowIdx).attr('data-val')) : 0;
+			_grand_totale_lead_trash	+= (parseFloat($(this.node()).find('#lead_trash-' 	+ rowIdx).attr('data-val'))!='') ? parseFloat($(this.node()).find('#lead_trash-'  + rowIdx).attr('data-val')) : 0;
+			_grand_totale_lead_nette  	+= (parseFloat($(this.node()).find('#lead_nette-' 	+ rowIdx).attr('data-val'))!='') ? parseFloat($(this.node()).find('#lead_nette-'  + rowIdx).attr('data-val')) : 0;
+			_grand_totale_delta_budget	+= (parseFloat($(this.node()).find('#delta_budget-' + rowIdx).attr('data-val'))!='') ? parseFloat($(this.node()).find('#delta_budget-'+ rowIdx).attr('data-val')) : 0;
+			_grand_totale_totale		+= (parseFloat($(this.node()).find('#totale-' 		+ rowIdx).attr('data-val'))!='') ? parseFloat($(this.node()).find('#totale-' 	  + rowIdx).attr('data-val')) : 0;
+
+		});
+		
+		grand_totale_lead_totali  .attr('data-val',_grand_totale_lead_totali  ).text(_grand_totale_lead_totali );
+		grand_totale_lead_trash	  .attr('data-val',_grand_totale_lead_trash	 ).text(_grand_totale_lead_trash);
+		grand_totale_lead_nette   .attr('data-val',_grand_totale_lead_nette   ).text(_grand_totale_lead_nette  );
+		grand_totale_delta_budget .attr('data-val',_grand_totale_delta_budget ).text(_grand_totale_delta_budget);
+		grand_totale_totale		  .attr('data-val',_grand_totale_totale		 ).text(_grand_totale_totale + '€');
+		
+	}
+	
+	function stornaBulk(indice){
+		var valori = $('#list_bulk_' + indice).val().trim();
+		if(valori==''){
+			return false;
+		}
+		valori = valori.replace(/[\n\r]/g, " ");
+		valori = valori.replace(/\t/g, " ");
+		valori = valori.replace(/\s{2,}/g, " ");
+		valori = valori.replace(/[^a-zA-Z0-9, ]/g, "");
+		valori = valori.replace(/[ ]/g,",");
+		$('#list_bulk_' + indice).val(valori);
+		var valori_arr = valori.split(',');
+		var totali_inseriti = valori_arr.length;
+		var totali_checked = 0;
+		if($('.chkbox').length>0){
+			if(totali_inseriti>0){
+				for(var i = 0; i < totali_inseriti; i++){
+					var code = valori_arr[i];
+					
+					var table = $('#table_storni_box-'+ indice).DataTable(tabella_opzioni);
+					
+					table.column(0).nodes().to$().each(function(index) {  
+						var _this = $(this).find('.chkbox');
+						var _this_val = _this.val();
+						if(_this_val==code){
+							_this.prop('checked', false);
+							totali_checked++;
+						}
+					}); 
+				}
+			}
+		}
+		alert('Inseriti: ' + totali_inseriti + ' codici\nStornati: ' + totali_checked);
+	}
+	
+	
+	function addLead(indice,tipo){
+		
+		tipo = tipo || '';
+		var identificatore = 'addLead' + tipo;
+		
+		var lead_totali 	= $('#lead_totali-' + indice).attr('data-val');
+		
+		console.log('addLead - lead_totali',lead_totali);
+		if(tipo =='Trash'){
+			lead_totali		= $('#lead_trash-' + indice).attr('data-val');
+			console.log('addLead - lead_trash',lead_totali);
+		}
+		var input_add_lead 	= '<div id="box-input-' + identificatore + '-'+indice+'">'
+							+ '<input type="number" class="'+ identificatore +'-input" id="'+identificatore+'-input-'+indice+'" value="'+lead_totali+'">' 
+							+ '<i class="fa fa-check-circle confermaAddLead" onclick="confermaAddLead('+indice+',\''+tipo+'\')"></i>'
+							+ '</div>';
+		$('#'+ identificatore +'-box-' + indice + ' .' + identificatore + '-btn').fadeOut('fast',function(){
+			if($('#box-input-' + identificatore + '-'+indice).length==0){
+				$('#'+identificatore +'-box-' + indice).append(input_add_lead);
+			}
+		});
+		
+	}
+	function confermaAddLead(indice, tipo){
+		tipo = tipo || '';
+		
+		var identificatore 		= 'addLead' + tipo;
+		var tipo_target_el		= 'lead_totali';
+		// recupero il valore IMMESSO A MANO
+		
+		var lead_totali 	= $('#' + identificatore + '-input-'+indice).val();
+		
+		// VERIFICO SE IL NUMERO IMMESSO è UN NUMERO
+		if(isNaN(lead_totali)){
+			console.log("IL NUMERO IMMESSO " + lead_totali + " NON E' UN NUMERO",lead_totali);
+			return false;
+		}
+		
+		// recupero i valori originali dei totali delle lead, verranno aggiunti solo la prima volta
+		var base_lead_totali = $('#lead_totali-' 	+ indice).attr('data-val'); // base delle lead se sto modificando il lordo
+		var base_lead_trash  = $('#lead_trash-' 	+ indice).attr('data-val'); // base delle lead se sto modificando il lordo
+		
+		console.log('confermaAddLead - base_lead_totali',base_lead_totali);
+		console.log('confermaAddLead - base_lead_trash',base_lead_trash);
+		
+
+		
+		// genero il bottone per modificare nuovamente il dato
+		var html_btn = generateAddLeadBtn(indice,tipo);
+		var html_icon = generateIconAddedLead(base_lead_totali);
+		var lead_totali_btn = html_icon + lead_totali + html_btn;
+		
+		var _base_lead_totali 	= base_lead_totali;	 
+		
+		console.log("lead_inserite: " , lead_totali);
+		console.log("lead_base: " , base_lead_totali);
+		
+		
+		if(tipo =='Trash'){
+			if(parseInt(lead_totali)>parseInt(base_lead_totali)){
+				//alert('Valore lead trash maggiore delle lead nette!');
+				return false;
+			}
+			tipo_target_el		= 'lead_trash'; 
+			_base_lead_totali 	= base_lead_trash;
+		}
+		
+
+		// VERIFICO SE IL NUMERO IMMESSO è UGUALE AL PRECEDENTE
+		if(_base_lead_totali==lead_totali){
+			hideInputAddLead(indice,tipo);
+			console.log('IL NUMERO IMMESSO è UGUALE AL PRECEDENTE',_base_lead_totali,lead_totali);
+			return false;
+		}
+	
+		
+		// aggiorno l'elemento con il valore immesso: tipo_target_el restituisce addLead o addLadTrash a seconda del tipo
+		console.log('lead_totali', lead_totali);
+		console.log('elemento', '#'+tipo_target_el+'-' + indice);
+		
+		$('#'+tipo_target_el+'-' + indice).attr('data-val', lead_totali);
+		$('#'+tipo_target_el+'-' + indice).html(lead_totali_btn);
+		
+		hideInputAddLead(indice,tipo); // nascondo l'input generato
+		updateTableAfterAddLead(indice, base_lead_totali, base_lead_trash, lead_totali, tipo);
+		// aggiorno i totali della tabella
+		updateTableTotalRow();
+	}
+	
+	function generateAddLeadBtn(indice, tipo){
+		tipo = tipo || '';
+		var identificatore = 'addLead' + tipo;
+		var html_btn = '<div class="'+identificatore+'-box addL-box" id="'+identificatore+'-box-'+indice+'">'
+							+'<i class="fa fa-plus-circle '+identificatore+'-btn" aria-hidden="true" onclick="addLead(\''+indice + '\',\''+tipo+'\')"></i>'
+					   +'</div>';
+		
+		
+		return html_btn;
+	}
+	function hideInputAddLead(indice,tipo){
+		tipo = tipo || '';
+		var identificatore = 'addLead' + tipo;
+		$('#box-input-'+identificatore+'-'+indice).fadeOut().remove();
+		$('#' + identificatore + '-box-' + indice + ' .'+ identificatore +'-btn').fadeIn();
+	}
+	
+	function generateIconAddedLead(valore){
+		var html_icon = '<div class="tooltip-addedLead tooltipl text-center"><i class="fa fa-link" aria-hidden="true"></i><span class="tooltipltext">'+ valore +'</span></div>';
+		return html_icon;
+	}
+	
+	function updateTableAfterAddLead(indice, base_lead_totali, base_lead_trash, lead_totali_modificate, tipo){
+		
+		tipo = tipo || '';
+		
+		var id_ordine 	= '';
+		var id_payout 	= '';
+		var target 		= '1'; // add Lead per fornitore
+		
+
+		// VALORI BASE PER I CALCOLI
+		var tetto_trash 	= $('#tetto_trash-' 	 + indice).attr('data-val');
+		var budget			= $('#budget-' 			 + indice).attr('data-val');
+		var valore_payout   = $('#valore_payout-'	 + indice).attr('data-val');
+		var id_ordine   	= $('#riga-' + indice).attr('data-ordineid');
+		var id_payout   	= $('#riga-' + indice).attr('data-payoutid');
+		var mese			= $('#riga-' + indice).attr('data-mese');
+		var anno			= $('#riga-' + indice).attr('data-anno');
+		
+
+		var upstorni_url = '{{admin.generateUrl('updateTableAfterLeadAdd')}}';
+		$.ajax({url: upstorni_url,
+				data: { 
+						base_lead_totali   		: base_lead_totali,
+						base_lead_trash    		: base_lead_trash,
+						lead_totali_modificate  : lead_totali_modificate,
+						tetto_trash   			: tetto_trash,
+						tipo    	  			: tipo,
+				        budget		  			: budget,
+				        valore_payout 			: valore_payout,
+				        target		  			: target,
+						id_ordine	  			: id_ordine,
+				        id_payout	  			: id_payout,
+				        mese		  			: mese,
+				        anno		  			: anno,
+					 },
+				success: function(results){
+						
+						var html_btn_trash 	= generateAddLeadBtn(indice,'Trash');
+						var html_icon_trash	= generateIconAddedLead(base_lead_trash);
+						
+						// AGGIORNO LE RIGHE DELLA TABELLA
+						
+						if(tipo!='Trash'){
+							$('#lead_trash-' 		+ indice).attr('data-val', results.lead_trash).html(html_icon_trash + results.lead_trash + html_btn_trash);
+						}
+						$('#perc_lead_trash-' 	+ indice).attr('data-val', results.perc_lead_trash_rouded)	.text(results.perc_lead_trash_rouded + '%');
+						$('#lead_nette-' 		+ indice).attr('data-val', results.lead_nette)				.text(results.lead_nette); 
+						$('#delta_budget-' 		+ indice).attr('data-val', results.delta_budget)			.text(results.delta_budget);
+						$('#totale-' 			+ indice).attr('data-val', results.totale)					.text(results.totale + '€');
+						
+						updateTableTotalRow();
+
+				},
+			complete: function(){
+					
+				},
+		});
+	}
+	
+	
+	</script>
+{% endblock %}
+

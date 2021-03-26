@@ -1,0 +1,737 @@
+{#
+
+This file is part of the Sonata package.
+
+(c) Thomas Rabaix <thomas.rabaix@sonata-project.org>
+
+For the full copyright and license information, please view the LICENSE
+file that was distributed with this source code.
+
+#}
+
+{% extends base_template %}
+
+{% block stylesheets %}
+    {{ parent() }}
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/font-awesome/4.6.0/css/font-awesome.min.css">
+    <link href="https://fonts.googleapis.com/css?family=Lobster" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css?family=Oswald:300,400,700" rel="stylesheet">
+    <link rel="stylesheet" href="/bundles/app/css/counter.css">
+{% endblock %}
+
+{% block javascripts %}
+    {{ parent() }}
+    {#  <script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/waypoints/4.0.1/jquery.waypoints.min.js"></script> #}
+    {# <script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/Counter-Up/1.0.0/jquery.counterup.min.js"></script> #}
+    <script type="text/javascript">
+        jQuery(document).ready(function ($) {
+            
+{#        $('.statistic-counter_two, .statistic-counter, .count-number').counterUp({
+        delay: 10,
+                time: 2000
+        });#}
+               // $(".counter_row_check").css("opacity", "100").parent().removeClass("icheckbox_square-blue");
+{#               {{dump(admin.datagrid.filters.campagna)}}#}
+                //var urlParams = new URLSearchParams(window.location.search);
+                //console.log("filter[campagna][value][settore]"+urlParams.get('filter[campagna][value][settore]'));
+
+                $("#filter_type_value").parent().next().find("i.fa-minus-circle").hide();
+                $("#filter_gia_estratte_value").parent().next().find("i.fa-minus-circle").hide();
+                
+                $('#check_today').next('.iCheck-helper').click(function(){
+                    if($('#check_today').is(':checked')){
+                        $(".icheckbox_square-blue").addClass("checked");
+                        $("#check_today_fisso").prop('checked', true);
+                        $("#check_today_mobile").prop('checked', true);
+                        }
+                    else{
+                        $(".icheckbox_square-blue").removeClass("checked");
+                        $("#check_today_fisso").prop('checked', false);
+                        $("#check_today_mobile").prop('checked', false);
+                    }
+                });
+                
+                $('#check_today_mobile').next('.iCheck-helper').click(uncheckTuttitoday);  
+                
+                $('#check_today_fisso').next('.iCheck-helper').click(uncheckTuttitoday); 
+                
+                function uncheckTuttitoday(){
+                    
+                    if($('#check_today').is(':checked')){ 
+                        $("#check_today").prop('checked', false);
+                        $("#check_today").parent(".icheckbox_square-blue").removeClass("checked");
+                    }
+                    
+                }
+               // $("#check_today").parent(".icheckbox_square-blue").on("click",function(){
+                   // $(".icheckbox_square-blue").addClass("checked");
+                    
+//                });
+               
+                var urlSett = "{{ admin.generateUrl('getsettori') }}";
+//                $("#filter_campagna_value_settore").html("<option value='0'>-- Nessuno --</option>");
+                //All'inizio preleviamo i settori da mostrare nel filtro Campagna             
+
+{#                var settoreParam = "{{admin.datagrid.filters.campagna.value['value']['settore']}}";#}
+                var settoreParam = {{admin.datagrid.filters.campagna.value['value']['settore']|json_encode|raw}};
+{#                var settoreParam = getJSonObject("{{admin.datagrid.filters.campagna.value['value']['settore']|json_encode}}");#}
+                getCampagnaOptions(urlSett, "filter_campagna_value_settore", settoreParam);
+                
+                //console.log('settoreParam',settoreParam);
+                
+                if (settoreParam.length != 0){     
+                    $("#select2-chosen-2").text(settoreParam[0]);
+                }
+{#                var settoreParam = getJSonObject("{{admin.datagrid.filters.campagna.value['value']['settore']|json_encode}}");//, urlParams.get('filter[campagna][value][settore]');#}
+                $("#filter_campagna_value_settore").on('change', function(e, rld){ getFilterTCampagnaOptions(rld);});
+                function getFilterTCampagnaOptions(reload=0){
+                        //console.log("reload", reload);
+                        if (reload === 1) var tcampParam = {{admin.datagrid.filters.campagna.value['value']['tipo_campagna']|json_encode|raw}};//, urlParams.get('filter[campagna][value][tipo_campagna]');
+                        else var tcampParam = null;
+                        console.log("tcampParam", tcampParam);
+                             
+                        $("#filter_campagna_value_tipo_campagna").html("");
+                        $("#s2id_filter_campagna_value_tipo_campagna .select2-search-choice").remove();
+                        $("#filter_campagna_value_brand").html("").parent('div').hide();
+                        $("#s2id_filter_campagna_value_brand .select2-search-choice").remove();
+                        $("#filter_campagna_value_B2b_B2c").html("").parent('div').hide();
+                        $("#s2id_filter_campagna_value_B2b_B2c .select2-search-choice").remove();
+                        $("#filter_campagna_value_nome_offerta").html("").parent('div').hide();
+                        $("#s2id_filter_campagna_value_nome_offerta .select2-search-choice").remove();
+                        var url = "{{ admin.generateUrl('gettipocampagna') }}";
+                        var sett = $("#filter_campagna_value_settore").val();
+
+                        getCampagnaOptions(url, "filter_campagna_value_tipo_campagna",tcampParam, {settore: sett});
+                        //getCampagnaOptions(url, "filter_campagna_value_tipo_campagna", {settore: sett});                    
+                        $("#filter_campagna_value_tipo_campagna").parent('div').show();
+                };
+                
+                $("#filter_campagna_value_tipo_campagna").on('change',  function(e, rld){ getFilterBrandOptions(rld);});
+                $("#s2id_filter_campagna_value_tipo_campagna .select2-search-choice-close").on('delete', getFilterBrandOptions);
+                function getFilterBrandOptions(reload=0){
+                        //console.log("reload brand", reload);
+                        if (reload === 1) var tcampParam = {{admin.datagrid.filters.campagna.value['value']['brand']|json_encode|raw}};//, urlParams.get('filter[campagna][value][tipo_campagna]');
+                        else var tcampParam = null;
+
+                        $("#filter_campagna_value_brand").html("");
+                        $("#s2id_filter_campagna_value_brand .select2-search-choice").remove();
+                        $("#filter_campagna_value_B2b_B2c").html("").parent('div').hide();
+                        $("#s2id_filter_campagna_value_B2b_B2c .select2-search-choice").remove();
+                        $("#filter_campagna_value_nome_offerta").html("").parent('div').hide();
+                        $("#s2id_filter_campagna_value_nome_offerta .select2-search-choice").remove();
+                        var url = "{{ admin.generateUrl('getbrand') }}";
+                        getCampagnaOptions(url, "filter_campagna_value_brand", tcampParam, {'settore': $("#filter_campagna_value_settore").val(), 'tipocampagna': $("#filter_campagna_value_tipo_campagna").val()});
+                };
+                $("#filter_campagna_value_brand").on('change',  function(e, rld){ getFilterB2bb2cOptions(rld);});
+                $("#s2id_filter_campagna_value_brand .select2-search-choice-close").on('delete', getFilterB2bb2cOptions);
+                function getFilterB2bb2cOptions(reload=0){
+                        //console.log("reload b2b", reload);
+                        if (reload === 1) var tcampParam = {{admin.datagrid.filters.campagna.value['value']['B2b_B2c']|json_encode|raw}};//, urlParams.get('filter[campagna][value][tipo_campagna]');
+                        else var tcampParam = null;
+
+                        $("#filter_campagna_value_B2b_B2c").html("");
+                        $("#s2id_filter_campagna_value_B2b_B2c .select2-search-choice").remove();
+                        $("#filter_campagna_value_nome_offerta").html("").parent('div').hide();
+                        $("#s2id_filter_campagna_value_nome_offerta .select2-search-choice").remove();
+                        var url = "{{ admin.generateUrl('getb2bb2c') }}";
+                        getCampagnaOptions(url, "filter_campagna_value_B2b_B2c",tcampParam, {'settore': $("#filter_campagna_value_settore").val(), 'tipocampagna': $("#filter_campagna_value_tipo_campagna").val(), 'brand': $("#filter_campagna_value_brand").val()});
+                        $("#filter_campagna_value_B2b_B2c").parent('div').show();
+                };
+                $("#filter_campagna_value_B2b_B2c").on('change',  function(e, rld){ getFilterNomeOffertaOptions(rld);});
+                $("#s2id_filter_campagna_value_B2b_B2c .select2-search-choice-close").on('delete', getFilterNomeOffertaOptions);
+                function getFilterNomeOffertaOptions(reload=0){
+                    
+                        if (reload === 1) var tcampParam = {{admin.datagrid.filters.campagna.value['value']['nome_offerta']|json_encode|raw}};//, urlParams.get('filter[campagna][value][tipo_campagna]');
+                        else var tcampParam = null;
+
+                        $("#filter_campagna_value_nome_offerta").html("");
+                        $("#s2id_filter_campagna_value_nome_offerta .select2-search-choice").remove();
+                        var url = "{{ admin.generateUrl('getnomeofferta') }}";
+                        getCampagnaOptions(url, "filter_campagna_value_nome_offerta",tcampParam, {'settore': $("#filter_campagna_value_settore").val(), 'tipocampagna': $("#filter_campagna_value_tipo_campagna").val(), 'brand': $("#filter_campagna_value_brand").val(), 'b2bb2c': $("#filter_campagna_value_B2b_B2c").val()});
+                        $("#filter_campagna_value_nome_offerta").parent('div').show();
+                };
+                
+                function getCampagnaOptions(url, id, selValue, parameters){
+                    
+                    if ($("#checktutti_"+id).length == 0) {
+                        $("#"+id).parent().append('<div class="box-select-all"><div class="btn-select-all" id="checktutti_'+id+'" onclick="loadAllTags(\''+id+'\')">Seleziona tutti</div>' +
+                                                  '<div class="btn-clear-all" id="pulisci_'+id+'" onclick="clearAllTags(\''+id+'\')">Pulisci</div></div>');
+                    }
+                    
+                    $.ajax({type: "POST",
+                            url: url,
+                            data: parameters,
+                            success: function(result){
+                            console.log("result", result);
+
+                            if (result.length == 0){
+                               $("#" + id).parent('div').hide();
+                            }
+                            else {
+                                for (var i = 0; i < result.length; i++){
+                                    //console.log(i);
+{#                                  console.log(result[i].label);
+                                    console.log("miao",selValue, result[i].value );
+                                    console.log($.inArray(result[i].value, selValue));#}
+                                  var append = "<option value='" + result[i].value +"' ";
+                                  if ((selValue !== null) && (selValue.length>0) && ($.inArray(String(result[i].value), selValue) > -1)) 
+                                      append += "selected = 'selected' ";
+                                  append += ">" + result[i].label + "</option>";
+                                  //console.log(append);
+                                 $("#" + id).append(append);
+                                }
+                                $("#" + id).parent('div').show();
+                            }
+                            
+                            //console.log("selValue",selValue);
+                            if ((selValue != null) && (selValue.length>0)){
+                                
+                                switch(id){
+                                
+                                    case "filter_campagna_value_settore"       :   //if (selValue[0]!='') getFilterTCampagnaOptions(1);
+                                                                                   $("#filter_campagna_value_settore").trigger('change',[1]);
+                                                                                   break;
+                                    case "filter_campagna_value_tipo_campagna" :   //getFilterBrandOptions(1);
+                                                                                   $("#filter_campagna_value_tipo_campagna").trigger('change',[1]);
+                                                                                   break;
+                                    case "filter_campagna_value_brand"         :   //getFilterB2bb2cOptions(1);                            
+                                                                                   $("#filter_campagna_value_brand").trigger('change',[1]);
+                                                                                   break;
+                                    case "filter_campagna_value_B2b_B2c"       :   //getFilterNomeOffertaOptions(1);
+                                                                                   $("#filter_campagna_value_B2b_B2c").trigger('change',[1]);
+                                                                                   break;  
+                                                                
+                                    default: break;
+                                }  
+                                
+                            }            
+                        }
+                            
+                    });
+                }
+
+        function hideCampagnaFilters(){
+
+        /*    $("#filter_campagna_value_tipo_campagna").parent('div').hide();
+            $("#filter_campagna_value_brand").parent('div').hide();
+            $("#filter_campagna_value_B2b_B2c").parent('div').hide();
+            $("#filter_campagna_value_nome_offerta").parent('div').hide();
+        */
+        }
+            
+
+        //$(".go_on_button").on("click", function);
+        
+    }); // document ready
+    
+    $(function() {
+        // Add class 'had-value-on-load' to inputs/selects with values.
+        $(".sonata-filter-form input").add(".sonata-filter-form select").each(function(){
+            if($(this).val()) {
+                $(this).addClass('had-value-on-load');
+            }
+        });
+
+        // REMOVE ALL EMPTY INPUT FROM FILTER FORM (except inputs, which has class 'had-value-on-load')
+        $(".sonata-filter-form").submit(function() {
+            $(".sonata-filter-form input").add(".sonata-filter-form select").each(function(){
+                if(!$(this).val() && !$(this).hasClass('had-value-on-load')) {
+                    $(this).remove()
+                };
+            });
+        });
+    });
+    
+        function goToExport(skip=0){
+                                
+            var export_page = '{{ admin.generateUrl('export', admin.modelmanager.paginationparameters(admin.datagrid, 0) + {'format' : 'csv', 'limit': 'tmp_limit', 'type':'tmp_type','max_lead':'tmp_max','save_url':'1'}) }}';
+            export_page = export_page.replace('tmp_limit', $("#form_Numero_lead_da_estrarre").val());
+            
+            var lead_type = '';
+            var user_choice = getMaxLeadEstraibili();
+            max_lead_estraibili = user_choice.num;
+            lead_type = user_choice.lead_type;
+            //console.log("max_lead_estraibili", max_lead_estraibili);
+            var lead_da_estrarre = $("#form_Numero_lead_da_estrarre").val();
+            
+            if (((lead_da_estrarre <= max_lead_estraibili) && (max_lead_estraibili != 0)) || skip){
+                export_page = export_page.replace('tmp_type', lead_type);
+                export_page = export_page.replace('tmp_max', max_lead_estraibili);
+                export_page = export_page.replace(/&amp;/g, '&');
+                location.href = export_page;
+            } 
+            else {
+                    var url = "{{ admin.generateUrl('warningleads', {'max_lead': 'tmp_lead'})}}";
+                    //console.log("max_lead_estraibili", url);
+                    url = url.replace("tmp_lead", max_lead_estraibili); 
+                    //console.log("max_lead_estraibili", url);
+                   
+                    //Per pulire il contenuto della finestra modale
+                    $("#myModal").on('hidden.bs.modal', function () {
+                        $(this).data('bs.modal', null);
+                    });
+    
+                    $('#myModal').modal({
+                        show: true,
+                        remote: url
+                    });           
+            }
+    
+        }
+        
+        function loadAllTags(id){
+
+                $('#'+id+' option').prop('selected', true);
+                $('#'+id).trigger('change');
+            
+        }
+        
+        function clearAllTags(id){
+
+                $('#'+id+' option').prop('selected', false);
+                $('#'+id).trigger('change');
+            
+        }
+        
+        function getMaxLeadEstraibili(){
+        
+            var max_lead_estraibili = {};
+            if ($('#check_today').length > 0){
+                if ($('#check_today').is(':checked') ||
+                    (($('#check_today_fisso').is(':checked')) &&  $('#check_today_mobile').is(':checked')) ||
+                    (!($('#check_today').is(':checked')) && !($('#check_today_fisso').is(':checked')) &&  !($('#check_today_mobile').is(':checked')))) 
+                        {
+                            max_lead_estraibili.lead_type = 0;
+                           {% if admin.getcounters.oggi.totali is defined %} max_lead_estraibili.num = {{admin.getcounters.oggi.totali}} {% else %} max_lead_estraibili.num = 0 {% endif %};
+                        }
+                else if ($('#check_today_fisso').is(':checked')) {
+                            max_lead_estraibili.lead_type = 1;
+                           {% if admin.getcounters.oggi.fisso is defined %} max_lead_estraibili.num = {{admin.getcounters.oggi.fisso}} {% else %} max_lead_estraibili.num = 0 {% endif %};
+                        }
+                else if ($('#check_today_mobile').is(':checked')) {
+                            max_lead_estraibili.lead_type = 2;
+                           {% if admin.getcounters.oggi.cellulare is defined %} max_lead_estraibili.num = {{admin.getcounters.oggi.cellulare}} {% else %} max_lead_estraibili.num = 0 {% endif %};
+                        }
+            }
+            else  {% if admin.getcounters.totali is defined %} max_lead_estraibili.num = {{admin.getcounters.totali}} {% else %} {max_lead_estraibili.num = 0;max_lead_estraibili.lead_type = 0;} {% endif %}; 
+
+            return max_lead_estraibili;
+        }
+        
+
+    </script>
+{% endblock %}
+
+{%- block actions -%}
+{% include 'SonataAdminBundle:CRUD:action_buttons.html.twig' %}
+{%- endblock -%}
+
+{# {% block tab_menu %}{{ knp_menu_render(admin.sidemenu(action), {'currentClass' : 'active', 'template': sonata_admin.adminPool.getTemplate('tab_menu_template')}, 'twig') }}{% endblock %} #}
+
+{% block list_table %}
+
+    <div class="col-xs-12 col-md-12">
+        <div class="box box-primary">
+            <div class="box-body">
+
+                <section id="counter" class="counter">
+                    <div class="main_counter_area">
+                        <div class="one-overlay p-y-3">
+                            <div class="container">
+                                <div class="row">
+                                    
+{#{{ dump(admin.datagrid.results) }}#}
+{#                {% if data.all_elements %}#}
+{#                    {{ 'message_batch_all_confirmation'|trans({}, 'SonataAdminBundle') }}#}
+{#                {% else %}
+                    {% transchoice data.idx|length with {'%count%': data.idx|length} from 'SonataAdminBundle' %}message_batch_confirmation{% endtranschoice %}
+                {% endif %}#}
+
+
+            
+                                    <div class="main_counter_content text-center white-text wow fadeInUp">
+                                        {% if ((app.request.query.get('filter')['gia_estratte']['value'] is defined) and (app.request.query.get('filter')['gia_estratte']['value']) != '0')%}
+                                            <div class="col-md-4"> 
+                                            </div> 
+                                        {% endif %}
+
+                                        {% if ((app.request.query.get('filter')['gia_estratte']['value'] is defined) and (app.request.query.get('filter')['gia_estratte']['value']) == '0') %}
+
+                                            <div class="col-md-3">
+                                                <div class="today_counter p-y-2 m-t-1">
+                                                    <h3>Anagrafiche disponibili<br />ad oggi</h3>
+                                                    <p class="statistic-counter">{% if admin.getcounters.oggi.totali is defined %}{{admin.getcounters.oggi.totali}}{% else %}0{% endif %}</p>
+                                                    <div class='box-checker'>
+                                                        <p class="label_checkbox_today"><label for="check_today_mobile">Mobile: {% if admin.getcounters.oggi.cellulare is defined %}{{admin.getcounters.oggi.cellulare}}{% else %}0{% endif %}</label>  <input type="checkbox" class="counter_row_check" value="None" id="check_today_mobile" name="check" checked  /> </p>
+                                                        <p class="label_checkbox_today"><label for="check_today_fisso">Fissi:  {% if admin.getcounters.oggi.fisso is defined %}{{admin.getcounters.oggi.fisso}}{% else %}0{% endif %}</label> <input type="checkbox" class="counter_row_check" value="None" id="check_today_fisso" name="check" checked /></p>
+                                                        <p class="label_checkbox_today"><label for="check_today">Seleziona tutti </label><input type="checkbox" id="check_today" checked></p>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                            <div class="col-md-3">
+                                                <div class="single_counter p-y-2 m-t-1">
+                                                  <h3 class="titoli_blocchi">Anagrafiche disponibili tra<br />30gg</h3>
+                                                    <p class="statistic-counter">{% if admin.getcounters.trenta.totali is defined %}+{{admin.getcounters.trenta.totali}}{% else %}0{% endif %}</p>
+                                                    <p class="label_checkbox_today">Mobile: <strong>{% if admin.getcounters.trenta.cellulare is defined %}{{admin.getcounters.trenta.cellulare}}{% else %}0{% endif %}</strong></p>
+                                                    <p class="label_checkbox_today">Fissi:  <strong>{% if admin.getcounters.trenta.fisso is defined %}{{admin.getcounters.trenta.fisso}}{% else %}0{% endif %}</strong></p>
+                                                </div>
+                                            </div>
+                                            <div class="col-md-3">
+                                                <div class="single_counter p-y-2 m-t-1">
+                                                   <h3 class="titoli_blocchi">Anagrafiche disponibili tra<br />60gg</h3>
+                                                    <p class="statistic-counter">{% if admin.getcounters.sessanta.totali is defined %}+{{admin.getcounters.sessanta.totali}}{% else %}0{% endif %}</p>
+                                                    <p class="label_checkbox_today">Mobile: <strong>{% if admin.getcounters.sessanta.cellulare is defined %}{{admin.getcounters.sessanta.cellulare}}{% else %}0{% endif %}</strong></p>
+                                                    <p class="label_checkbox_today">Fissi:  <strong>{% if admin.getcounters.sessanta.fisso is defined %}{{admin.getcounters.sessanta.fisso}}{% else %}0{% endif %}</strong></p>
+                                                </div>
+                                            </div>
+                                        {% endif %}
+                                        <div class="col-md-3">   
+                                            <div class="single_counter p-y-2 m-t-1">
+                                                <h1 class="titoli_blocchi">Anagrafiche trovate</h1>
+                                                <p class="statistic-counter">{% if admin.getcounters.totali is defined %}{{ admin.getcounters.totali }}{% else %}0{% endif %}</p>
+                                                <p class="privacy-counter">{% if admin.getcounters.privacy_not_accepted is defined %} di cui {{ admin.getcounters.privacy_not_accepted }} senza autorizzazione privacy terzi{% endif %}</p>
+                                                <p class="label_checkbox_today">Mobile: <strong>{% if admin.getcounters.cellulare.totali is defined %}{{admin.getcounters.cellulare.totali}}{% else %}0{% endif %}</strong></p>
+                                                <p class="label_checkbox_today">Fissi:  <strong>{% if admin.getcounters.fisso.totali is defined %}{{admin.getcounters.fisso.totali}}{% else %}0{% endif %}</strong></p>                                                
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </section><!-- End of counter Section -->
+
+            </div>
+        </div>
+    </div>
+
+    <div class="col-xs-12 col-md-12">
+        <div class="box box-primary">
+            <div class="box-body">
+				<div class="row">
+					<div class="col-md-6">
+						<div class="row">
+							<div class="col-md-3">
+								<label class="control-label required" for="form_Numero_lead_da_estrarre">Numero di anagrafiche da estrarre</label>
+							</div>
+							<div class="col-md-9">
+								
+								<div class="sonata-ba-field ">
+									<input type="number" id="form_Numero_lead_da_estrarre" name="form[Numero_lead_da_estrarre]" required="required" class="form-control">
+								</div>
+							</div>
+						</div>
+					</div>
+					<div class="col-md-6">
+					{% if ((app.request.query.get('filter')['gia_estratte']['value'] is defined) and
+						   (app.request.query.get('filter')['gia_estratte']['value'] == '0') and
+						   (app.request.query.get('filter')['type']['value'] is defined) and
+						   (app.request.query.get('filter')['type']['value'] == 'ven'))
+					
+					%}
+						<div class="row">
+							<div class="btn-group col-md-12 text-center">
+								<button type="button" id="calcola_button" class="btn btn-default" onclick="computeDates()">Calcola il range di date per le anagrafiche selezionate</button>
+								<script>
+									function computeDates() {
+										var num_lead = $("#form_Numero_lead_da_estrarre").val();
+										$("#form_Numero_lead_da_estrarre_daterange").html("");
+                                                                                var max_lead = getMaxLeadEstraibili();
+                                                                                max_lead = max_lead.num;
+										var url = "{{ admin.generateUrl('getdates', {'limit': 'temp_var','max_lead':'tmp_lead'}) }}";
+										url = url.replace("temp_var", num_lead);
+                                                                                url = url.replace("tmp_lead", max_lead);
+                                                                                url = url.replace(/&amp;/g, '&');
+										$.post(url, function(obj){
+										   //console.log(obj);
+										   //var dateFormat = require('dateformat');
+											$.datepicker.setDefaults($.datepicker.regional['it']);
+                                                                                        if (obj['res']=='ok'){
+                                                                                            var maxDate = obj['max']['data']['date'];
+                                                                                            var minDate = obj['min']['data']['date'];
+                                                                                            var formatted_start = $.datepicker.formatDate("d M yy", new Date(minDate));
+                                                                                            var formatted_end = $.datepicker.formatDate("d M yy", new Date(maxDate));
+                                                                                            $("#form_Numero_lead_da_estrarre_daterange").html("Da " + formatted_end + " a " + formatted_start);
+
+                                                                                        } else {
+                                                                                                $("#form_Numero_lead_da_estrarre_daterange").html('Nessun risultato disponibile');
+                                                                                        }
+										});
+									}
+								</script>
+							</div>
+							<div class="col-md-12 text-center">
+								<div id="form_Numero_lead_da_estrarre_daterange"{% if ((app.request.query.get('filter')['gia_estratte']['value'] is defined) and (app.request.query.get('filter')['gia_estratte']['value']) != '0') %} style = "display:none"> {% else %}>{% endif %}</div>  
+							</div>
+						</div>
+					{% endif %}
+					</div> <!-- chiusura seconda col-md-6 -->
+				</div> <!-- chiusura row -->
+                {% if admin.hasRoute('export') and admin.isGranted('EXPORT') and admin.getExportFormats()|length %}
+				<div class="row top-buffer">
+					<div class="col-md-12 text-center">
+						<button type="button" class="btn btn-primary go_on_button" onclick="goToExport()"><i class="fa fa-filter" aria-hidden="true"></i>Prosegui con l'estrazione</button>
+					</div>
+				</div>
+				{% endif %}
+			</div> <!-- chiusura body-box -->
+				<!-- <input type="hidden" id="form__token" name="form[_token]" class=" form-control" value="tc7EukAWxUV76EfPzd4yLXNM-JqYmCB8sUi6gpID0VI"> -->
+		</div>  <!-- chiusura box-primary -->
+		<!-- finestra modale asincrona -->
+		<div class="modal fade" id="myModal" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
+			<div class="modal-dialog"><div class="modal-content"></div></div>
+		</div>
+		<!-- fine finestra modale -->
+	</div>  <!-- chiusura col -->
+    {#<div class="col-xs-12 col-md-12" {% if ((app.request.query.get('filter')['gia_estratte']['value'] is defined) and (app.request.query.get('filter')['gia_estratte']['value']) == '0') %} style="display:none" {% endif %}>#}
+    <div class="col-xs-12 col-md-12" style="display:none">
+        {% set batchactions = admin.batchactions %}
+        {% if admin.hasRoute('batch') and batchactions|length %}
+            <form action="{{ admin.generateUrl('batch', {'filter': admin.filterParameters}) }}" method="POST" >
+                <input type="hidden" name="_sonata_csrf_token" value="{{ csrf_token }}">
+            {% endif %}
+
+            {# Add a margin if no pager to prevent dropdown cropping on window #}
+            <div class="box box-primary" {% if admin.datagrid.pager.lastPage == 1 %}style="margin-bottom: 100px;"{% endif %}>
+                <div class="box-body {% if admin.datagrid.results|length > 0 %}table-responsive no-padding{% endif %}">
+                    {{ sonata_block_render_event('sonata.admin.list.table.top', { 'admin': admin }) }}
+
+                {% block list_header %}{% endblock %}
+
+                {% if admin.datagrid.results|length > 0 %}
+                    <table class="table table-bordered table-striped sonata-ba-list">
+                        {% block table_header %}
+                            <thead>
+                                
+                                <tr class="sonata-ba-list-field-header">
+                                    {% for field_description in admin.list.elements %}
+                                        {% if admin.hasRoute('batch') and field_description.getOption('code') == '_batch' and batchactions|length > 0 %}
+                                            <th class="sonata-ba-list-field-header sonata-ba-list-field-header-batch">
+                                                <input type="checkbox" id="list_batch_checkbox">
+                                            </th>
+                                        {% elseif field_description.getOption('code') == '_select' %}
+                                            <th class="sonata-ba-list-field-header sonata-ba-list-field-header-select"></th>
+                                            {% elseif field_description.name == '_action' and app.request.isXmlHttpRequest %}
+                                                {# Action buttons disabled in ajax view! #}
+                                            {% elseif field_description.getOption('ajax_hidden') == true and app.request.isXmlHttpRequest %}
+                                                {# Disable fields with 'ajax_hidden' option set to true #}
+                                            {% else %}
+                                                {% set sortable = false %}
+                                                {% if field_description.options.sortable is defined and field_description.options.sortable %}
+                                                    {% set sortable             = true %}
+                                                    {% set sort_parameters      = admin.modelmanager.sortparameters(field_description, admin.datagrid) %}
+                                                    {% set current              = admin.datagrid.values._sort_by == field_description or admin.datagrid.values._sort_by.fieldName == sort_parameters.filter._sort_by %}
+                                                    {% set sort_active_class    = current ? 'sonata-ba-list-field-order-active' : '' %}
+                                                    {% set sort_by              = current ? admin.datagrid.values._sort_order : field_description.options._sort_order %}
+                                                {% endif %}
+
+                                            {% spaceless %}
+                                                <th class="sonata-ba-list-field-header-{{ field_description.type}} {% if sortable %} sonata-ba-list-field-header-order-{{ sort_by|lower }} {{ sort_active_class }}{% endif %}{% if field_description.options.header_class is defined %} {{ field_description.options.header_class }}{% endif %}"{% if field_description.options.header_style is defined %} style="{{ field_description.options.header_style }}"{% endif %}>
+                                                    {% if sortable %}<a href="{{ admin.generateUrl('list', sort_parameters) }}">{% endif %}
+                                                        {{ field_description.label|trans({}, field_description.translationDomain) }}
+                                                        {% if sortable %}</a>{% endif %}
+                                                </th>
+                                            {% endspaceless %}
+                                        {% endif %}
+                                    {% endfor %}
+                                </tr>
+                            </thead>
+                        {% endblock %}
+
+                        {% block table_body %}
+                            <tbody>
+                                {% include admin.getTemplate('outer_list_rows_' ~ admin.getListMode()) %}
+                            </tbody>
+                        {% endblock %}
+
+                        {% block table_footer %}
+                        {% endblock %}
+                    </table>
+                {% else %}
+                    {% block no_result_content %}
+                        <div class="info-box">
+                            <span class="info-box-icon bg-aqua"><i class="fa fa-arrow-circle-right" aria-hidden="true"></i></span>
+                            <div class="info-box-content">
+                                <span class="info-box-text">{{ 'no_result'|trans({}, 'SonataAdminBundle') }}</span>
+                                <div class="progress">
+                                    <div class="progress-bar" style="width: 0%"></div>
+                                </div>
+                                <span class="progress-description">
+                                    {% if not app.request.xmlHttpRequest %}
+                                        {% include 'SonataAdminBundle:Button:create_button.html.twig' %}
+                                    {% endif %}
+                                </span>
+                            </div><!-- /.info-box-content -->
+                        </div>
+                    {% endblock %}
+                {% endif %}
+
+                {{ sonata_block_render_event('sonata.admin.list.table.bottom', { 'admin': admin }) }}
+            </div>
+            {% block list_footer %}
+                {% if admin.datagrid.results|length > 0 %}
+                    <div class="box-footer">
+                        <div class="form-inline clearfix">
+                            {% if not app.request.isXmlHttpRequest %}
+                                <div class="pull-left">
+                                    {% if admin.hasRoute('batch') and batchactions|length > 0  %}
+                                        {% block batch %}
+                                            <script>
+                                                {% block batch_javascript %}
+                                                    jQuery(document).ready(function ($) {
+                                                    // Toggle individual checkboxes when the batch checkbox is changed
+                                                    $('#list_batch_checkbox').on('ifChanged change', function () {
+                                                    var checkboxes = $(this)
+                                                            .closest('table')
+                                                            .find('td.sonata-ba-list-field-batch input[type="checkbox"], div.sonata-ba-list-field-batch input[type="checkbox"]')
+                                                            ;
+                                                            if (window.SONATA_CONFIG.USE_ICHECK) {
+                                                    checkboxes.iCheck($(this).is(':checked') ? 'check' : 'uncheck');
+                                                    } else {
+                                                    checkboxes.prop('checked', this.checked);
+                                                    }
+                                                    });
+                                                            // Add a CSS class to rows when they are selected
+                                                            $('td.sonata-ba-list-field-batch input[type="checkbox"], div.sonata-ba-list-field-batch input[type="checkbox"]')
+                                                            .on('ifChanged change', function () {
+                                                            $(this)
+                                                                    .closest('tr, div.sonata-ba-list-field-batch')
+                                                                    .toggleClass('sonata-ba-list-row-selected', $(this).is(':checked'))
+                                                                    ;
+                                                            })
+                                                            .trigger('ifChanged');
+                                                });
+                                                {% endblock %}
+                                            </script>
+                                          
+                                        {% endblock %}
+                                    {% endif %}
+                                </div>
+
+                            {% endif %}
+                        </div>
+
+
+                    </div>
+                {% endif %}
+            {% endblock %}
+        </div>
+
+</div>
+{% endblock %}
+
+{% block list_filters_actions %}
+    {%- if admin.datagrid.filters|length %}
+    <ul class="nav navbar-nav navbar-right">
+
+
+    </ul>
+    {% endif -%}
+        {% endblock %}
+
+            {% block list_filters %}
+                {% if admin.datagrid.filters %}
+{#{{ dump(admin.datagrid.filters) }} #}
+                    {% form_theme form admin.getTemplate('filter') %}
+
+                    <div class="col-xs-12 col-md-12 sonata-filters-box" style="display: {{ admin.datagrid.hasDisplayableFilters ? 'block' : 'none' }}" id="filter-container-{{ admin.uniqid() }}">
+                        <div class="box box-primary" >
+                            <div class="box-body">
+                                <form class="sonata-filter-form form-horizontal {{ admin.isChild and 1 == admin.datagrid.filters|length ? 'hide' : '' }}" action="{{ admin.generateUrl('list') }}" method="GET" role="form">
+                                    {{ form_errors(form) }}
+
+                                    <div class="row">
+                                        <div class="col-sm-10">
+                                            {% set withAdvancedFilter = false %}
+                                            {% for filter in admin.datagrid.filters %}
+                                               
+                                                {% set filterActive = ((filter.isActive() and filter.options['show_filter'] is null) or (filter.options['show_filter'] is same as(true))) and not admin.isDefaultFilter(filter.formName) %}
+                                                {% set filterVisible = filter.options['show_filter'] is same as(true) or filter.options['show_filter'] is null %}
+                                                <div class="form-group {% block sonata_list_filter_group_class %}{% endblock %}" id="filter-{{ admin.uniqid }}-{{ filter.name }}" sonata-filter="{{ filterVisible ? 'true' : 'false' }}" style="display: {% if filterActive %}block{% else %}none{% endif %}">
+
+                                                    {% if filter.label is not same as(false) %}
+                                                        <label for="{{ form.children[filter.formName].children['value'].vars.id }}" class="col-sm-2 control-label">{{ filter.label|trans({}, filter.translationDomain ?: admin.translationDomain) }}</label>
+                                                    {% endif %}
+                                                    {% set attr = form.children[filter.formName].children['type'].vars.attr|default({}) %}
+
+                                                    <div class="col-sm-2 advanced-filter">
+                                                        {{ form_widget(form.children[filter.formName].children['type'], {'attr':  attr}) }}
+                                                    </div>
+
+                                                    <div class="col-sm-7">
+                                                        {{ form_widget(form.children[filter.formName].children['value']) }}
+                                                    </div>
+
+                                                    <div class="col-sm-1">
+                                                        <label class="control-label">
+                                                            <a href="#" class="sonata-toggle-filter sonata-ba-action" filter-target="filter-{{ admin.uniqid }}-{{ filter.name }}" filter-container="filter-container-{{ admin.uniqid() }}">
+                                                                <i class="fa fa-minus-circle" aria-hidden="true"></i>
+                                                            </a>
+                                                        </label>
+                                                    </div>
+                                                </div>
+
+                                                {% if filter.options['advanced_filter'] %}
+                                                    {% set withAdvancedFilter = true %}
+                                                {% endif %}
+                                            {% endfor %}
+                                        </div>
+                                        <div class="col-sm-2 text-center">
+											<input type="hidden" name="filter[_page]" id="filter__page" value="1">
+
+                                            {% set foo = form.children['_page'].setRendered() %}
+                                            {{ form_rest(form) }}
+
+                                            <div class="form-group filtri-grp">
+												{% if withAdvancedFilter %}
+												<div class="filtri_avanzati">
+													<div class="form-group">
+														<a href="#" data-toggle="advanced-filter">
+															<i class="fa fa-cogs" aria-hidden="true"></i>
+															{{ 'Mostra filtri avanzati'|trans({}, 'SonataAdminBundle') }}
+														</a>
+													</div>
+												</div>
+												{% endif %}
+                                                <li class="dropdown sonata-actions">
+                                                    <a href="#" class="dropdown-toggle sonata-ba-action" data-toggle="dropdown">
+                                                        <i class="fa fa-filter" aria-hidden="true"></i>
+                                                        {{ 'Aggiungi filtro'|trans({}, 'SonataAdminBundle') }} <b class="caret"></b>
+                                                    </a>
+                                                    <ul class="dropdown-menu" role="menu">
+                                                        {% for filter in admin.datagrid.filters if (filter.options['show_filter'] is same as(true) or filter.options['show_filter'] is null) %}
+                                                            {% set filterActive = ((filter.isActive() or filter.options['show_filter']) and not admin.isDefaultFilter(filter.formName)) %}
+                                                            <li>
+                                                                <a href="#" class="sonata-toggle-filter sonata-ba-action" filter-target="filter-{{ admin.uniqid }}-{{ filter.name }}" filter-container="filter-container-{{ admin.uniqid() }}">
+                                                                    <i class="fa {{ (filter.isActive() or filter.options['show_filter']) ? 'fa-check-square-o' : 'fa-square-o' }}"></i>{{ filter.label|trans({}, filter.translationDomain ?: admin.translationDomain) }}
+                                                                </a>
+                                                            </li>
+                                                        {% endfor %}
+                                                    </ul>
+												</li>
+											</div>
+										</div>
+									
+										{% for paramKey, paramValue in admin.persistentParameters %}
+											<input type="hidden" name="{{ paramKey }}" value="{{ paramValue }}">
+										{% endfor %}
+                                    
+										<div class="col-md-12 text-center">
+											<div class="form-group">
+
+												<button type="submit" class="btn btn-primary">
+													<i class="fa fa-filter" aria-hidden="true"></i> {{ 'Effettua la ricerca'|trans({}, 'SonataAdminBundle') }}
+												</button>
+
+												<a class="btn btn-default" href="{{ admin.generateUrl('list', {filters: 'reset'}) }}">
+													{{ 'Resetta tutti i filtri'|trans({}, 'SonataAdminBundle') }}
+												</a>
+											</div>
+										</div> 
+								</div>
+                            </form>
+						</div>
+                    </div>
+				</div>
+                {% endif %}
+            {% endblock %}

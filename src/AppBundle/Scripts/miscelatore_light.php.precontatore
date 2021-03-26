@@ -1,0 +1,433 @@
+<?php
+
+
+$lock_file = __DIR__ . '/_miscelatore_light.lock';
+if (file_exists($lock_file )) {
+		die('Spiacente, un\'altra istanza dello Script è in esecuzione...');
+		$errorStr  = date("Y-m-d,H-i-s")." Error: Altra istanza in esecuzione: \n";		
+		$errorStr .= date("Y-m-d,H-i-s")." Exiting";
+		exit();
+		mailError('Attenzione il file miscelata_light non è partito perche è presente un file di lock. elimina manualmente il file di lock.');	
+		}
+$myfile = fopen($lock_file , "w") or die("Unable to create lock file!");
+error_reporting(E_ERROR);
+
+
+//settaggio del file di log
+//Directory corrente
+$curDir = dirname(__FILE__) ;
+$arrPath = explode("/", $curDir) ;
+
+$logfile = fopen($curDir."/log/".date("Ymd")."_miscelatore_light.txt", "a"); //FILE di LOG
+
+fwrite($logfile, date("Y-m-d,H-i-s")."\n\n\n\n/************************************************/ \n");
+fwrite($logfile, date("Y-m-d,H-i-s")."\n Avvio Script per Il miscelatore light di campagna\n\n");
+echo "\n\n /****  Avvio Script per Il miscelatore light di campagna ****/\n\n";
+
+//DBS
+
+
+/*************** 3) CONNESSIONE A DB DESTINAZIONE *****************/
+// Qui impostiamo i parametri di connessione al DB
+$config_file = $curDir."/../../../app/config/parameters.yml"; //file di config di symfony
+$db_config = yaml_parse_file($config_file);
+
+
+//MISCELATA LIGHT SCRIPT
+//connessioni al server
+
+//sintassi dell'array delle tabelle di source e di destinaz array('nometabella'=>'nomedb','nometabella2'=>'nomedb')
+$HotSourceTable=array();//SERIALIZZATO nometabella=>nomedb i db possono essere: concorso(leadout), offertesumisura,esclusivaperte,offertepromozioni,gestione, leadout
+	
+	
+	
+// DATABASE ALTRI
+	
+//esclusiva per te:
+$DBesclusivaperte =  array('host'=>'46.16.95.229', 'db'=>'esclusiv_cpl','username'=>'esclusiv_cplus', 'password'=>'HYpN%Ep!Mhxg', 'nome'=>'NAME','cognome'=>'SURNAME','cellulare'=>'PHONE1');
+$DBoffertesumisura=  array('host'=>'46.16.95.229', 'db'=>'offertes_cpl','username'=>'offertes_ucps', 'password'=>';2mgK6y7sZQg', 'nome'=>'NAME','cognome'=>'SURNAME','cellulare'=>'PHONE1');
+$DBoffertepromozioni=  array('host'=>'46.16.95.34', 'db'=>'offertep_cpl','username'=>'offertep_cpl', 'password'=>'UW[J8ScXWUJC', 'nome'=>'NAME','cognome'=>'SURNAME','cellulare'=>'PHONE1');
+$DBleadout=  array('host'=>'46.16.95.34', 'db'=>'leadoutl_dbb','username'=>'leadoutl_usbd', 'password'=>'A%2)8s!JTkBp','nome'=>'NAME','cognome'=>'SURNAME','cellulare'=>'PHONE1');
+$DBconcorso =  array('host'=>'46.254.38.170', 'db'=>'leadoutcnc_db562','username'=>'leadoutcnc_usrbd', 'password'=>'pB?HzC4GPZQi','nome'=>'nome','cognome'=>'cognome','cellulare'=>'cellulare');
+$DBgestione= array('host'=>$db_config['parameters']['database_host'], 'db'=>$db_config['parameters']['database_name'],'username'=>$db_config['parameters']['database_user'], 'password'=>$db_config['parameters']['database_password'],'nome'=>'nome','cognome'=>'cognome','cellulare'=>'cellulare');
+
+$DbsNameArray=array('gestione', 'concorso', 'offertesumisura', 'esclusivaperte', 'offertepromozioni', 'leadout');
+
+//test connections:
+foreach($DbsNameArray as $DBName) {
+	$dbvarname=${'DB'.$DBName};
+	$mysqli_par = new mysqli($dbvarname['host'],
+                          $dbvarname['username'],
+						  $dbvarname['password'],
+                          $dbvarname['db']);
+	if ($mysqli_par->connect_errno) {
+		echo "Non siamo riusciti a conneterci a: ".$DBName."; \n\n";
+		fwrite($logfile, "Non siamo riusciti a conneterci a: ".$DBName."; \n\n");
+		mailError("Non siamo riusciti a conneterci a: ".$DBName);
+	}else{
+		echo "Siamo riusciti a conneterci a: ".$DBName."; \n\n ";
+		fwrite($logfile, "Siamo riusciti a conneterci a: ".$DBName."; \n\n ");
+	}
+}
+
+
+//recupero row da tabella per ogni row ciclo:
+
+$SelectMiscelata= "select * from miscelate_light where attiva=1";
+//array che conterra tutti gli extrafield label del concorso
+$mysqli_get_misc = new mysqli($DBgestione['host'],
+                          $DBgestione['username'],
+						  $DBgestione['password'],
+                          $DBgestione['db']);
+
+if (!$result = $mysqli_get_misc->query($SelectMiscelata)) {
+	echo "errore recupero miscelate";
+	mailError("abbiamo avuto un errore sul recupero delle miscelate");
+	fwrite($logfile, "errore recupero miscelate");
+	$errorStr  = date("Y-m-d,H-i-s")." Error: Failed to make a MySQL query, here is why: \n";
+	$errorStr .= date("Y-m-d,H-i-s")." Query: " . $SelectMiscelata . "\n";
+	$errorStr .= date("Y-m-d,H-i-s")."Errno: " . $mysqli_get_misc->errno . "\n";
+	$errorStr .= date("Y-m-d,H-i-s")."Error: " . $mysqli_get_misc->error . "\n";
+	fwrite($logfile, $errorStr);
+	esci();
+}else {
+	$countMisc=0;
+	while ($misc = $result->fetch_assoc()){
+		$MiscId=$misc['id'];
+		$NewLeads=array();
+		$HotSources=$misc['hot_sources'];
+		$ColdSource=$misc['cold_source'];
+		$ColdSource=unserialize($ColdSource);
+		$MixedTable=$misc['mixed_table'];
+		$PercentualeFredde=$misc['percentuale_fredde'];
+		$limite=$misc['limite'];
+		
+		echo "------ Stiamo lavorando la miscelata con id: ".$MiscId . "\n\n";
+		fwrite($logfile, "------ Stiamo lavorando la miscelata con id: ".$MiscId . "\n\n");
+		
+	
+		if (empty($HotSources) OR empty($MixedTable)){
+			echo "la miscelata con id ".$MiscId." ha dei campi mancanti.. salto alla prossima miscelata\n\n";
+			fwrite($logfile, "la miscelata con id ".$MiscId." ha dei campi mancanti.. salto alla prossima miscelata\n\n");
+			mailError("la miscelata con id ".$MiscId." ha dei campi mancanti.. salto alla prossima miscelata");
+			continue;
+		}
+		
+		$MixedTable=unserialize($MixedTable);
+		if(!is_array($MixedTable) OR !isset($MixedTable[1]) OR !in_array($MixedTable[1],$DbsNameArray)){
+			echo "il campo mixed_table della miscelata ".$MiscId." non è correttamente settato... deve essere array.. salto alla prossima miscelata \n\n";
+			fwrite($logfile, "il campo mixed_table della miscelata ".$MiscId." non è correttamente settato... deve essere array.. salto alla prossima miscelata \n\n");
+			mailError("il campo mixed_table della miscelata ".$MiscId." non è correttamente settato... deve essere array.. salto alla prossima miscelata \n\n");
+			continue;
+		}
+		
+		
+		//unserialize
+		$HotSources=unserialize($HotSources);
+		if(!is_array($HotSources)){
+			echo "il campo hotsources della miscelata ".$MiscId." non è correttamente settato... deve essere array.. salto alla prossima\n\n";
+			fwrite($logfile, "il campo hotsources della miscelata ".$MiscId." non è correttamente settato... deve essere array.. salto alla prossima\n\n");
+			mailError("il campo hotsources della miscelata ".$MiscId." non è correttamente settato... deve essere array.. salto alla prossima miscelata \n\n");
+			continue;
+		}
+		
+		
+		//get total leads in mixed table
+		//recupero dalla mixed table tutte le chiavi primarie cellulare e le metto in comma separatedstring
+		$dbvarname=${'DB'.$MixedTable[1]};
+		$FieldCellulareInMixed=$dbvarname['cellulare'];
+		$QueryAlreadyPassedKeys="select ".$dbvarname['cellulare']." from ".$MixedTable[0]; 
+		echo "query recupero gia passate:".$QueryAlreadyPassedKeys;
+		
+		$mysqli_par = new mysqli($dbvarname['host'],
+							  $dbvarname['username'],
+							  $dbvarname['password'],
+								$dbvarname['db']);
+		$KeyAlreadyPassed='';
+		$alreadyMixedLeadsNumber=0;
+		if (!$result = $mysqli_par->query($QueryAlreadyPassedKeys)) {
+			echo "errore recupero dati gia passati \n\n";
+			fwrite($logfile, "errore recupero DATI GIA PASSATI \n\n");
+		}else {
+			$countKey=0;
+			while ($Cellmisc = $result->fetch_assoc()){
+				$alreadyMixedLeadsNumber++;
+				if($countKey==0){
+					$KeyAlreadyPassed='"'.$Cellmisc[$FieldCellulareInMixed].'"';
+				}else{
+					$KeyAlreadyPassed.=', "'.$Cellmisc[$FieldCellulareInMixed].'"';
+				}
+				$countKey++;
+			}
+			//parte delle query che evitano di ripetere l'import su chiave primaria
+			if($KeyAlreadyPassed!=''){
+				$KeyAlreadyPassed=" where cellulare not in (".$KeyAlreadyPassed.")";
+			}
+		}
+		echo "already passed number: ".$alreadyMixedLeadsNumber."\n\n";
+		fwrite($logfile, "already passed number: ".$alreadyMixedLeadsNumber."\n\n");
+		
+		if($limite>0 AND $limite > $alreadyMixedLeadsNumber){
+			echo "entro nel recupero delle lead... limite non settato o ancora non raggiunto \n\n";
+			fwrite($logfile, "entro nel recupero delle lead... limite non settato o ancora non raggiunto \n\n");
+			$stopLeads=0;
+			//unserializzo hotsourcetable, per ogni hotsourcetable controllo se il db è presente fra la rosa dei db, tento di connettermi alla tabella indicata con query_:
+			$CountHotNewLead=0;
+			$LimitQueryStringBase=' limit 0,';
+			$LimitQueryedNumber=0;
+			
+			foreach($HotSources as $HotSourceName=>$HotSourceDb){
+				echo "sto analizzando la hotsource:".$HotSourceName.", con db: ".$HotSourceDb . "\n\n";
+				fwrite($logfile, "sto analizzando la hotsource:".$HotSourceName.", con db: ".$HotSourceDb . "\n\n");
+				if(!in_array($HotSourceDb, $DbsNameArray)){
+					echo "il db ".$HotSourceDb." della hotsource ".$HotSourceName." non è fra la rosa dei db possibili.. salto alla prossima hs.\n\n";
+					fwrite($logfile, "il db ".$HotSourceDb." della hotsource ".$HotSourceName." non è fra la rosa dei db possibili.. salto alla prossima hs.\n\n");
+					mailError("il db ".$HotSourceDb." della hotsource ".$HotSourceName." non è fra la rosa dei db possibili, miscelata id: ".$MiscId);
+					continue;
+				}
+				$dbvarname=${'DB'.$HotSourceDb};
+				$mysqli_par = new mysqli($dbvarname['host'],
+							  $dbvarname['username'],
+							  $dbvarname['password'],
+							  $dbvarname['db']);
+				//recupero le lead
+				//controllo i limiti
+				if($limite!=0){
+					$limiteQuery=$limite-$alreadyMixedLeadsNumber-$LimitQueryedNumber;
+					if($limiteQuery<1){
+						$stopLeads=1;
+						$LimitQueryStringFinal='';
+						echo "abbiamo stoppato il processo di questa miscelata per raggiungimento limite \n\n";
+						fwrite($logfile, "abbiamo stoppato il processo di questa miscelata per raggiungimento limite  \n\n");
+					}else{
+						$LimitQueryStringFinal=$LimitQueryStringBase.$limiteQuery;
+					}
+			    }else{
+					$LimitQueryStringFinal='';
+				}
+				if($stopLeads==0){
+					$KeyAlreadyPassedToQuery=str_replace("cellulare", $dbvarname['cellulare'], $KeyAlreadyPassed);
+					$selectHotDataQuery="select ".$dbvarname['nome'].", ".$dbvarname['cognome'].", ".$dbvarname['cellulare']." from ".$HotSourceName.$KeyAlreadyPassedToQuery.$LimitQueryStringFinal;
+					echo "query calda: ".$selectHotDataQuery. "\n\n";
+					fwrite($logfile, "query calda: ".$selectHotDataQuery. "\n\n");
+					if (!$result = $mysqli_par->query($selectHotDataQuery)) {
+						echo "errore recupero dati dalla hotsource \n\n";
+						mailError("errore recupero dati dalla hotsource, miscelata id: ".$MiscId);
+						fwrite($logfile, "errore recupero dati dalla hotsource \n\n");
+						$errorStr  = date("Y-m-d,H-i-s")." Error: Failed to make a MySQL query, here is why: \n";
+						$errorStr .= date("Y-m-d,H-i-s")." Query: " . $SelectMiscelata . "\n";
+						$errorStr .= date("Y-m-d,H-i-s")."Errno: " . $mysqli_get_misc->errno . "\n";
+						$errorStr .= date("Y-m-d,H-i-s")."Error: " . $mysqli_get_misc->error . "\n";
+						fwrite($logfile, $errorStr);
+						continue;
+					}else {
+						while ($Datas = $result->fetch_assoc()){
+							$LimitQueryedNumber++;
+							$LeadName=$Datas[$dbvarname['nome']];
+							$LeadCognome=$Datas[$dbvarname['cognome']];
+							$LeadCellulare=$Datas[$dbvarname['cellulare']];
+							//echo "lead datas: nome:".$LeadName."; cognome: ".$LeadCognome."; cellulare: ".$LeadCellulare . " \n\n";
+							$NewLeads[]=array($LeadName, $LeadCognome,$LeadCellulare);
+							$CountHotNewLead++;
+						}
+					}
+				}
+			}
+			if($CountHotNewLead>0){
+				echo "abbiamo recuperato ".$CountHotNewLead." lead calde, procediamo alle fredde \n\n";
+				fwrite($logfile, "abbiamo recuperato ".$CountHotNewLead." lead calde, procediamo alle fredde \n\n");
+			}else{
+				echo "non abbiamo recuperato nessuna lead calda, passiamo alla prossima miscelata \n\n";
+				fwrite($logfile, "non abbiamo recuperato nessuna lead calda, passiamo alla prossima miscelata \n\n");
+				continue;
+			}
+			echo "lead calde trovate !!!!!!!: ".$CountHotNewLead."; percent: ".$PercentualeFredde."\n\n\r";
+			fwrite($logfile, "lead calde trovate !!!!!!!: ".$CountHotNewLead."; percent: ".$PercentualeFredde."\n\n\r");
+			
+			$NumberOfCold=ceil(($CountHotNewLead*$PercentualeFredde)/(100-$PercentualeFredde));
+			echo "numero di fredde da recuperare:".$NumberOfCold."\n\n\r";
+			fwrite($logfile, "numero di fredde da recuperare:".$NumberOfCold."\n\n\r");
+			//selezioniamo le fredde
+			
+			if(is_array($ColdSource)){
+				echo "cold source isarray: yes <br>\n";
+			}else{
+				echo "cold source isarray:  no <br>\n";
+			}
+			if(isset($ColdSource[1])){
+				echo "cold source isset: yes <br>\n";
+			}else{
+				echo "cold source isset: no <br>\n";
+			}
+			if(in_array($ColdSource[1],$DbsNameArray)){
+				echo "cold source inarray: yes <br>\n";
+			}else{
+				echo "cold source inarray: no <br>\n";
+			}
+		
+			if($NumberOfCold>0 AND is_array($ColdSource) AND isset($ColdSource[1]) AND in_array($ColdSource[1],$DbsNameArray)){
+				echo "numero di fredde che speriamo di ritrovare in base alla percentuale: ".$NumberOfCold . "\n\n";
+				fwrite($logfile, "numero di fredde che speriamo di ritrovare in base alla percentuale: ".$NumberOfCold . "\n\n");
+				//controllo i limiti
+				if($limite!=0){
+					$limiteQuery=$limite-$alreadyMixedLeadsNumber-$LimitQueryedNumber;
+					if($limiteQuery<1){
+						$stopLeads=1;
+						$LimitQueryStringFinal='';
+						echo "abbiamo stoppato il processo di questa miscelata per raggiungimento limite \n\n";
+						fwrite($logfile, "abbiamo stoppato il processo di questa miscelata per raggiungimento limite \n\n");
+					}else{
+						$LimiteColdIntel=min($NumberOfCold,$limiteQuery);
+						$LimitQueryStringFinal=$LimitQueryStringBase.$LimiteColdIntel;
+					}
+			    }else{
+					$LimitQueryStringFinal=' limit 0,'.$NumberOfCold;
+				}
+				if($stopLeads==0){
+					$QueryRecuperoFredde="select nome, cognome, cellulare from ".$ColdSource[0].$KeyAlreadyPassed." order by rand() ".$LimitQueryStringFinal;
+					echo "query recupero fredde: ".$QueryRecuperoFredde." \n\n";
+					fwrite($logfile, "query recupero fredde: ".$QueryRecuperoFredde." \n\n");
+					
+					$dbvarname=${'DB'.$ColdSource[1]};
+					$mysqli_par = new mysqli($dbvarname['host'],
+								  $dbvarname['username'],
+								  $dbvarname['password'],
+								  $dbvarname['db']);
+							  
+					if (!$result = $mysqli_par->query($QueryRecuperoFredde)) {
+						echo "errore recupero dati dalla coldsource \n\n";
+						mailError("errore recupero dati dalla coldsource, miscelata id: ".$MiscId);
+						fwrite($logfile, "errore recupero dati dalla coldsource: ".$mysqli_par->errno." \n\n");
+						echo $mysqli_par->errno;
+						continue;
+					}else {
+						 
+						while ($Datas = $result->fetch_assoc()){
+							$LimitQueryedNumber++;
+							$LeadName=$Datas['nome'];
+							$LeadCognome=$Datas['cognome'];
+							$LeadCellulare=$Datas['cellulare'];
+							//echo "lead datas: nome:".$LeadName."; cognome: ".$LeadCognome."; cellulare: ".$LeadCellulare . " \n\n";
+							$NewLeads[]=array($LeadName, $LeadCognome,$LeadCellulare);
+						}
+					}
+				}
+				
+			}else{
+				echo "le fredde non verranno recuperate, perche o il numero da recuperare è 0 o l'array non è settato bene a db \n\n";
+				fwrite($logfile, "le fredde non verranno recuperate, perche o il numero da recuperare è 0 o l'array non è settato bene a db \n\n");
+			}
+			if(count($NewLeads)>0){
+				//randomiziamo l'ordine dell array di insert
+				//print_r($NewLeads);
+				//echo "\n\n"; 
+				
+				$keys = array_keys($NewLeads);
+				shuffle($keys);
+
+				foreach ($keys as $key)
+				{
+					$NewLeadsRand[$key] = $NewLeads[$key];
+				}
+				$NewLeads=$NewLeadsRand;
+				//insert new lead
+				echo "Procediamo all'inserimento di ".count($NewLeads)."leads \n\n";
+				fwrite($logfile, "Procediamo all'inserimento di ".count($NewLeads)."leads \n\n");
+				//print_r($NewLeads);
+				$dbvarname=${'DB'.$MixedTable[1]};
+				foreach($NewLeads as $NewLead){
+					//print_r($NewLead);
+					$NLnome=$NewLead[0];
+					$NLcognome=$NewLead[1];
+					$NLcellulare=$NewLead[2];
+					
+					$QueryInsertNL='insert into '.$MixedTable[0].' set ' . $dbvarname['nome']. ' = "'.$NLnome.'", ' . $dbvarname['cognome']. ' = "'.$NLcognome.'", ' . $dbvarname['cellulare']. ' = "'.$NLcellulare.'"';
+					
+					
+					
+					//echo "query di insert".$QueryInsertNL;
+					$dbvarname=${'DB'.$MixedTable[1]};
+					$mysqli_par = new mysqli($dbvarname['host'],
+										  $dbvarname['username'],
+										  $dbvarname['password'],
+										  $dbvarname['db']);
+					if ($mysqli_par->query($QueryInsertNL) === TRUE) {
+						$id = $mysqli_par->insert_id;
+						echo "query di inserimento riuscita \r\n\n";
+						fwrite($logfile, "query di inserimento riuscita \r\n\n");
+					}else{
+						echo "query di inserimento non riuscita \n\n\r";
+						mailError("query di inserimento finale delle lead non riuscita, miscelata id: ".$MiscId);
+						fwrite($logfile, "query di inserimento non riuscita \n\n\r");
+					}
+				}
+				
+			}else{
+				echo "non abbiamo ritrovato nessuna lead da importare per la miscelata ".$MiscId . " \n\n\r";
+				fwrite($logfile, "non abbiamo ritrovato nessuna lead da importare per la miscelata ".$MiscId . " \n\n\r");
+				
+			}
+			
+			
+		}else{ //fine if limite non ragiunto 1
+			$stopLeads=1;
+			//limite raggiunto1.. stop della campagna e invio email di avvertimento
+		}
+		
+		//se abbiamo raggiunto il limite procediamo allo stop della campagna e a invio emil
+		if($stopLeads==1){
+			//send mail
+			$StopMiscelataQuery='update miscelate_light set attiva = 0 where id='.$MiscId;
+			$mysqli_get_misc = new mysqli($DBgestione['host'],
+                          $DBgestione['username'],
+						  $DBgestione['password'],
+                          $DBgestione['db']);
+
+			if ($mysqli_get_misc->query($StopMiscelataQuery) !== TRUE) {
+				echo 'abbiamo provato a stoppare la miscelata con id '.$MiscId.' per raggiungimento limite ma la query è fallita \n\n';
+				fwrite($logfile, 'abbiamo provato a stoppare la miscelata con id '.$MiscId.' per raggiungimento limite ma la query è fallita \n\n');
+				mailError('abbiamo provato a stoppare la miscelata con id '.$MiscId.' per raggiungimento limite ma la query è fallita ');
+			}else{
+				echo 'abbiamo stoppato la miscelata con id '.$MiscId.' per raggiungimento limite \n\n';
+				fwrite($logfile, 'abbiamo stoppato la miscelata con id '.$MiscId.' per raggiungimento limite \n\n');
+				mailError('abbiamo stoppato la miscelata con id '.$MiscId.' per raggiungimento limite');
+			}
+			
+		}
+	}//fine while miscelate
+}
+
+
+esci();
+
+
+function esci(){
+	 global $lock_file;
+	 unlink($lock_file);
+	 exit();
+}
+//recupero row da tabella per ogni row ciclo:
+function date_now(){
+	$date_now = new DateTime();
+	$date_now = $date_now->format('Y\-m\-d\ H:i:s');
+	return $date_now;
+}
+
+
+ function mailError($errorMsg){
+     
+    $to      = 'info@linkappeal.it';
+    $subject = 'Script Error: miscelatalight.php';
+    $message = 'Results: ' . print_r( $errorMsg, true );
+    $headers = 'From: miscelatalight@gestione.linkappeal.it' . "\r\n" .
+    'Reply-To: miscelatalight@gestione.linkappeal.it' . "\r\n" .
+    'X-Mailer: PHP/' . phpversion();
+
+    mail($to, $subject, $message, $headers);  
+     
+ }
+
+
+
+
+?>

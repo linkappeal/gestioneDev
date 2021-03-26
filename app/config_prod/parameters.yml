@@ -1,0 +1,35 @@
+# This file is auto-generated during the composer install
+parameters:
+    database_host: localhost
+    database_port: null
+    database_name: symfony
+    database_user: root
+    database_password: 
+    src_database_host: 46.16.95.34
+    src_database_port: null
+    src_database_user: wscpl_utility
+    src_database_password: 0^5UZ+sX?8_gCL*H
+    pxl_database_host: 46.16.95.34
+    pxl_database_port: null
+    pxl_database_name: tracking_pixels
+    pxl_database_user: tracking_pixelus
+    pxl_database_password: ^0O7J+M+Fc&m
+    cnc_database_host: 46.254.38.137
+    cnc_database_port: null
+    cnc_database_name: premi365_db23
+    cnc_database_user: premi365_utente2
+    cnc_database_password: x?h{JoE3AC6W
+    utils_database_host: localhost
+    utils_database_port: null
+    utils_database_name: utilslinkappeal_cpl
+    utils_database_user: utilscpl_db
+    utils_database_password: FJg-23nHRNfzTmc7 
+    mailer_transport: sendmail
+    mailer_host: 127.0.0.1
+    mailer_user: null
+    mailer_password: null
+    secret: cdf1f7eada42b3ac68785326c1896b0f79e420c1
+    sonata.admin.configuration.filters.persist: true
+    ws_baseurl: https://10.26.29.9:8443
+    ws_token: plead
+

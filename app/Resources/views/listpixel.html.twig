@@ -1,0 +1,185 @@
+{% extends base_template %}
+
+        {% block stylesheets %}
+            {{ parent() }}
+                {% stylesheets
+                        'css/style.css'
+                %}
+                        <link href="{{ asset_url }}" type="text/css" rel="stylesheet"/>
+                {% endstylesheets %}
+                <link href="https://cdnjs.cloudflare.com/ajax/libs/datatables/1.10.12/css/dataTables.bootstrap.min.css" rel="stylesheet"/>
+        {% endblock %}
+
+
+        {% block content %}
+		<div class="container">
+		<nav class="navbar navbar-default">
+		  <div class="container-fluid">
+			<!-- Brand and toggle get grouped for better mobile display -->
+			<div class="navbar-header">
+			  <button type="button" class="navbar-toggle collapsed" data-toggle="collapse" data-target="#bs-example-navbar-collapse-1" aria-expanded="false">
+				<span class="sr-only">Toggle navigation</span>
+				<span class="icon-bar"></span>
+				<span class="icon-bar"></span>
+				<span class="icon-bar"></span>
+			  </button>
+			  <a class="navbar-brand" href="#">Pixel Manager</a>
+			</div>
+			<div class="collapse navbar-collapse" id="bs-example-navbar-collapse-1">
+			  <ul class="nav navbar-nav">
+				<li class="active"><a href="#">Lista Pixel<span class="sr-only">(current)</span></a></li>
+				<li ><a href="{{admin.generateUrl('addpixel')}}">Nuovo Pixel<span class="sr-only">(current)</span></a></li>
+			  </ul>
+			  <ul class="nav navbar-nav navbar-right">
+			  </ul>
+			</div><!-- /.navbar-collapse -->
+		  </div><!-- /.container-fluid -->
+		</nav>
+		</div>
+		<div class="container-list">
+			<div class="row">
+				<div class="col-md-12">
+					<h1>Listato Pixel inseriti</h1>
+					<table 
+					   id="listatoPixel" 
+					   class="table table-striped table-bordered table-hover" cellspacing="0" width="100%">
+					<thead>
+						<tr>
+							<th>ID</th><th>Descrizione</th><th class="search_drop">Editore</th><th class="search_drop">Id Campagna</th><th>Pay code</th><th class="search_drop">Falsemedia</th><th>Pixel</th><th>Attivo</th><th>Azioni</th>
+						</tr>
+					</thead>
+					<tbody>
+						{% for pixel in pixels %}
+						<tr id="pixel_row_{{ pixel.id }}">
+							<td>{{ pixel.id }}</td>
+							<td>{{ pixel.descrizione }}</td>
+							<td>{{ pixel.cplNumber }}</td>
+							<td>{{ pixel.idCampagna }}</td>
+							<td>{{ pixel.payoutcode }}</td>
+							<td>{{ pixel.codebase }}</td>
+							<td>{{ pixel.pixel|length > 50 ? pixel.pixel|slice(0, 50) ~ '...' : pixel.pixel }}</td>
+							<td>{{ pixel.attivo }}</td>
+							<td><a title="Modifica" href="{{ admin.generateUrl('editpixel', {'pixelid': pixel.id}) }}" class="btn btn-sm btn-default"><i class="fa fa-pencil" aria-hidden="true"></i></a>
+							<a title="Elimina" href="javascript:void(0);" onclick="confermaEliminazione('{{pixel.id}}')" class="btn btn-sm btn-default"><i class="fa fa-window-close" aria-hidden="true"></i></a></td>
+						</tr>
+						{% endfor %}
+					</tbody>
+					</table>
+				</div>
+			</div>
+		</div>
+		<script src="https://cdnjs.cloudflare.com/ajax/libs/datatables/1.10.12/js/jquery.dataTables.min.js"></script>
+		<script src="https://cdnjs.cloudflare.com/ajax/libs/datatables/1.10.12/js/dataTables.bootstrap.min.js"></script>
+		<script type="text/javascript">
+			$(document).ready(function() {
+				var table = $('#listatoPixel').DataTable( {
+						"order": [[ 0, "desc" ]],
+						paging:         true,
+						"scrollX": true,
+						fixedHeader: true,
+						 "lengthMenu": [[10, 25, 50, -1], [10, 25, 50, "All"]],
+						dom:
+								"<'row'<'col-sm-12'<'box box-primary'<'box-body'<'col-md-6 search_filter'><'col-md-6'f>>>>>" +
+								"<'row'<'col-sm-12'tr>>" +
+								"<'row'<'col-sm-6'i><'col-sm-6'l>>"+
+								"<'row'<'col-sm-12 text-center'p>>",
+						buttons: [
+								{ extend: 'csv', text: '<i class="fa fa-download"></i>  Esporta in CSV' }
+						],
+						language: {
+							search: "Cerca in tutte le colonne:"
+						},
+						language: {
+							search: "<strong>Cerca in tutte le colonne</strong>",
+							paginate: {
+										first:      "Prima",
+										previous:   "Predecente",
+										next:       "Successiva",
+										last:       "Ultima"
+									},
+							lengthMenu: "<strong>Risultati per pagina</strong> _MENU_",
+							info: "Pagina _PAGE_ di _PAGES_",
+						},
+					});
+					
+				// FILTRI RICERCA
+				var search_html_row = '<div class="col-md-12">';
+				$('#listatoCC thead th').each(function (index) {
+			
+					var title = $(this).text();
+					if($(this).hasClass('search')){
+						search_html_row += '<div class="col-md-4"><input class="form-control table_input_s sear_'+index+'" type="text" placeholder="Cerca '+title+'" /></div>';
+						
+					}else if($(this).hasClass('search_drop')){
+					
+						var options = table.column(index).data().unique();
+						var options_html = '';
+
+						$.each( options, function(indice, valore ){
+							options_html += '<option value="' + valore.replace(/<\/?[^>]+(>|$)/g, "") + '">'+valore.replace(/<\/?[^>]+(>|$)/g, "")+'</option>';
+						});
+						search_html_row += '<div class="col-md-4">'
+												+'<select class="table_select2 sear_'+index+'">'
+													+'<option value="">Filtra ' + title + '</option>'
+													+ options_html 												
+												+'</select>'
+											+'</div>';
+					}
+				} );
+				search_html_row += '</div>';
+				
+				$('.search_filter').html(search_html_row);
+		
+				 table.columns().every( function () {
+					var that = this;
+					$( '.sear_'+that[0]).on( 'keyup change', function () {
+						if ( that.search() !== this.value ) {
+							that.search( '^'+this.value,true).draw();
+						}
+					} );
+				} );
+				$('.table_select2').select2();
+			});
+			function confermaEliminazione(id){
+				$('.id_pixel-modal').html(id);
+				var url = '{{admin.generateUrl('deletepixel')}}'; 
+				$('#confirm').modal({
+				  backdrop: 'static',
+				  keyboard: false
+				}).one('click', '#delete', function(e) {
+					$.ajax({url: url,
+					data: { pixelid : id},
+					success: function(result){
+						if(result.eliminato==true){ // pixel non presente
+							$('#pixel_row_' + id).fadeOut('slow').remove();
+						}
+					}});
+				});
+			}
+			
+			
+					
+		</script>
+			<!-- finestra modale -->
+			<div class="modal fade" id="confirm">
+			  <div class="modal-dialog" role="document">
+				<div class="modal-content">
+				  <div class="modal-header">
+					<button type="button" class="close" data-dismiss="modal" aria-label="Close">
+					  <span aria-hidden="true">&times;</span>
+					</button>
+					<h5 class="modal-title">Stai eliminando il pixel con ID: <span class="id_pixel-modal"></span></h5>
+				  </div>
+				  <div class="modal-body">
+					<p>Sei sicuro di voler eliminare il Pixel con ID: <span class="id_pixel-modal"></span>?</p>
+				  </div>
+				  <div class="modal-footer">
+					<button type="button" class="btn btn-primary" data-dismiss="modal" id="delete">Si, Elimina</button>
+					<button type="button" class="btn btn-secondary" data-dismiss="modal">Annulla</button>
+				  </div>
+				</div>
+			  </div>
+			</div>
+		</div> <!-- row -->
+		{% endblock %}
+

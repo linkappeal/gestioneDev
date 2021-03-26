@@ -1,0 +1,456 @@
+{% extends base_template %}
+
+        {% block stylesheets %}
+            {{ parent() }}
+                {% stylesheets
+                        'css/style.css'
+                %}
+					<link href="{{ asset_url }}" type="text/css" rel="stylesheet"/>
+					<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/bootstrap-daterangepicker/2.1.27/daterangepicker.min.css" />
+					<link href="https://cdnjs.cloudflare.com/ajax/libs/datatables/1.10.12/css/dataTables.bootstrap.min.css" rel="stylesheet"/>
+                {% endstylesheets %}
+			
+				<style>
+					.checkbox-change-trace{padding-right: 10px; border-right: 1px solid #fff; margin-right: 10px;font-size: 15px;}
+					.btn-change-trace-selected{border: 3px solid #aaa;}
+					.title-change-trace .fa{margin-left: 10px;}
+					.singola-selezione-ricerca{cursor: pointer; padding: 0px 10px;font-size:15px;}
+					.titolo-filtro .fa{font-size: 20px; padding: 6px;}
+					.icona .fa{    font-size: 20px; padding: 2px;}
+					.riga-filtro{margin-bottom: 15px; font-size:17px; text-align: left;}
+					.filtri-box{    border-left: 2px solid #3c8dbc; min-height: 100px;}
+					.loader { border: 16px solid #f3f3f3; border-radius: 50%; border-top: 16px solid #3498db; width: 120px; height: 120px; 
+					-webkit-animation: spin 2s linear infinite; /* Safari */  animation: spin 2s linear infinite; }
+					.title-underbox{border-bottom: 2px solid #3c8dbc; margin-bottom: 15px; padding-bottom: 11px;}
+					.mini-loader { position: absolute; top: 10px; margin: 5px auto; display: inline; border: 7px solid #f3f3f3; border-radius: 50%; border-top: 7px solid #3498db; width: 30px; height: 30px; -webkit-animation: spin 2s linear infinite; animation: spin 2s linear infinite;}
+					.info-subbox {font-size: 20px; margin-bottom: 5px;}
+					.info-subbox .fa{margin-right: 15px;}
+					.strong{font-weight: bold;}
+					
+		
+				</style>
+        {% endblock %}
+        {% block content %}
+	<div class="container-fluid">
+		<section class="content">
+			<div class="sonata-ba-content">  
+				<div class="row">
+					<div class="col-md-12">
+						<div class="box box-primary">
+							<div class="box-header">	
+								<h2 class="title-box">
+									Tracciamenti Campagne 
+									<button id="trace-pixel" onclick="changeTrace('pixel')" class="togglerTrace btn btn-primary btn-change-trace-selected">
+										<span class="checkbox-change-trace">
+											<i class="fa fa-check-square-o"></i>
+										</span>
+										<span class="title-change-trace">
+											Pixel <i class="fa fa-dot-circle-o" aria-hidden="true"></i>
+										</span>
+									</button>
+									<button id="trace-click" onclick="changeTrace('click')" class="togglerTrace btn btn-primary">
+										<span class="checkbox-change-trace">
+											<i class="fa fa-square-o"></i>
+										</span>
+										<span class="title-change-trace">
+											Clicks <i class="fa fa-hand-pointer-o" aria-hidden="true"></i>
+										</span>
+									</button>
+									<input type="hidden" id="target-to-trace" value="pixel" />
+								</h2>
+							</div>
+							<div class="box-body">	
+								<div class="col-md-10">
+									<div class="row riga-filtro box-filtro-periodo">
+										<div class="col-md-3 titolo-filtro">
+											<i class="fa fa-calendar" aria-hidden="true"></i>
+											Seleziona un periodo
+										</div>
+										<div class="col-md-8">
+											<div class="col-md-4">
+												{{datepicker.mesi | raw}}
+											</div>
+											<div class="col-md-3">
+												{{datepicker.anni | raw}}
+											</div>
+										</div>
+									</div>
+									<div class="row riga-filtro box-filtro-editore">
+										<div class="col-md-3 titolo-filtro">
+											<i class="fa fa-newspaper-o" aria-hidden="true"></i>
+											Filtra per editore
+										</div>
+										<div class="col-md-8">
+											<div class="col-md-7">
+												<input type="text" name="codice_cpl" class="form-control" id="codice_cpl" placeholder="Inserisci un codice CPL" />
+											</div>
+										</div>
+									</div>
+									<div class="row riga-filtro">
+											<div class="col-md-3 titolo-filtro">
+												<i class="fa fa-search" aria-hidden="true"></i>
+												Ricerca per
+											</div>
+											<div class="col-md-8">
+												<div class="singola-selezione-ricerca col-md-4" id="selettore-landingslug" onclick="toggleSelezioneRicerca('landingslug')">
+													<div class="col-md-1 icona">
+														<i class="fa fa-check-square-o"></i>
+													</div>
+													<div class="col-md-9 titolo-selettore">
+														Campagna
+													</div>
+												</div>
+												<div class="singola-selezione-ricerca col-md-4" id="selettore-id-campagna" onclick="toggleSelezioneRicerca('id-campagna')">
+													<div class="col-md-1 icona">
+														<i class="fa fa-square-o"></i>
+													</div>
+													<div class="col-md-9 titolo-selettore">
+														ID Campagna
+													</div>
+												</div>
+												<div class="singola-selezione-ricerca col-md-4" id="selettore-libera" onclick="toggleSelezioneRicerca('libera')">
+													<div class="col-md-1 icona">
+														<i class="fa fa-square-o"></i>
+													</div>
+													<div class="col-md-9 titolo-selettore">
+														Ricerca Libera
+													</div>
+												</div>
+											</div>
+										<!-- identificatore ricerca -->
+										<input type="hidden" id="identificatore-ricerca" value="landingslug" />
+									</div> <!-- /row riga-filtro -->
+									<div class="row">
+										<div class="col-md-7 select-boxes">
+											<div class="row selettori" id="select-box-landingslug">
+												<div class="col-md-12">
+													<select class="landingslug-select selettore-attivo" id="landingslug-select">
+														<option value="">Seleziona una campagna...</option>
+														<option value="all">Tutte le campagne</option>
+														{% for landingSlug in landingsSlugs %}
+															<option value="{{landingSlug.slug}}">{{landingSlug.titolo}} - ({{landingSlug.url}})</option>
+														{% endfor %}
+													</select>
+												</div>
+											</div>
+											<div class="row selettori" id="select-box-id-campagna" style="display:none;">
+											
+											<!-- select pixel id campagna -->
+												<div class="col-md-12 underbox-select-id-campagna" id="underbox-select-id-campagna-pixel">
+													<select class="id-campagna-select selettore-attivo" id="id-campagna-select">
+														<option value="" data-codice="">Seleziona un identificativo per il pixel...</option>
+													{% for idcampagna in idCampagne %}
+															<option value="{{idcampagna.id_campagna}}">{{idcampagna.id_campagna}}</option>
+														{% endfor %}
+													</select>
+												</div>
+
+											<!-- select click id campagna -->
+												<div class="col-md-12 underbox-select-id-campagna" id="underbox-select-id-campagna-click" style="display: none">
+													<select class="id-campagna-select" id="id-campagna-select">
+														<option value="" data-codice="">Seleziona un identificativo per il click...</option>
+													{% for idcampagnaClick in idCampagneClick %}
+															<option value="{{idcampagnaClick.id_campagna}}">{{idcampagnaClick.id_campagna}}</option>
+														{% endfor %}
+													</select>
+												</div>
+												
+											</div>
+											<div class="row selettori" id="select-box-libera" style="display:none;">
+												<div class="col-md-12">
+													<input type="text" name="libera-select" class="form-control selettore-attivo" id="libera-select" placeholder="Inserisci un identificativo, usa il carattere * come jolly" />
+												</div>
+											</div>
+										</div>
+										<div class="col-md-2 select-boxes-btn">
+											<button id="trace-btn-action" onclick="getTrace()" class="btn btn-primary"><i class="fa fa-calculator" aria-hidden="true"></i> Conteggia</button>
+										</div>
+										<div class="col-md-3">
+										</div>
+									</div>
+								</div>
+								<div class="col-md-2 filtri-box">
+									<h4>Filtri</h4>
+									<div class="col-md-12">
+										<input type="checkbox" name="filtro-periodo"  class="filtri-checkbox" checked id="filtro-periodo" data-filtro="periodo" value="1"> Periodo
+									</div>
+									<div class="col-md-12">
+										<input type="checkbox" name="filtro-editore" onclick="toggleFilter(this)" class="filtri-checkbox" checked id="filtro-editore" data-filtro="editore" value="1"> Editore
+									</div>
+									<div class="col-md-12">
+										<input type="checkbox" name="filtro-unique" class="filtri-checkbox" id="filtro-unique" data-filtro="unique" value="1"> IP Unici
+									</div>
+								</div>
+							</div>
+
+							</div>
+						</div>
+						
+					</div>
+				</div>
+				<div class="row">	
+					<div class="col-md-12">
+						<div class="box box-primary">
+							<div class="box-body">	
+							<div class="box-header">	
+									<div class="row">
+										<div class="col-md-12 title-underbox">
+											<div class="start-title"><strong><i class="fa fa-search"></i> Seleziona una campagna per visualizzare i risultati</strong></div>
+										</div>
+									</div>
+							</div>
+							<!-- left col-->
+							<div class="tab-content col-md-12">
+								<div class="tabellaRisultati"></div>
+							</div>
+						</div>
+					</div> <!-- box-primary-->
+				</div>
+			</div><!-- row -->
+	
+
+	<script src="https://cdnjs.cloudflare.com/ajax/libs/bootstrap-daterangepicker/2.1.27/moment.min.js"></script>
+	<script src="https://cdnjs.cloudflare.com/ajax/libs/bootstrap-daterangepicker/2.1.27/daterangepicker.min.js"></script>
+	<script src="https://cdnjs.cloudflare.com/ajax/libs/datatables/1.10.12/js/jquery.dataTables.min.js"></script>
+	<script src="https://cdnjs.cloudflare.com/ajax/libs/datatables/1.10.12/js/dataTables.bootstrap.min.js"></script>
+	<script src="https://cdn.datatables.net/buttons/1.5.1/js/dataTables.buttons.min.js"></script>
+	<script src="https://cdn.datatables.net/buttons/1.5.1/js/buttons.html5.min.js"     ></script>
+	<script>
+	
+	var traduzione_tabella = {
+							search: "<strong>Cerca in tutte le colonne</strong>",
+							paginate: {
+										first:      "Prima",
+										previous:   "Predecente",
+										next:       "Successiva",
+										last:       "Ultima"
+									},
+							lengthMenu: "<strong>Risultati per pagina</strong> _MENU_",
+							info: "Pagina _PAGE_ di _PAGES_",
+							emptyTable: "Nessun dato trovato o ordine non configurato",
+						};
+	var tabella_opzioni = {
+						"order"			: [[ 0, "desc" ]],
+						"pageLength"	: 50,
+						"order": [],
+						"columnDefs": [ {
+										"targets"  : 'no-sort',
+										"orderable": false,
+										}],
+						scrollY:        "500px",
+						scrollX:        true,
+						scrollCollapse: true,
+						paging:         true,
+						"scrollX": true,
+						//fixedHeader: true,
+						 "lengthMenu": [[10, 25, 50, -1], [10, 25, 50, "All"]],
+						dom:
+								"<'row'<'col-sm-12'<'box box-primary'<'box-body'<'col-md-2'B><'col-md-4 search_filter'><'col-md-6'f>>>>>" +
+								"<'row'<'col-sm-12'tr>>" +
+								"<'row'<'col-sm-6'i><'col-sm-6'l>>"+
+								"<'row'<'col-sm-12 text-center'p>>",
+						buttons: [ 
+								{ extend: 'csv', text: '<i class="fa fa-download"></i>  Esporta in CSV' }
+								],
+						language: traduzione_tabella,
+					}
+						
+	function changeTrace(target){
+		$('.togglerTrace').each(function(){
+			$(this).removeClass('btn-change-trace-selected');
+			var id = $(this).attr('id');
+			$('#'+ id + ' .checkbox-change-trace .fa').removeClass('fa-check-square-o').addClass('fa-square-o');
+		});
+		$('#trace-' + target).addClass('btn-change-trace-selected');
+		$('#trace-' + target + ' .checkbox-change-trace .fa').removeClass('fa-square-o').addClass('fa-check-square-o');
+		$('#target-to-trace').val(target);
+		// selettori
+		$('.underbox-select-id-campagna').each(function(){ 
+			$(this).slideUp().find('.id-campagna-select').removeClass('selettore-attivo');
+		});
+		$('#underbox-select-id-campagna-' + target).slideDown().find('.id-campagna-select').addClass('selettore-attivo');
+	}
+	function getTrace(){
+		var mese = '', anno = '', editore = '', unique = '', selettore, selettore_finale, id_campagna, content;
+		var target = $('#target-to-trace').val();
+		content = $('.tabellaRisultati');
+		content.html('<div class="mini-loader"></div><br>Sto caricando le informazioni...').fadeIn('fast').addClass('active');
+		var url_getTrace = '{{admin.generateUrl('getTrace')}}'; 
+		
+		if($('.box-filtro-periodo').is(':visible')){
+			mese 	= $("#mese option:selected").val();
+			anno 	= $("#anno option:selected").val();
+		}
+		
+		if($('.box-filtro-editore').is(':visible')){
+			editore = $('#codice_cpl').val();
+		}
+		selettore 	= $('#identificatore-ricerca').val();
+		
+		if($('#filtro-unique').is(":checked")){
+			unique = '1';
+		}
+		
+		if(selettore=='libera'){
+			selettore_finale = '#' + selettore + '-select.selettore-attivo';
+		}else{
+			selettore_finale = '#' + selettore + '-select.selettore-attivo' + ' option:selected';
+		}
+		id_campagna = $(selettore_finale).val();
+		console.log('id_campagna', id_campagna);
+		var recap = 	'<div class="campagna_info">'
+					+	'<div class="col-md-8 info-subbox"><i class="fa fa-window-maximize"></i><span class="info-titolo-campagna strong">'+ id_campagna +'</span></div>'
+					+	'<div class="col-md-2 info-subbox"><i class="fa fa-pencil-square"></i>Totali: <span class="info-totali strong"></span></div>'
+					+	'<div class="col-md-2 info-subbox"><i class="fa fa-eye"></i>Tracciate: <span class="info-totali-tracciate strong"></span></div>'
+					+	'</div>';
+		$('.start-title').html(recap);
+		if(id_campagna){
+			$.ajax({url: url_getTrace,
+					data: { mese : mese, 
+							anno : anno,
+							unique: unique,
+							editore : editore,
+							id_campagna : id_campagna,
+							target : target,
+							},
+					success: function(result){
+						console.log(result);
+						content.html(result.tabella);
+						if($('#listatoTrace').length>0){
+							var table = $('#listatoTrace').DataTable( tabella_opzioni);
+							
+							
+							// FILTRI RICERCA
+							var search_html_row = '<div class="col-md-12">';
+							$('#listatoTrace thead td').each(function (index) {
+						
+								var title = $(this).text();
+								if($(this).hasClass('search')){
+									search_html_row += '<div class="col-md-4"><input class="form-control table_input_s sear_'+index+'" type="text" placeholder="Cerca '+title+'" /></div>';
+									
+								}else if($(this).hasClass('search_drop')){
+								
+									var options = table.column(index).data().unique();
+									var options_html = '';
+
+									$.each( options, function(indice, valore ){
+										options_html += '<option value="' + valore.replace(/<\/?[^>]+(>|$)/g, "") + '">'+valore.replace(/<\/?[^>]+(>|$)/g, "")+'</option>';
+									});
+
+									search_html_row += '<div class="col-md-4">'
+															+'<select class="table_select2 sear_'+index+'">'
+																+'<option value="">Filtra ' + title + '</option>'
+																+ options_html 												
+															+'</select>'
+														+'</div>';
+								}
+							} );
+							search_html_row += '</div>';
+							
+							$('.search_filter').html(search_html_row);
+
+							 table.columns().every( function () {
+								var that = this;
+								$( '.sear_'+that[0]).on( 'keyup change', function () {
+									if ( that.search() !== this.value ) {
+										that.search( '^'+this.value,true).draw();
+									}
+								} );
+							} );
+							$('.table_select2').select2();
+							// fine filtri ricerca
+							
+							
+							
+							
+							
+							
+						}
+						$('.info-totali').html(result.totali.totali)
+						$('.info-totali-tracciate').html(result.totali.tracciate)
+					},
+					 complete: function(){
+						//$('.mini-loader-box').fadeOut('fast');
+						//$('.start-title').fadeOut('fast');
+					}
+			});
+		}
+	
+	
+	}
+	function toggleSelezioneRicerca(sel){
+		$("#identificatore-ricerca").val(sel);
+		var id_sel = 'select-box-' + sel;
+		var id_selettore = 'selettore-' + sel;
+		$('.selettori').each(function(){
+			if($(this).is(':visible') && $(this).attr('id')!=id_sel){
+				$(this).slideUp();
+			}
+		});
+		$('#'+id_sel).slideDown();
+		$('.singola-selezione-ricerca .icona i.fa').removeClass('fa-check-square-o').addClass('fa-square-o');
+		$('#'+id_selettore+ ' .icona i.fa').removeClass('fa-square-o').addClass('fa-check-square-o');
+	}
+	
+	$(function() {
+		
+		$('.filtri-checkbox').on('ifChanged', function(){
+			var filtro = $(this).data('filtro');
+			var box_filtro = $('.box-filtro-' + filtro);
+			if($(this).is(":checked")){
+				box_filtro.slideDown();
+			}else{
+				box_filtro.slideUp();
+			}
+		});
+		
+		$('#mesi,#anni').trigger('change');
+		$('.datepicker').daterangepicker({
+				"locale": {
+				"direction": "ltr",
+				"format": "MM/DD/YYYY",
+				"separator": " - ",
+				"applyLabel": "Conferma",
+				"cancelLabel": "Cancella",
+				"fromLabel": "Da",
+				"toLabel": "A",
+				"customRangeLabel": "Custom",
+				"daysOfWeek": ["Do","Lu","Ma","Me","Gi","Ve","Sa"],
+				"monthNames": ["Gennaio","Febbraio","Marzo","Aprile","Maggio","Giugno","Luglio","Agosto","Settembre","Ottobre","Novembre","Dicembre"],
+				"firstDay": 1
+			},
+			"linkedCalendars": false,
+			"showCustomRangeLabel": false,
+		}, function(start, end, label) {
+		  //console.log("New date range selected: ' + start.format('YYYY-MM-DD') + ' to ' + end.format('YYYY-MM-DD') + ' (predefined range: ' + label + ')");
+		});
+		
+		
+	});
+	
+	</script>
+				<!-- finestra modale -->
+				<div class="modal fade" id="confirm">
+				  <div class="modal-dialog" role="document">
+					<div class="modal-content">
+					  <div class="modal-header">
+						<button type="button" class="close" data-dismiss="modal" aria-label="Close">
+						  <span aria-hidden="true">&times;</span>
+						</button>
+						<h3 class="modal-title"><i class="fa fa-info-circle" aria-hidden="true"></i> Informazioni media: <span class="media_cc-modal"></span></h3>
+						<h5 class="modal-title">Concorso di riferimento: <span class="concorso_cc-modal"></span></h5>
+					  </div>
+					  <div class="modal-body">
+					  </div>
+					  <div class="modal-footer">
+						<button type="button" class="btn btn-secondary" data-dismiss="modal">Ok</button>
+					  </div>
+					</div>
+				  </div>
+				</div>
+			
+			</div> <!-- row -->
+		</section> <!-- row -->
+	</div> <!-- row -->
+{% endblock %}
+

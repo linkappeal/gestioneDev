@@ -1,0 +1,23 @@
+{% extends base_template %}
+{% block list_table %}
+    <div class="container"> 
+        <div class="row">
+            <div class="col-md-2"></div>
+            <div class="col-md-8 text-center">
+                <div class="box-accesso-negato">
+					<div class="col-md-2">
+						<i class="fa fa-exclamation-triangle fa-4" aria-hidden="true"></i>
+					</div>
+					<div class="col-md-10">
+						<div class="inner-box-accesso-negato">
+							<span class="testo-an"><span class="alert-an">Attenzione!</span> Non hai i permessi per visualizzare la pagina.</span><br>
+							Contattare l'amministratore del sistema se si vuole procedere oltre.<br>
+							Per continuare puoi selezionare una voce dal menu laterale.
+						</div>
+					</div>
+                </div>
+            </div>
+            <div class="col-md-2"></div>
+        </div>
+    </div>
+{% endblock %}

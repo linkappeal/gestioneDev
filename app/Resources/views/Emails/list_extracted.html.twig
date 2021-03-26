@@ -1,0 +1,50 @@
+<p> L'utente {{ username}} associato alla email {{ email }} </p>
+<p>ha effettuato l'estrazione di <strong>{{ num_lead_label }} anagrafiche per <strong>{{ tipologia_estrazione_label }}.</p>
+
+<div class="box-body">
+        <div class="row">
+            
+                <div class="col-md-1 col-sx-1 text-center">
+                        <div class="lato-infobox">
+                                <i class="fa fa-info-circle fa-5x"></i>
+                        </div>
+                </div>
+                <div class="col-md-11 col-sx-11 text-left">
+                        <p>
+                            Ricerca effettuata sulle anagrafiche {{ tipologia_lead_label }} {% if filter_data_label|length %} con i seguenti filtri: {% endif %}
+                        </p>
+                </div>
+
+
+
+        <ul id="filters_list">
+
+                {% for key, value in filter_data_label %}
+                        {{ key }} : {%if value is iterable %}
+                                {% for k, v in value %}
+                                        {% if v|length %}
+                                                {%if v is iterable %}
+                                                    <strong>{{ k }} : </strong><br/>
+                                                        {% for j, z in v %}
+                                                                 {%if z is iterable %}
+                                                                   {% for j, z in v %}
+                                                                           {{ z }}
+                                                                   {% endfor %}
+                                                                 {% else %}
+                                                                        {{ z }}<br/>
+                                                                 {% endif %}    
+                                                        {% endfor %}
+                                                {% else %}
+                                                        {{ v }}<br/>
+                                                {% endif %}
+                                        {% endif %}
+                                {% endfor %}
+                        {% else %}
+                                {{ value }}<br/>
+                        {% endif %}
+
+        {% endfor %}
+</ul>
+
+
+</div>

@@ -1,0 +1,54 @@
+.box-header-controls {
+    background-color: #ececec;
+    padding: 10px;
+    margin-bottom: 14px;
+    text-align: right;
+}
+.lato-infobox{color: #367FA9;}
+h2.box-title{float: left;font-size: 25px!important;}
+.box-checkbox{background-color: #ececec; margin-bottom: 10px;box-sizing: border-box;-moz-box-sizing: border-box;-webkit-box-sizing: border-box;}
+#form_checkbox .container li{list-style: none;}
+.gruppi-checkb{ min-height: 250px;padding: 10px;}
+.gruppi-checkb li{list-style: none;}
+.gruppi-checkb ul{background-color: #ffffff;border-radius: 5px;padding: 10px;}
+.gruppi-checkb label{margin-left: 10px;}
+.box-btn-aggiornalista{padding: 10px;     border-top: 3px solid rgba(217, 218, 218,1);}
+.btn-login{width: 250px;
+    float: right;
+    padding: 15px;
+    font-weight: bold;
+font-size: 14px;}
+.username{border-right: 2px solid #000000;padding-right:10px;}
+.btn-login a{margin-left: 10px;}
+.btn-addNewCustomer{cursor: pointer; color:#367FA9; font-weight: bold;}
+.btn-addNewCustomer:before {
+   font-family: FontAwesome;
+   content: "\f055";
+   display: inline-block;
+   padding-right: 5px;
+   vertical-align: top;
+}
+.aggiungi_cliente_box_modal{background: #ececec; width: 100%;padding: 10px;height: 60px;}
+.aggiungi_cliente_box_modal #nome_cliente{padding: 5px; margin-right: 10px;float: left;}
+.aggiungi_cliente_box_modal .btn-primary{float: left;}
+/* pagina accesso negato */
+.box-accesso-negato{
+	text-align: left;
+	margin-top: 50px;
+	padding: 20px 20px 20px 20px;
+	width: 100%;
+	height: 120px;
+	font-size: 15px;
+	background-color: #ffffff;
+	-webkit-box-shadow: 0px 0px 30px 0px rgba(0,0,0,0.75);
+	-moz-box-shadow: 0px 0px 30px 0px rgba(0,0,0,0.75);
+	box-shadow: 0px 0px 30px 0px rgba(0,0,0,0.75);
+	border-radius: 10px 10px 10px 10px;
+	-moz-border-radius: 10px 10px 10px 10px;
+	-webkit-border-radius: 10px 10px 10px 10px;
+	border: 2px solid #222D32;
+}
+.box-accesso-negato i{font-size: 80px; color: #fb3c00}
+.alert-an{font-weight: bold; font-size: 20px; color: #fb3c00; }
+.testo-an{font-weight: bold; font-size: 20px;}
+/* fine pagina accesso negato */

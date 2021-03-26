@@ -1,0 +1,373 @@
+{% extends base_template %}
+
+         {% block stylesheets %}
+            {{ parent() }}
+                {% stylesheets
+                        'css/style.css'
+                        'css/data_tables/style-table.css'
+                %}
+					<link href="{{ asset_url }}" type="text/css" rel="stylesheet"/>
+					<link href="https://gitcdn.github.io/bootstrap-toggle/2.2.2/css/bootstrap-toggle.min.css" rel="stylesheet">
+                {% endstylesheets %}
+			
+				<style>
+					.no-padding{padding:0!important;}
+					.selectable{width: 100%;padding:8px;position: relative;cursor:pointer;}
+					.btnover{ position: relative; margin: 10 auto;	}
+					.overbox{display: none; background: rgba(0, 136, 204, 0.5); position: absolute; top: 0; left: 0; width: 100%;text-align: center; padding:5px;}
+					.color-deactive{color: red;}
+					.color-active{color: green; }
+					.form-group input {width: 450;}
+					.form-group {margin-top: 10px;}
+					.principale{background: #fafafa;border: solid 1px #eee;padding:20px;}
+					.border-left{border-left: solid 2px #3498db;}
+					.box-submit{margin-top:20px;}
+					#listatoCC_wrapper{    margin-top: 20px;}
+					.btn-addnew {margin-top: 20px;}
+					table#listatoCC td{vertical-align: middle;}
+					.disattivo_label{ color: red; font-weight: bold;}
+					.attivo_label{ color: green;  font-weight: bold;}
+					.tail_screenshot{
+							-webkit-box-shadow: 0px 0px 30px 0px rgba(0,0,0,0.75);
+							-moz-box-shadow: 0px 0px 30px 0px rgba(0,0,0,0.75);
+							box-shadow: 0px 0px 30px 0px rgba(0,0,0,0.75);
+							position: absolute;
+							float: left;
+							z-index:9999;
+						}
+					.noLanding{
+							background-color: #fff;
+							padding: 10px; 
+							-webkit-box-shadow: 0px 0px 30px 0px rgba(0,0,0,0.75);
+							-moz-box-shadow: 0px 0px 30px 0px rgba(0,0,0,0.75);
+							box-shadow: 0px 0px 30px 0px rgba(0,0,0,0.75);
+						}
+					.mini-loader {
+							border: 10px solid #f3f3f3; /* Light grey */
+							border-top: 10px solid #3498db; /* Blue */
+							border-radius: 50%;
+							width: 50px;
+							height: 50px;
+							animation: spin 2s linear infinite;
+						}
+
+						@keyframes spin {
+							0% { transform: rotate(0deg); }
+							100% { transform: rotate(360deg); }
+						}
+						.hidden-tablehead{font-weight: bold;}
+						.hidden-tablehead.info-pup{font-weight: bold; background-color: #ececec;}
+						.gruppo_ordini{ position: absolute;	width: 350px; background-color: #FFF; padding: 15px; border: 1px solid #337ab7; z-index: 9999;	right: 0;
+										-webkit-box-shadow: 0px 0px 20px 0px rgba(0,0,0,0.75);
+										-moz-box-shadow: 0px 0px 20px 0px rgba(0,0,0,0.75);
+										box-shadow: 0px 0px 20px 0px rgba(0,0,0,0.75);
+										}
+						/* loader */
+					.loader {
+							border: 5px solid #f3f3f3;
+							border-top: 5px solid #3498db;
+							border-radius: 50%;
+							width: 30px;
+							height: 30px;
+							margin: 0px 20px;
+							float: left;
+							margin-bottom: 25px;
+							animation: spin 2s linear infinite;
+					}
+
+					@keyframes spin {
+						0% { transform: rotate(0deg); }
+						100% { transform: rotate(360deg);}
+					}
+			/* fine loader */				
+					.chkbox{width: 25px;height: 25px;}		
+					.dt-buttons .dt-button{margin-top: 15px;}
+				</style>
+        {% endblock %}
+        {% block content %}
+	<div class="container-fluid">
+		<div class="row">
+			<div class="row principale">
+				<div class="row">
+					<div class="col-md-10">
+						<h2 class="title-box">Lista ordini Fornitori</h2>
+					</div>
+					<div class="col-md-2">
+						<a href="{{admin.generateUrl('creaFornitore')}}">
+							<button id="crea-btn-action" class="btn btn-primary"><i class="fa fa-plus" aria-hidden="true"></i> Aggiungi Ordine</button>
+						</a>
+					</div>
+				</div>
+				<div class="row">
+					<div class="col-md-2">
+						{{datepicker.mesi | raw}}
+					</div>
+					<div class="col-md-1">
+						{{datepicker.anni | raw}}
+					</div>
+					<div class="col-md-1">
+						<button id="trace-btn-action" onclick="getListFornitoriOrdini()" class="btn btn-primary"><i class="fa fa-list" aria-hidden="true"></i> Mostra</button>
+					</div>
+					<div class="col-md-1">
+						<div class="loader" style="display:none;"></div>
+					</div>
+				</div>
+			</div>
+			<div class="orderList"></div>
+		</div>
+	<script src="https://cdnjs.cloudflare.com/ajax/libs/datatables/1.10.12/js/jquery.dataTables.min.js"></script>
+	<script src="https://cdnjs.cloudflare.com/ajax/libs/datatables/1.10.12/js/dataTables.bootstrap.min.js"></script>
+	<script src="https://cdn.datatables.net/fixedcolumns/3.2.3/js/dataTables.fixedColumns.min.js"></script>
+	<script src="https://gitcdn.github.io/bootstrap-toggle/2.2.2/js/bootstrap-toggle.min.js"></script>
+	<script src="https://cdn.datatables.net/buttons/1.5.1/js/dataTables.buttons.min.js"></script>
+	<script>
+		function toggleGruppiPayout(ordine_id){
+			$('.gruppo-'+ ordine_id).toggle();
+		}
+		
+		function confermaEliminazione(id){
+			var url_del = '{{admin.generateUrl('deleteOrderFornitore')}}'; 
+			var fornitore = $('.red-'+id+'-id_nomefornitore').html();
+			var campagna = $('.red-'+id+'-id_campagna').html();
+			$('.id_cc-modal').html(id);
+			$('.modal-nomefornitore').html(fornitore);
+			$('.modal-campagna').html(campagna);
+			$('#confirm').modal({
+			  backdrop: 'static',
+			  keyboard: false
+			}).one('click', '#delete', function(e) {
+				$.ajax({url: url_del,
+				data: { id : id},
+				success: function(result){
+					if(result.eliminato==true){ // pixel non presente
+						$('#cc_row_' + id).fadeOut('slow').remove();
+					}
+				}});
+			});
+		}
+		
+		function getListFornitoriOrdini(){
+			var loader 		= $('.loader');
+			var cerca_btn 	= $('#trace-btn-action');
+			loader.fadeIn('fast');
+			cerca_btn.prop('disabled', true);
+			
+			var url_list = '{{admin.generateUrl('getListFornitoriOrdini')}}'; 
+			var mese 	 = $('#mese option:selected').val();
+			var nomemese = $('#mese option:selected').text();
+			var anno 	 = $('#anno option:selected').val();
+			var nomeanno = $('#anno option:selected').text();
+
+			$.ajax({url: url_list,
+				data: { 
+						mese : mese,
+						anno : anno
+					},
+				success: function(result){
+					loader.fadeOut('fast');
+					cerca_btn.prop('disabled', false);
+					if(result.table){ // pixel non presente
+						$('.orderList').html(result.table);
+						// tabella
+						var table = $('#listatoCC').
+						DataTable( {
+							"order": [[ 0, "desc" ]],
+									
+							scrollY:        "800px",
+							scrollX:        true,
+							scrollCollapse: true,
+							paging:         true,
+							"scrollX": true,
+							fixedHeader: true,
+							 "lengthMenu": [[10, 25, 50, -1], [10, 25, 50, "All"]],
+							dom: 
+									"<'row'<'col-sm-12'<'box box-primary'<'box-body'<'col-md-6 search_filter'><'col-md-6'f>>>>>" +
+									"<'row'<'col-sm-12'tr>>" +
+									"<'row'<'col-sm-12'B>>" +
+									"<'row'<'col-sm-6'i><'col-sm-6'l>>" +
+									"<'row'<'col-sm-12 text-center'p>>" ,
+
+							buttons: [
+									//{ extend: 'csv', text: '<i class="fa fa-download"></i>  Esporta in CSV' },
+									{
+										text: '<i class="fa fa-times"></i> Elimina i selezionati',
+										action: function ( e, dt, node, config ) {
+											deleteBulk(dt);
+											
+										}
+									} 
+							],
+							language: {
+								search: "<strong>Cerca in tutte le colonne</strong>",
+								paginate: {
+											first:      "Prima",
+											previous:   "Predecente",
+											next:       "Successiva",
+											last:       "Ultima"
+										},
+								lengthMenu: "<strong>Risultati per pagina</strong> _MENU_",
+								info: "Pagina _PAGE_ di _PAGES_",
+							},
+						});
+						
+
+						// FILTRI RICERCA
+						var search_html_row = '<div class="col-md-12">';
+						$('#listatoCC thead th').each(function (index) {
+					
+							var title = $(this).text();
+							if($(this).hasClass('search')){
+								search_html_row += '<div class="col-md-4"><input class="form-control table_input_s sear_'+index+'" type="text" placeholder="Cerca '+title+'" /></div>';
+								
+							}else if($(this).hasClass('search_drop')){
+							
+								var options = table.column(index).data().unique();
+								var options_html = '';
+
+								$.each( options, function(indice, valore ){
+									options_html += '<option value="' + valore.replace(/<\/?[^>]+(>|$)/g, "") + '">'+valore.replace(/<\/?[^>]+(>|$)/g, "")+'</option>';
+								});
+
+								search_html_row += '<div class="col-md-4">'
+														+'<select class="table_select2 sear_'+index+'">'
+															+'<option value="">Filtra ' + title + '</option>'
+															+ options_html 												
+														+'</select>'
+													+'</div>';
+							}
+						} );
+						search_html_row += '</div>';
+						
+						$('.search_filter').html(search_html_row);
+				
+						 table.columns().every( function () {
+							var that = this;
+							$( '.sear_'+that[0]).on( 'keyup change', function () {
+								if ( that.search() !== this.value ) {
+									that.search( '^'+this.value,true).draw();
+								}
+							} );
+						} );
+						$('.table_select2').select2();
+					}
+					enableGetScreenshot();
+					
+				},
+				 complete: function(){
+					loader.fadeOut('fast');
+					cerca_btn.prop('disabled', false);
+				}
+			});
+		}
+		
+	$(function() {
+		
+		
+		
+	});
+	
+	
+	function enableGetScreenshot(){
+	
+		var ajaxrun = false;
+		//hover su link landing per screenshot---------------
+		var url_screenshot = '{{admin.generateUrl('getLandingScreenshot')}}'; 
+		
+		$('.get-screenshot').mouseenter(function(e) {
+			var link_landing = $(this).data('url_landing');
+			var sluglanding = $(this).html().trim().replace('.','');;
+			var element = 'screen-' + sluglanding;
+			
+			if($('#'+element).length==0 && ajaxrun==false){
+				ajaxrun = true;
+				$('body').append('<div id="'+element+'" class="tail_screenshot"><div class="mini-loader"></div></div>').css({left: e.pageX + 20,top: e.pageY});
+				$.ajax({
+						url: url_screenshot,
+						data: { urlsite : link_landing},
+						success: function(response){
+							if(response.status){
+								$('#'+element).html(response.img);
+							}else{
+								$('#'+element).html('<div class="noLanding">Landing non trovata</div>');
+							}
+							ajaxrun = false;
+						},
+						complete: function(){
+							ajaxrun = false;
+						},
+						 error: function(XMLHttpRequest, textStatus, errorThrown) {
+						 $('#'+element).html('<div class="noLanding">Landing non trovata</div>');
+						 ajaxrun = false;
+					  }
+					});
+			}else if($('#'+element).length>=1){
+				$('.tail_screenshot').fadeOut('fast');
+				$('#'+element).fadeIn();
+			}
+			$(document).bind('mousemove', function(e){
+				$('#'+element).css({
+				   left:  e.pageX + 20,
+				   top:   e.pageY
+				});
+			});
+		}).mouseleave(function() {
+			$('#screen-' + $(this).html().trim().replace('.','')).fadeOut();
+		  });
+		// /hover su link landing per screenshot-------------------------------
+	}
+	
+	function deleteBulk(dt){
+		var arr_codes  = [];
+		dt.column(1).nodes().to$().each(function(index) {  
+			if ($(this).find('.chkbox').prop('checked')){
+				var code = $(this).find('.chkbox').val();
+				console.log(code);
+				arr_codes.push(code);
+			}
+		}); 
+		if(arr_codes.length>0){
+			var url_del = '{{admin.generateUrl('deleteOrderFornitore')}}';
+			$('.id_cc-modal').html(arr_codes.length + ' Ordini');
+			$('#confirm').modal({
+			  backdrop: 'static',
+			  keyboard: false
+			}).one('click', '#delete', function(e) {
+				$.each( arr_codes, function( index, value ){
+					var id = value;
+					console.log(id);
+					$.ajax({url: url_del,
+					data: { id : id},
+					success: function(result){
+						if(result.eliminato==true){ // pixel non presente
+							$('#cc_row_' + id).fadeOut('slow').remove();
+						}
+						}
+					});
+				});
+			});
+		}
+	}
+	</script>
+	<!-- finestra modale -->
+	<div class="modal fade" id="confirm">
+	  <div class="modal-dialog" role="document">
+		<div class="modal-content">
+		  <div class="modal-header">
+			<button type="button" class="close" data-dismiss="modal" aria-label="Close">
+			  <span aria-hidden="true">&times;</span>
+			</button>
+			<h5 class="modal-title">Conferma di eliminazione ordine ID: <span class="id_cc-modal"></span></h5>
+		  </div>
+		  <div class="modal-body">
+			<p>Sei sicuro di voler eliminare l'ordine sulla campagna <strong class="modal-campagna"></strong> del fornitore <strong class="modal-nomefornitore"></strong>con id: <span class="id_cc-modal"></span>?</p>
+		  </div>
+		  <div class="modal-footer">
+			<button type="button" class="btn btn-primary" data-dismiss="modal" id="delete">Si, Elimina</button>
+			<button type="button" class="btn btn-secondary" data-dismiss="modal">Annulla</button>
+		  </div>
+		</div>
+	  </div>
+	</div>
+</div> <!-- /container-fluid -->
+{% endblock %}
+

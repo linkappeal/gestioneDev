@@ -1,0 +1,362 @@
+{% extends base_template %}
+
+{%- block actions -%}
+    {% include 'SonataAdminBundle:CRUD:action_buttons.html.twig' %}
+{%- endblock -%}
+
+{% block tab_menu %}{{ knp_menu_render(admin.sidemenu(action), {'currentClass' : 'active', 'template': sonata_admin.adminPool.getTemplate('tab_menu_template')}, 'twig') }}{% endblock %}
+
+{% block javascripts %}
+    {{ parent() }}
+    {#  <script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/waypoints/4.0.1/jquery.waypoints.min.js"></script> #}
+    {# <script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/Counter-Up/1.0.0/jquery.counterup.min.js"></script> #}
+    <script type="text/javascript">
+        jQuery(document).ready(function ($) {
+            
+                $('.groupcheck').next('.iCheck-helper').click(function(){
+
+                    if($(this).prev().is(':checked')){
+                        $(this).parent().addClass("checked");
+                        $(this).parent().nextUntil('ul').next().find('.suboption').prop('checked', true).parent().addClass('checked');
+                    }
+                    else{
+                        $(this).parent().removeClass("checked");
+                        $(this).parent().nextUntil('ul').next().find('.suboption').prop('checked', false).parent().removeClass('checked');
+                    }
+                });
+                
+                $('.suboption').next('.iCheck-helper').click(uncheckTutti);  
+                
+                function uncheckTutti(){
+                    
+                    if($(this).parentsUntil('ul').parent().prev().prev().find('.groupcheck').is(':checked')){ 
+                        $(this).parentsUntil('ul').parent().prev().prev().find('.groupcheck').prop('checked', false);
+                        $(this).parentsUntil('ul').parent().prev().prev().removeClass("checked");
+                    }
+                    
+                }
+                
+            
+        });
+        
+        function goToExtract(){
+
+         {% if (((tipologia_estrazione_label == 'noleggio') or (tipologia_estrazione_label == 'vendita')) and (tipologia_lead_label == 'estraibili'))%}
+            var url = "{{ admin.generateUrl('extractdo', {'max_lead': 'tmp_lead'})}}";
+            //url = url.replace("tmp_lead", max_lead_estraibili); 
+            $('#myModal2').modal({
+                show: true,
+                remote: url
+            }); 
+         {% else %}                    
+             $("#extractForm").submit();
+         {% endif %}   
+             
+        }
+        
+        function reloadExport(){
+            
+             var action="{{ admin.generateUrl('export', {'filter': admin.filterParameters,'max_lead':lead_limit, 'limit':limit, 'type':phone_type}) }}";
+             action = action.replace(/&amp;/g, '&');
+             $('#extractForm').attr('action', action);
+             $("#extractForm").submit();
+             
+        }
+        
+        function submitExtract(){
+            
+            var dataSblocco =  $("#form_data_di_sblocco").val();
+            var cliente = $("#form_cliente").val();
+            $("#_data_di_sblocco").val(dataSblocco);   
+            $("#_store_into_db").val(1);
+            $("#_cliente").val(cliente);
+            
+            $("#extractForm").submit();
+            
+            $('#myModal2').modal('hide'); 
+            
+        }
+
+
+        
+    
+    </script>
+{% endblock %}
+
+{% block content %}
+<div class="row">
+	<div class="col-md-12">
+		<div class="sonata-ba-delete">
+			<div class="box box-info">
+				<div class="box-header">
+				<div class="box-header-controls row">
+					<div class="col-md-10">
+						<h2 class="box-title">Riepilogo dei dati per l'estrazione</h2>
+					</div>
+                                        
+					<div class="col-md-2">
+						{% if admin.hasRoute('list') and admin.isGranted('LIST') %}
+							<a class="btn btn-danger" href="{{ referer }}">
+								<i class="fa fa-th-list" aria-hidden="true"></i> {{ 'Torna indietro' }}
+							</a>
+						{% endif %}
+					</div>
+				</div>
+
+				</div>
+				<div class="box-body">
+					<div class="row">
+						<div class="col-md-1 col-sx-1 text-center">
+							<div class="lato-infobox">
+								<i class="fa fa-info-circle fa-5x"></i>
+							</div>
+						</div>
+						<div class="col-md-11 col-sx-11 text-left">
+							<h4>
+								Stai procedendo all'estrazione di <strong>{{ num_lead_label }}</strong> anagrafiche per <strong>{{ tipologia_estrazione_label }}</strong>.</br>
+								Ricerca effettuata sulle anagrafiche {{ tipologia_lead_label }} {% if filter_data_label|length %} con i seguenti filtri: {% endif %}
+							</h4>
+                                                        <div id="filters_list">
+{#	                    {{dump(filter_data_label)}}#}
+						{% for key, value in filter_data_label %}
+							<strong>{{ key|upper }} -> </strong>{%if value is iterable %}
+                                                            <ul>
+								{% for k, v in value %}
+									{% if v|length %}
+										{%if v is iterable %}
+											<strong>{{ k|capitalize }}: </strong><br/> 
+											{% for j, z in v %}
+												 {%if z is iterable %}
+												   {% for j, z in v %}
+													   {{ z }}
+												   {% endfor %}
+												 {% else %}
+                                                                                                     <li>{{ z }}</li>
+												 {% endif %}    
+											{% endfor %}
+										{% else %}
+											<li>{{ v }}</li>
+										{% endif %}
+									{% endif %}
+								{% endfor %}
+                                                            </ul>
+							{% else %}
+								<strong>{{ value }}</strong><br/>
+							{% endif %}
+	{#                       {{ filt_val }}#}
+	{#                    {{ cycle(filter_data_label, loop.index0) }}#}
+					{% endfor %}
+				</div>
+						</div>
+					</div>	
+	{#{{ dump(admin.datagrid) }}#}
+	{#                {% if data.all_elements %}#}
+	{#                    {{ 'message_batch_all_confirmation'|trans({}, 'SonataAdminBundle') }}#}
+	{#                {% else %}
+						{% transchoice data.idx|length with {'%count%': data.idx|length} from 'SonataAdminBundle' %}message_batch_confirmation{% endtranschoice %}
+					{% endif %}#}
+
+					
+				</div>
+				<div class="box-footer clearfix">
+					<form id="extractForm" action="{{ admin.generateUrl('exportdo', {'filter': admin.filterParameters,'num_lead':lead_limit}) }}" method="POST">
+						<input type="hidden" name="confirmation" value="ok">
+						<input type="hidden" name="format" value="csv">
+	{#                  <input type="hidden" name="data" value="{{ data|json_encode }}"> #}
+						<input type="hidden" name="_sonata_csrf_token" value="{{ csrf_token }}">
+						<input type="hidden" id="_data_di_sblocco" name="_data_di_sblocco" value="">
+						<input type="hidden" id="_store_into_db" name="_store_into_db" value="">
+						<input type="hidden" id="_cliente" name="_cliente" value="">
+{#						{% form_theme form 'SonataAdminBundle:Form:form_admin_fields.html.twig' %}#}
+						<div id="form_checkbox" class="row">
+							<div class="col-md-12">
+								<h3>Seleziona i campi che vuoi estrarre</h3>
+							</div>
+							<div class="box-checkbox col-md-12">
+								{% for groupk, groupv in checkb %}
+								<div class="col-md-2 gruppi-checkb {{groupk|replace(' ', '_')}}">
+									<ul>
+										<li>
+										  <input type="checkbox" class="groupcheck" id="option_{{groupk|replace(' ', '_')}}"><label for="option_{{groupk|replace(' ', '-')}}"> {{groupk}}</label>
+										  <ul>
+											{% for subk, subv in groupv %}
+												<li><label>
+												{# {% if (app.request.request is defined)%}{{ dump(app.request.request.get('campi_export'))}} {% endif %}#}
+														<input type="checkbox" name="campi_export[]" class="suboption" id="option_{{subv}}" value="{{subv}}" {% if ((app.request.request is defined) and (subv in  app.request.request.get('campi_export') or (not(app.request.request.get('campi_export')|length) and subv in campi_default))) %} checked {% endif %}> {{subk}}
+												</label></li>
+											{% endfor %}
+										  </ul>
+										</li>
+									</ul>
+								</div>
+								{% endfor %}
+								<div class="col-sx-12 col-md-12 box-btn-aggiornalista">
+									<button type="button" class="btn btn-primary go_on_button" onclick="reloadExport();"><i class="fa fa-filter" aria-hidden="true"></i>Aggiorna Lista</button>
+								</div>
+							</div>
+						</div>
+
+                                                
+{#						<ul id="form_campi_estrazione" class=" list-unstyled">
+							<li>
+								<div class="checkbox"><label class="">
+									<div class="icheckbox_square-blue checked">
+									<input type="checkbox" id="form_campi_estrazione_2" name="form[campi_estrazione][]" value="3" checked="checked" >
+									<ins class="iCheck-helper"></ins>
+									</div>
+									<span class="control-label__text">Mail</span></label>
+								</div>
+							</li>
+						</ul>#}
+						<span onclick="goToExtract()" class="btn btn-success">{{ 'Estrai' }}</span>
+					</form>
+				</div>
+			</div>
+		</div>
+                                        
+                <!-- finestra modale asincrona -->
+		<div class="modal fade" id="myModal2" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
+			<div class="modal-dialog"><div class="modal-content"></div></div>
+		</div>
+		<!-- fine finestra modale -->
+    </div>
+
+    <div class="col-xs-12 col-md-12">
+        {% set batchactions = admin.batchactions %}
+        {% if admin.hasRoute('batch') and batchactions|length %}
+            <form action="{{ admin.generateUrl('batch', {'filter': admin.filterParameters}) }}" method="POST" >
+            <input type="hidden" name="_sonata_csrf_token" value="{{ csrf_token }}">
+        {% endif %}
+
+        {# Add a margin if no pager to prevent dropdown cropping on window #}
+        <div class="box box-primary" {% if admin.datagrid.pager.lastPage == 1 %}style="margin-bottom: 100px;"{% endif %}>
+            <div class="box-body {% if admin.datagrid.results|length > 0 %}table-responsive no-padding{% endif %}">
+                {{ sonata_block_render_event('sonata.admin.list.table.top', { 'admin': admin }) }}
+
+                {% block list_header %}{% endblock %}
+
+                {% if admin.datagrid.results|length > 0 %}
+                    <table class="table table-bordered table-striped sonata-ba-list">
+                        {% block table_header %}
+                            <thead>
+                                <tr class="sonata-ba-list-field-header">
+                                    {% for field_description in admin.list.elements %}
+                                        {% if admin.hasRoute('batch') and field_description.getOption('code') == '_batch' and batchactions|length > 0 %}
+                                            <th class="sonata-ba-list-field-header sonata-ba-list-field-header-batch">
+                                              <input type="checkbox" id="list_batch_checkbox">
+                                            </th>
+                                        {% elseif field_description.getOption('code') == '_select' %}
+                                            <th class="sonata-ba-list-field-header sonata-ba-list-field-header-select"></th>
+                                        {% elseif field_description.name == '_action' and app.request.isXmlHttpRequest %}
+                                            {# Action buttons disabled in ajax view! #}
+                                        {% elseif field_description.getOption('ajax_hidden') == true and app.request.isXmlHttpRequest %}
+                                            {# Disable fields with 'ajax_hidden' option set to true #}
+                                        {% else %}
+                                            {% set sortable = false %}
+                                            {% if field_description.options.sortable is defined and field_description.options.sortable %}
+                                                {% set sortable             = false %}
+                                                {% set sort_parameters      = admin.modelmanager.sortparameters(field_description, admin.datagrid) %}
+                                                {% set current              = admin.datagrid.values._sort_by == field_description or admin.datagrid.values._sort_by.fieldName == sort_parameters.filter._sort_by %}
+                                                {% set sort_active_class    = current ? 'sonata-ba-list-field-order-active' : '' %}
+                                                {% set sort_by              = current ? admin.datagrid.values._sort_order : field_description.options._sort_order %}
+                                            {% endif %}
+
+                                            {% spaceless %}
+                                                <th class="sonata-ba-list-field-header-{{ field_description.type}} {% if sortable %} sonata-ba-list-field-header-order-{{ sort_by|lower }} {{ sort_active_class }}{% endif %}{% if field_description.options.header_class is defined %} {{ field_description.options.header_class }}{% endif %}"{% if field_description.options.header_style is defined %} style="{{ field_description.options.header_style }}"{% endif %}>
+                                                    {% if sortable %}<a href="{{ admin.generateUrl('export', sort_parameters) }}">{% endif %}
+                                                    {{ field_description.label|trans({}, field_description.translationDomain) }}
+                                                    {% if sortable %}</a>{% endif %}
+                                                </th>
+                                            {% endspaceless %}
+                                        {% endif %}
+                                    {% endfor %}
+                                </tr>
+                            </thead>
+                        {% endblock %}
+
+                        {% block table_body %}
+                            <tbody>
+                                {% include admin.getTemplate('outer_list_rows_' ~ admin.getListMode()) %}
+                            </tbody>
+                        {% endblock %}
+
+                        {% block table_footer %}
+                        {% endblock %}
+                    </table>
+                {% else %}
+                    {% block no_result_content %}
+                        <div class="info-box">
+                            <span class="info-box-icon bg-aqua"><i class="fa fa-arrow-circle-right" aria-hidden="true"></i></span>
+                            <div class="info-box-content">
+                                <span class="info-box-text">{{ 'no_result'|trans({}, 'SonataAdminBundle') }}</span>
+                                <div class="progress">
+                                    <div class="progress-bar" style="width: 0%"></div>
+                                </div>
+                                <span class="progress-description">
+                                    {% if not app.request.xmlHttpRequest %}
+                                        {% include 'SonataAdminBundle:Button:create_button.html.twig' %}
+                                    {% endif %}
+                                </span>
+                            </div><!-- /.info-box-content -->
+                        </div>
+                    {% endblock %}
+                {% endif %}
+
+                {{ sonata_block_render_event('sonata.admin.list.table.bottom', { 'admin': admin }) }}
+            </div>
+            {% block list_footer %}
+                {% if admin.datagrid.results|length > 0 %}
+                    <div class="box-footer">
+                        <div class="form-inline clearfix">
+                            {% if not app.request.isXmlHttpRequest %}
+                                <div class="pull-left">
+                                    {% if admin.hasRoute('batch') and batchactions|length > 0  %}
+                                        {% block batch %}
+                                            <script>
+                                                {% block batch_javascript %}
+                                                    jQuery(document).ready(function ($) {
+                                                        // Toggle individual checkboxes when the batch checkbox is changed
+                                                        $('#list_batch_checkbox').on('ifChanged change', function () {
+                                                            var checkboxes = $(this)
+                                                                .closest('table')
+                                                                .find('td.sonata-ba-list-field-batch input[type="checkbox"], div.sonata-ba-list-field-batch input[type="checkbox"]')
+                                                            ;
+                                                            if (window.SONATA_CONFIG.USE_ICHECK) {
+                                                                checkboxes.iCheck($(this).is(':checked') ? 'check' : 'uncheck');
+                                                            } else {
+                                                                checkboxes.prop('checked', this.checked);
+                                                            }
+                                                        });
+
+                                                        // Add a CSS class to rows when they are selected
+                                                        $('td.sonata-ba-list-field-batch input[type="checkbox"], div.sonata-ba-list-field-batch input[type="checkbox"]')
+                                                            .on('ifChanged change', function () {
+                                                                $(this)
+                                                                    .closest('tr, div.sonata-ba-list-field-batch')
+                                                                    .toggleClass('sonata-ba-list-row-selected', $(this).is(':checked'))
+                                                                ;
+                                                            })
+                                                            .trigger('ifChanged');
+
+                                                        
+                                                    });
+                                                                                                        
+                                                {% endblock %}
+                                            </script>
+
+                                            
+                                        {% endblock %}
+                                    {% endif %}
+                                </div>
+
+
+                            {% endif %}
+                        </div>
+                    </div>
+                {% endif %}
+            {% endblock %}
+        </div>
+
+    </div>                
+</div>
+{% endblock %}

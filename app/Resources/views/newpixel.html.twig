@@ -1,0 +1,190 @@
+{% extends base_template %}
+
+        {% block stylesheets %}
+            {{ parent() }}
+			{% stylesheets 'css/style.css'	%}
+				<link href="{{ asset_url }}" type="text/css" rel="stylesheet"/>
+			{% endstylesheets %}
+		{% endblock %}
+        {% block javascripts %}
+                {{ parent() }}
+			{% javascripts 'js/main.js' %}
+				<script src="{{ asset_url }}"></script>
+			{% endjavascripts %}
+		<script>
+			function aggiorna(obj){
+				var e = document.getElementById("vars");
+				var target = document.getElementById("pixel");
+				//var strUser = e.options[e.selectedIndex].value;
+				var strUser = obj.getAttribute('data-value')
+				if(strUser!=''){
+					console.log(strUser);
+					insertAtCursor(target, strUser);
+					//e.selectedIndex =0;
+				}
+			}
+			function insertAtCursor(myField, myValue) {
+				//IE support
+				if (document.selection) {
+					myField.focus();
+					sel = document.selection.createRange();
+					sel.text = myValue;
+				}
+				//MOZILLA and others
+				else if (myField.selectionStart || myField.selectionStart == '0') {
+					var startPos = myField.selectionStart;
+					var endPos = myField.selectionEnd;
+					myField.value = myField.value.substring(0, startPos)
+						+ myValue
+						+ myField.value.substring(endPos, myField.value.length);
+				} else {
+					myField.value += myValue;
+				}
+			}
+			</script>
+		{% endblock %}
+
+		{% block content %}
+		<div class="container theme-showcase" role="main">
+		<nav class="navbar navbar-default">
+		  <div class="container-fluid">
+			<!-- Brand and toggle get grouped for better mobile display -->
+			<div class="navbar-header">
+			  <button type="button" class="navbar-toggle collapsed" data-toggle="collapse" data-target="#bs-example-navbar-collapse-1" aria-expanded="false">
+				<span class="sr-only">Toggle navigation</span>
+				<span class="icon-bar"></span>
+				<span class="icon-bar"></span>
+				<span class="icon-bar"></span>
+			  </button>
+			  <a class="navbar-brand" href="#">Pixel Manager</a>
+			</div>
+			<div class="collapse navbar-collapse" id="bs-example-navbar-collapse-1">
+			  <ul class="nav navbar-nav">
+				<li ><a href="{{admin.generateUrl('pixelmanager')}}">Lista Pixel<span class="sr-only">(current)</span></a></li>
+				<li class="active"><a href="#">Nuovo Pixel<span class="sr-only">(current)</span></a></li>
+			  </ul>
+			  <ul class="nav navbar-nav navbar-right">
+			  </ul>
+			</div><!-- /.navbar-collapse -->
+		  </div><!-- /.container-fluid -->
+		</nav>
+			<div class="row">
+				<div class="col-sm-12">
+					{% if inserito == true %}
+						<div class="alert alert-success" role="alert">
+							<strong>Pixel {{media}} inserito!</strong> Id Campagna: {{id_campagna}} - {{ descrizione }}
+						</div>
+					{% endif %}
+					<div class="panel panel-default">
+						<div class="panel-heading">
+						  <h3 class="panel-title">Inserisci un nuovo Pixel</h3>
+						</div>
+						<div class="panel-body">
+							<form name="login" action={{admin.generateUrl('insertpixel')}} method="post" id="insert-pixel-form">
+							<div class="form-group">
+								<label for="dominio">URL della campagna</label>
+								<input type="text" name="dominio" id="dominio" class="form-control" placeholder="Inserisci una campagna" />
+								<small id="emailHelp" class="form-text text-muted">Inserire il link della campagna completo del sul falsemedia.</small>
+								<div id="dominio_errore"></div>
+							</div>
+							<div class="form-group error">
+								<label for="cplnumber">CPL associato al pixel</label>
+								<input type="text" name="cplnumber" class="form-control" id="cplnumber" placeholder="Codice CPL" />
+								<small id="emailHelp" class="form-text text-muted">Inserire il codice dell'editore nel formato cplXX.</small>
+								<div id="cplnumber_errore"></div>
+							</div>
+							<div class="form-group error">
+								<label for="payout_code">Payout code</label>
+								<input type="text" name="payout_code" class="form-control" id="payout_code" placeholder="Codice Payout" />
+								<small id="emailHelp" class="form-text text-muted">Inserire il codice payout (solitamente 1 => business, 2 => Consumer) da associare al pixel.</small>
+								<div id="payout_code_errore"></div>
+							</div>
+								<input type="hidden" name="runrun" id="runrun" value="runner" />
+								<div class="form-group">
+									<label for="pixel">Codice pixel</label>
+									<div class="dropdown">
+										<button class="btn btn-primary dropdown-toggle" type="button" data-toggle="dropdown">Variabili dinamiche
+										<span class="caret"></span></button>
+										<ul class="dropdown-menu">
+											<li><a href="javascript:void(0)" onclick="aggiorna(this)" data-value="{ORDERID}">Id Ordine (sub_id)</a></li>
+											<li><a href="javascript:void(0)" onclick="aggiorna(this)" data-value="{BANNERID}">Id banner</a></li>
+											<li><a href="javascript:void(0)" onclick="aggiorna(this)" data-value="{AFFILIATEID}">Id Affiliato</a></li>
+											<li><a href="javascript:void(0)" onclick="aggiorna(this)" data-value="{PRODUCTID}">Id Prodotto</a></li>
+											<li><a href="javascript:void(0)" onclick="aggiorna(this)" data-value="{DATA2}">Dato Custom 2</a></li>
+											<li><a href="javascript:void(0)" onclick="aggiorna(this)" data-value="{DATA2}">Dato Custom 2</a></li>
+										</ul>
+									</div>
+									<textarea class="form-control"  name="pixel" id="pixel" rows="3"></textarea>
+									<small id="emailHelp" class="form-text text-muted">Tag consentiti: img, js ed iframe. Puoi inserire variabili dinamiche all'interno del codice cliccando su <strong>Variabili dinamiche</strong></small>
+									<div id="pixel_errore"></div>
+								</div>
+								<div class="form-group">
+									<label for="descrizione">Descrizione</label>
+									<input type="text" name="descrizione" class="form-control" id="descrizione" placeholder="Descrizione breve" />
+									<small id="emailHelp" class="form-text text-muted">Breve descrizione del pixel - Es. nome della campagna seguita dal numero cpl.</small>
+								</div>
+								<button type="button" onclick="inserisciPixel()" class="btn btn-primary">Inserisci</button>
+							 </form>
+						</div>
+					</div>
+				</div>
+				<!-- finestra modale -->
+				<div class="modal fade" id="confirm">
+				  <div class="modal-dialog" role="document">
+					<div class="modal-content">
+					  <div class="modal-header">
+						<h5 class="modal-title">Pixel Presente</h5>
+						<button type="button" class="close" data-dismiss="modal" aria-label="Close">
+						  <span aria-hidden="true">&times;</span>
+						</button>
+					  </div>
+					  <div class="modal-body">
+						<p>Il pixel che stai cercando di inserire è già presente.<br>Vuoi che lo sovrasciva?</p>
+					  </div>
+					  <div class="modal-footer">
+						<button type="button" class="btn btn-primary" id="sovrascrivi">Si, sovrascrivi</button>
+						<button type="button" class="btn btn-secondary" data-dismiss="modal">Annulla</button>
+					  </div>
+					</div>
+				  </div>
+				</div>
+			</div> <!-- row -->
+		 </div>
+		 <script>
+			 function inserisciPixel(){
+				var url = "{{admin.generateUrl('checkpixel')}}";
+				var dominio = $('#dominio').val();
+				var cplnumber = $('#cplnumber').val();
+				var pixelcode = $('#pixel').val();
+				var payout_code = $('#payout_code').val();
+				var controllo = controlli($('#dominio'),$('#cplnumber'),$('#pixel'));
+				cleanError();
+				if(controllo.stato!=true){
+					$.each(controllo.objs, function(index, obj) {
+						console.log(obj.id);
+						console.log(obj.messaggio);
+						$('#'+obj.id + '_errore').html(obj.messaggio);
+					});
+				}else{
+					$.ajax({url: url,
+						data: { dominio : dominio, cplnumber : cplnumber, payout_code : payout_code },
+						success: function(result){
+							console.log(result);
+							console.log(result.presente);
+							if(result.presente==false){ // pixel non presente
+								$('#insert-pixel-form').submit();
+							}else{
+								$('#confirm').modal({
+									backdrop: 'static',
+									keyboard: false
+								})
+									.one('click', '#sovrascrivi', function(e) {
+									$('#insert-pixel-form').submit();
+								});
+							}
+					}});
+				}
+			}
+		 </script>
+		 {% endblock %}
+

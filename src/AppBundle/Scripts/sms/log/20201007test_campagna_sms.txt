@@ -1,0 +1,1072 @@
+2020-10-07,12-10-35
+
+
+
+/************************************************/ 
+2020-10-07,12-10-35
+ File che lancia i test per le campagne sms che lo richiedono 
+
+
+ Connesso a gestione! 
+
+
+ Abbiamo recuperato la campagna: AMEX BAU test con id 91, risposta: 0.
+
+
+ update campagna-91 allo stato 1 RIUSCITO... info:   
+
+
+ Recuperiamo fornitore con id: 3  
+
+
+ messaggio in gsm KO, controllo che non superi i 70 caratteri  
+
+
+ update campagna-91 allo stato 6 RIUSCITO... info: errore: Messaggio non compatibile con gsm e superiore a 70 caratteri  
+
+
+ Esco  
+
+2020-10-07,12-23-35
+
+
+
+/************************************************/ 
+2020-10-07,12-23-35
+ File che lancia i test per le campagne sms che lo richiedono 
+
+
+ Connesso a gestione! 
+
+
+ Abbiamo recuperato la campagna: AMEX BAU test con id 91, risposta: 0.
+
+
+ update campagna-91 allo stato 1 RIUSCITO... info:   
+
+
+ Recuperiamo fornitore con id: 3  
+
+
+ messaggio in gsm KO, controllo che non superi i 70 caratteri  
+
+
+ update campagna-91 allo stato 6 RIUSCITO... info: errore: Messaggio non compatibile con gsm e superiore a 70 caratteri  
+
+
+ Esco  
+
+2020-10-07,12-32-15
+
+
+
+/************************************************/ 
+2020-10-07,12-32-15
+ File che lancia i test per le campagne sms che lo richiedono 
+
+
+ Connesso a gestione! 
+
+
+ Abbiamo recuperato la campagna: AMEX BAU test con id 91, risposta: 0.
+
+
+ update campagna-91 allo stato 1 RIUSCITO... info:   
+
+
+ Recuperiamo fornitore con id: 3  
+
+
+ messaggio in gsm KO, controllo che non superi i 70 caratteri  
+
+
+ update campagna-91 allo stato 6 RIUSCITO... info: errore: Messaggio non compatibile con gsm e superiore a 70 caratteri  
+
+
+ Esco  
+
+2020-10-07,12-37-19
+
+
+
+/************************************************/ 
+2020-10-07,12-37-19
+ File che lancia i test per le campagne sms che lo richiedono 
+
+
+ Connesso a gestione! 
+
+
+ Abbiamo recuperato la campagna: AMEX BAU test con id 91, risposta: 0.
+
+
+ update campagna-91 allo stato 1 RIUSCITO... info:   
+
+
+ Recuperiamo fornitore con id: 3  
+
+
+ messaggio in gsm KO, controllo che non superi i 70 caratteri  
+
+
+ update campagna-91 allo stato 6 RIUSCITO... info: errore: Messaggio non compatibile con gsm e superiore a 70 caratteri  
+
+
+ Esco  
+
+2020-10-07,12-37-50
+
+
+
+/************************************************/ 
+2020-10-07,12-37-50
+ File che lancia i test per le campagne sms che lo richiedono 
+
+
+ Connesso a gestione! 
+
+
+ Abbiamo recuperato la campagna: AMEX BAU test con id 91, risposta: 0.
+
+
+ update campagna-91 allo stato 1 RIUSCITO... info:   
+
+
+ Recuperiamo fornitore con id: 3  
+
+
+ messaggio in gsm KO, controllo che non superi i 70 caratteri  
+
+
+ update campagna-91 allo stato 6 RIUSCITO... info: errore: Messaggio non compatibile con gsm e superiore a 70 caratteri  
+
+
+ Esco  
+
+2020-10-07,12-38-20
+
+
+
+/************************************************/ 
+2020-10-07,12-38-20
+ File che lancia i test per le campagne sms che lo richiedono 
+
+
+ Connesso a gestione! 
+
+
+ Abbiamo recuperato la campagna: AMEX BAU test con id 91, risposta: 0.
+
+
+ update campagna-91 allo stato 1 RIUSCITO... info:   
+
+
+ Recuperiamo fornitore con id: 3  
+
+
+ messaggio in gsm KO, controllo che non superi i 70 caratteri  
+
+
+ update campagna-91 allo stato 6 RIUSCITO... info: errore: Messaggio non compatibile con gsm e superiore a 70 caratteri  
+
+
+ Esco  
+
+2020-10-07,12-52-54
+
+
+
+/************************************************/ 
+2020-10-07,12-52-54
+ File che lancia i test per le campagne sms che lo richiedono 
+
+
+ Connesso a gestione! 
+
+
+ Abbiamo recuperato la campagna: AMEX BAU test con id 91, risposta: 0.
+
+
+ update campagna-91 allo stato 1 RIUSCITO... info:   
+
+
+ Recuperiamo fornitore con id: 3  
+
+
+ messaggio gsm ok 
+
+
+ Preleviamo numeri di test.  
+
+
+ Non abbiamo recuperato nessun numero di test. Settiamo la campagna con stato a 6.  
+
+
+ update campagna-91 allo stato 6 RIUSCITO... info: Errore: Non abbiamo recuperato nessun numero di test  
+
+
+ Esco  
+
+2020-10-07,12-57-03
+
+
+
+/************************************************/ 
+2020-10-07,12-57-03
+ File che lancia i test per le campagne sms che lo richiedono 
+
+
+ Connesso a gestione! 
+
+
+ Abbiamo recuperato la campagna: AMEX BAU test con id 91, risposta: 0.
+
+
+ update campagna-91 allo stato 1 RIUSCITO... info:   
+
+
+ Recuperiamo fornitore con id: 3  
+
+
+ messaggio in gsm KO, controllo che non superi i 70 caratteri  
+
+
+ update campagna-91 allo stato 6 RIUSCITO... info: errore: Messaggio non compatibile con gsm e superiore a 70 caratteri  
+
+
+ Esco  
+
+2020-10-07,12-59-20
+
+
+
+/************************************************/ 
+2020-10-07,12-59-20
+ File che lancia i test per le campagne sms che lo richiedono 
+
+
+ Connesso a gestione! 
+
+
+ Abbiamo recuperato la campagna: AMEX BAU test con id 91, risposta: 0.
+
+
+ update campagna-91 allo stato 1 RIUSCITO... info:   
+
+
+ Recuperiamo fornitore con id: 3  
+
+
+ messaggio in gsm KO, controllo che non superi i 70 caratteri  
+
+
+ update campagna-91 allo stato 6 RIUSCITO... info: errore: Messaggio non compatibile con gsm e superiore a 70 caratteri  
+
+
+ Esco  
+
+2020-10-07,13-00-01
+
+
+
+/************************************************/ 
+2020-10-07,13-00-01
+ File che lancia i test per le campagne sms che lo richiedono 
+
+
+ Connesso a gestione! 
+
+
+ Abbiamo recuperato la campagna: AMEX BAU test con id 91, risposta: 0.
+
+
+ update campagna-91 allo stato 1 RIUSCITO... info:   
+
+
+ Recuperiamo fornitore con id: 3  
+
+
+ messaggio gsm ok 
+
+
+ Preleviamo numeri di test.  
+
+
+ Non abbiamo recuperato nessun numero di test. Settiamo la campagna con stato a 6.  
+
+
+ update campagna-91 allo stato 6 RIUSCITO... info: Errore: Non abbiamo recuperato nessun numero di test  
+
+
+ Esco  
+
+2020-10-07,13-07-25
+
+
+
+/************************************************/ 
+2020-10-07,13-07-25
+ File che lancia i test per le campagne sms che lo richiedono 
+
+
+ Connesso a gestione! 
+
+
+ Abbiamo recuperato la campagna: AMEX BAU test con id 91, risposta: 0.
+
+
+ update campagna-91 allo stato 1 RIUSCITO... info:   
+
+
+ Recuperiamo fornitore con id: 3  
+
+
+ messaggio gsm ok 
+
+
+ Preleviamo numeri di test.  
+
+
+ Abbiamo recuperato 1 numeri di test  divisi in 1 lanci.  
+
+
+ Lancio n. 1  
+
+
+ Lanciamo lo script del fornitore: Crossing Bulk.php 
+
+
+ Il lancio è andato OK 
+
+
+ update stato numero RIUSCITO per il numero con id: 3104632, id del fornitore: CRONET-ec699995f6dc-0b8731b36889  
+
+
+ update campagna stato a 2 RIUSCITO.  
+
+
+ Esco  
+
+2020-10-07,14-46-35
+
+
+
+/************************************************/ 
+2020-10-07,14-46-35
+ File che lancia i test per le campagne sms che lo richiedono 
+
+
+ Connesso a gestione! 
+
+
+ Abbiamo recuperato la campagna: AMEX BAU test con id 91, risposta: 0.
+
+
+ update campagna-91 allo stato 1 RIUSCITO... info:   
+
+
+ Recuperiamo fornitore con id: 3  
+
+
+ messaggio in gsm KO, controllo che non superi i 70 caratteri  
+
+
+ update campagna-91 allo stato 6 RIUSCITO... info: errore: Messaggio non compatibile con gsm e superiore a 70 caratteri  
+
+
+ Esco  
+
+2020-10-07,14-47-40
+
+
+
+/************************************************/ 
+2020-10-07,14-47-40
+ File che lancia i test per le campagne sms che lo richiedono 
+
+
+ Connesso a gestione! 
+
+
+ Abbiamo recuperato la campagna: AMEX BAU test con id 91, risposta: 0.
+
+
+ update campagna-91 allo stato 1 RIUSCITO... info:   
+
+
+ Recuperiamo fornitore con id: 3  
+
+
+ messaggio gsm ok 
+
+
+ Preleviamo numeri di test.  
+
+
+ Abbiamo recuperato 2 numeri di test  divisi in 1 lanci.  
+
+
+ Lancio n. 1  
+
+
+ Lanciamo lo script del fornitore: Crossing Bulk.php 
+
+
+ Il lancio è andato OK 
+
+
+ update stato numero RIUSCITO per il numero con id: 3104633, id del fornitore: CRONET-46d0f5c208eb-39bde85674c5  
+
+
+ update stato numero RIUSCITO per il numero con id: 3104634, id del fornitore: CRONET-fbafe91f598d-dfc05fcb2c22  
+
+
+ update campagna stato a 2 RIUSCITO.  
+
+
+ Esco  
+
+2020-10-07,15-49-44
+
+
+
+/************************************************/ 
+2020-10-07,15-49-44
+ File che lancia i test per le campagne sms che lo richiedono 
+
+
+ Connesso a gestione! 
+
+
+ Abbiamo recuperato la campagna: AMEX BAU test con id 91, risposta: 0.
+
+
+ update campagna-91 allo stato 1 RIUSCITO... info:   
+
+
+ Recuperiamo fornitore con id: 3  
+
+
+ messaggio gsm ok 
+
+
+ Preleviamo numeri di test.  
+
+
+ Abbiamo recuperato 2 numeri di test  divisi in 1 lanci.  
+
+
+ Lancio n. 1  
+
+
+ Lanciamo lo script del fornitore: Crossing Bulk.php 
+
+
+ Il lancio è andato OK 
+
+
+ update stato numero RIUSCITO per il numero con id: 3104635, id del fornitore: CRONET-f84bb6294a2a-b6d58dd98d30  
+
+
+ update stato numero RIUSCITO per il numero con id: 3104636, id del fornitore: CRONET-daa1bec38c6a-1891e19828ee  
+
+
+ update campagna stato a 2 RIUSCITO.  
+
+
+ Esco  
+
+2020-10-07,15-53-08
+
+
+
+/************************************************/ 
+2020-10-07,15-53-08
+ File che lancia i test per le campagne sms che lo richiedono 
+
+
+ Connesso a gestione! 
+
+
+ Abbiamo recuperato la campagna: AMEX BAU test con id 91, risposta: 0.
+
+
+ update campagna-91 allo stato 1 RIUSCITO... info:   
+
+
+ Recuperiamo fornitore con id: 3  
+
+
+ messaggio in gsm KO, controllo che non superi i 70 caratteri  
+
+
+ update campagna-91 allo stato 6 RIUSCITO... info: errore: Messaggio non compatibile con gsm e superiore a 70 caratteri  
+
+
+ Esco  
+
+2020-10-07,15-54-41
+
+
+
+/************************************************/ 
+2020-10-07,15-54-41
+ File che lancia i test per le campagne sms che lo richiedono 
+
+
+ Connesso a gestione! 
+
+
+ Abbiamo recuperato la campagna: AMEX BAU test con id 91, risposta: 0.
+
+
+ update campagna-91 allo stato 1 RIUSCITO... info:   
+
+
+ Recuperiamo fornitore con id: 3  
+
+
+ messaggio in gsm KO, controllo che non superi i 70 caratteri  
+
+
+ update campagna-91 allo stato 6 RIUSCITO... info: errore: Messaggio non compatibile con gsm e superiore a 70 caratteri  
+
+
+ Esco  
+
+2020-10-07,15-57-10
+
+
+
+/************************************************/ 
+2020-10-07,15-57-10
+ File che lancia i test per le campagne sms che lo richiedono 
+
+
+ Connesso a gestione! 
+
+
+ Abbiamo recuperato la campagna: AMEX BAU test con id 91, risposta: 0.
+
+
+ update campagna-91 allo stato 1 RIUSCITO... info:   
+
+
+ Recuperiamo fornitore con id: 3  
+
+
+ messaggio in gsm KO, controllo che non superi i 70 caratteri  
+
+
+ update campagna-91 allo stato 6 RIUSCITO... info: errore: Messaggio non compatibile con gsm e superiore a 70 caratteri  
+
+
+ Esco  
+
+2020-10-07,15-59-14
+
+
+
+/************************************************/ 
+2020-10-07,15-59-14
+ File che lancia i test per le campagne sms che lo richiedono 
+
+
+ Connesso a gestione! 
+
+
+ Abbiamo recuperato la campagna: AMEX BAU test con id 91, risposta: 0.
+
+
+ update campagna-91 allo stato 1 RIUSCITO... info:   
+
+
+ Recuperiamo fornitore con id: 3  
+
+
+ messaggio gsm ok 
+
+
+ Preleviamo numeri di test.  
+
+
+ Abbiamo recuperato 2 numeri di test  divisi in 1 lanci.  
+
+
+ Lancio n. 1  
+
+
+ Lanciamo lo script del fornitore: Crossing Bulk.php 
+
+
+ Il lancio è andato OK 
+
+
+ update stato numero RIUSCITO per il numero con id: 3104637, id del fornitore: CRONET-6b5665a82af6-24cc995491f2  
+
+
+ update stato numero RIUSCITO per il numero con id: 3104638, id del fornitore: CRONET-5e0c33ae04c6-37ecb2642aeb  
+
+
+ update campagna stato a 2 RIUSCITO.  
+
+
+ Esco  
+
+2020-10-07,16-02-32
+
+
+
+/************************************************/ 
+2020-10-07,16-02-32
+ File che lancia i test per le campagne sms che lo richiedono 
+
+
+ Connesso a gestione! 
+
+
+ Abbiamo recuperato la campagna: AMEX BAU test con id 91, risposta: 0.
+
+
+ update campagna-91 allo stato 1 RIUSCITO... info:   
+
+
+ Recuperiamo fornitore con id: 3  
+
+
+ messaggio in gsm KO, controllo che non superi i 70 caratteri  
+
+
+ update campagna-91 allo stato 6 RIUSCITO... info: errore: Messaggio non compatibile con gsm e superiore a 70 caratteri  
+
+
+ Esco  
+
+2020-10-07,16-03-13
+
+
+
+/************************************************/ 
+2020-10-07,16-03-13
+ File che lancia i test per le campagne sms che lo richiedono 
+
+
+ Connesso a gestione! 
+
+
+ Abbiamo recuperato la campagna: AMEX BAU test con id 91, risposta: 0.
+
+
+ update campagna-91 allo stato 1 RIUSCITO... info:   
+
+
+ Recuperiamo fornitore con id: 3  
+
+
+ messaggio in gsm KO, controllo che non superi i 70 caratteri  
+
+
+ update campagna-91 allo stato 6 RIUSCITO... info: errore: Messaggio non compatibile con gsm e superiore a 70 caratteri  
+
+
+ Esco  
+
+2020-10-07,16-03-44
+
+
+
+/************************************************/ 
+2020-10-07,16-03-44
+ File che lancia i test per le campagne sms che lo richiedono 
+
+
+ Connesso a gestione! 
+
+
+ Abbiamo recuperato la campagna: AMEX BAU test con id 91, risposta: 0.
+
+
+ update campagna-91 allo stato 1 RIUSCITO... info:   
+
+
+ Recuperiamo fornitore con id: 3  
+
+
+ messaggio in gsm KO, controllo che non superi i 70 caratteri  
+
+
+ update campagna-91 allo stato 6 RIUSCITO... info: errore: Messaggio non compatibile con gsm e superiore a 70 caratteri  
+
+
+ Esco  
+
+2020-10-07,16-05-54
+
+
+
+/************************************************/ 
+2020-10-07,16-05-54
+ File che lancia i test per le campagne sms che lo richiedono 
+
+
+ Connesso a gestione! 
+
+
+ Abbiamo recuperato la campagna: AMEX BAU test con id 91, risposta: 0.
+
+
+ update campagna-91 allo stato 1 RIUSCITO... info:   
+
+
+ Recuperiamo fornitore con id: 3  
+
+
+ messaggio in gsm KO, controllo che non superi i 70 caratteri  
+
+
+ Preleviamo numeri di test.  
+
+
+ Abbiamo recuperato 1 numeri di test  divisi in 1 lanci.  
+
+
+ Lancio n. 1  
+
+
+ Lanciamo lo script del fornitore: Crossing Bulk.php 
+
+
+ Il lancio è andato OK 
+
+
+ update stato numero RIUSCITO per il numero con id: 3104639, id del fornitore: CRONET-8162a204d835-eef90271bcc3  
+
+
+ update campagna stato a 2 RIUSCITO.  
+
+
+ Esco  
+
+2020-10-07,17-05-07
+
+
+
+/************************************************/ 
+2020-10-07,17-05-07
+ File che lancia i test per le campagne sms che lo richiedono 
+
+
+ Connesso a gestione! 
+
+
+ Abbiamo recuperato la campagna: AMEX BAU test con id 91, risposta: 0.
+
+
+ update campagna-91 allo stato 1 RIUSCITO... info:   
+
+
+ Recuperiamo fornitore con id: 3  
+
+
+ messaggio gsm ok 
+
+
+ Preleviamo numeri di test.  
+
+
+ Abbiamo recuperato 2 numeri di test  divisi in 1 lanci.  
+
+
+ Lancio n. 1  
+
+
+ Lanciamo lo script del fornitore: Crossing Bulk.php 
+
+
+ Il lancio è andato OK 
+
+
+ update stato numero RIUSCITO per il numero con id: 3104640, id del fornitore: CRONET-65853bb42501-2d9b86be81ff  
+
+
+ update stato numero RIUSCITO per il numero con id: 3104641, id del fornitore: CRONET-9f28ea497e0a-29c774a07ab1  
+
+
+ update campagna stato a 2 RIUSCITO.  
+
+
+ Esco  
+
+2020-10-07,17-11-08
+
+
+
+/************************************************/ 
+2020-10-07,17-11-08
+ File che lancia i test per le campagne sms che lo richiedono 
+
+
+ Connesso a gestione! 
+
+
+ Abbiamo recuperato la campagna: AMEX BAU test con id 91, risposta: 0.
+
+
+ update campagna-91 allo stato 1 RIUSCITO... info:   
+
+
+ Recuperiamo fornitore con id: 3  
+
+
+ messaggio gsm ok 
+
+
+ Preleviamo numeri di test.  
+
+
+ Abbiamo recuperato 1 numeri di test  divisi in 1 lanci.  
+
+
+ Lancio n. 1  
+
+
+ Lanciamo lo script del fornitore: Crossing Bulk.php 
+
+
+ Il lancio è andato KO setto a 6 e esco 
+
+
+ Non abbiamo recuperato nessun numero di test. Settiamo la campagna con stato a 6 passo alla prossima campagna . Errore restituito dal fornitore: Possibly not a UTF-8 message text
+  
+
+
+ update campagna stato a 6 RIUSCITO.  
+
+
+ Esco  
+
+2020-10-07,17-13-34
+
+
+
+/************************************************/ 
+2020-10-07,17-13-34
+ File che lancia i test per le campagne sms che lo richiedono 
+
+
+ Connesso a gestione! 
+
+
+ Esco  
+
+2020-10-07,17-14-06
+
+
+
+/************************************************/ 
+2020-10-07,17-14-06
+ File che lancia i test per le campagne sms che lo richiedono 
+
+
+ Connesso a gestione! 
+
+
+ Abbiamo recuperato la campagna: AMEX BAU test con id 91, risposta: 0.
+
+
+ update campagna-91 allo stato 1 RIUSCITO... info:   
+
+
+ Recuperiamo fornitore con id: 3  
+
+
+ messaggio gsm ok 
+
+
+ Preleviamo numeri di test.  
+
+
+ Abbiamo recuperato 1 numeri di test  divisi in 1 lanci.  
+
+
+ Lancio n. 1  
+
+
+ Lanciamo lo script del fornitore: Crossing Bulk.php 
+
+
+ Il lancio è andato OK 
+
+
+ update stato numero RIUSCITO per il numero con id: 3104642, id del fornitore: CRONET-798da007d19a-6f593c084735  
+
+
+ update campagna stato a 2 RIUSCITO.  
+
+
+ Esco  
+
+2020-10-07,17-40-49
+
+
+
+/************************************************/ 
+2020-10-07,17-40-49
+ File che lancia i test per le campagne sms che lo richiedono 
+
+
+ Connesso a gestione! 
+
+
+ Abbiamo recuperato la campagna: AMEX BAU test con id 91, risposta: 0.
+
+
+ update campagna-91 allo stato 1 RIUSCITO... info:   
+
+
+ Recuperiamo fornitore con id: 3  
+
+
+ messaggio gsm ok 
+
+
+ Preleviamo numeri di test.  
+
+
+ Abbiamo recuperato 1 numeri di test  divisi in 1 lanci.  
+
+
+ Lancio n. 1  
+
+
+ Lanciamo lo script del fornitore: Crossing Bulk.php 
+
+
+ Il lancio è andato KO setto a 6 e esco 
+
+
+ Non abbiamo recuperato nessun numero di test. Settiamo la campagna con stato a 6 passo alla prossima campagna . Errore restituito dal fornitore: Possibly not a UTF-8 message text
+  
+
+
+ update campagna stato a 6 RIUSCITO.  
+
+
+ Esco  
+
+2020-10-07,17-45-48
+
+
+
+/************************************************/ 
+2020-10-07,17-45-48
+ File che lancia i test per le campagne sms che lo richiedono 
+
+
+ Connesso a gestione! 
+
+MESSAGGIO DECODIFICATO: Richiedi ora Blu American Express: per te l'1% di CashBack, fino a �80 sui primi �2000* spesi e il 1 anno di quota gratuita.Promo online http://bit.ly/2jpig 
+
+
+ Abbiamo recuperato la campagna: AMEX BAU test con id 91, risposta: 0.
+
+
+ update campagna-91 allo stato 1 RIUSCITO... info:   
+
+
+ Recuperiamo fornitore con id: 3  
+
+
+ messaggio gsm ok 
+
+
+ Preleviamo numeri di test.  
+
+
+ Abbiamo recuperato 1 numeri di test  divisi in 1 lanci.  
+
+
+ Lancio n. 1  
+
+
+ Lanciamo lo script del fornitore: Crossing Bulk.php 
+
+
+ Il lancio è andato KO setto a 6 e esco 
+
+
+ Non abbiamo recuperato nessun numero di test. Settiamo la campagna con stato a 6 passo alla prossima campagna . Errore restituito dal fornitore: Possibly not a UTF-8 message text
+  
+
+
+ update campagna stato a 6 RIUSCITO.  
+
+
+ Esco  
+
+2020-10-07,18-07-10
+
+
+
+/************************************************/ 
+2020-10-07,18-07-10
+ File che lancia i test per le campagne sms che lo richiedono 
+
+
+ Connesso a gestione! 
+
+
+ Esco  
+
+2020-10-07,18-07-38
+
+
+
+/************************************************/ 
+2020-10-07,18-07-38
+ File che lancia i test per le campagne sms che lo richiedono 
+
+
+ Connesso a gestione! 
+
+MESSAGGIO ORIGINALE: 		Richiedi ora Blu American Express: per te l'1% di CashBack, fino a 80 sui primi 2000* spesi e il 1 anno di quota gratuita.Promo online http://bit.ly/2jpig 
+
+MESSAGGIO DECODIFICATO: 	Richiedi ora Blu American Express: per te l'1% di CashBack, fino a �80 sui primi �2000* spesi e il 1 anno di quota gratuita.Promo online http://bit.ly/2jpig 
+
+
+ Abbiamo recuperato la campagna: AMEX BAU test con id 91, risposta: 0.
+
+
+ update campagna-91 allo stato 1 RIUSCITO... info:   
+
+
+ Recuperiamo fornitore con id: 3  
+
+
+ messaggio gsm ok 
+
+
+ Preleviamo numeri di test.  
+
+
+ Abbiamo recuperato 1 numeri di test  divisi in 1 lanci.  
+
+
+ Lancio n. 1  
+
+
+ Lanciamo lo script del fornitore: Crossing Bulk.php 
+
+
+ Il lancio è andato KO setto a 6 e esco 
+
+
+ Non abbiamo recuperato nessun numero di test. Settiamo la campagna con stato a 6 passo alla prossima campagna . Errore restituito dal fornitore: Possibly not a UTF-8 message text
+  
+
+
+ update campagna stato a 6 RIUSCITO.  
+
+
+ Esco  
+

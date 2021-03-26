@@ -1,0 +1,446 @@
+{% extends base_template %}
+
+        {% block stylesheets %}
+            {{ parent() }}
+            {% stylesheets 'css/style.css' %}
+                <link href="{{ asset_url }}" type="text/css" rel="stylesheet"/>
+            {% endstylesheets %}
+            <style>
+                .panel-message {
+                    padding: 15px;
+                    background-color: #00a66973;
+                    text-align: center;
+                    font-size: 18px;
+                    cursor: pointer;
+                }
+
+                /*miscelate*/
+                label {
+                    margin-bottom: 0;
+                }
+
+                .campo-help {
+                    margin-bottom: 8px;
+                    display: block;
+                }
+
+                form {
+                    padding-top: 44px;
+                }
+
+                input.inputerror, .inputerror {
+                    border-color: #c42d2d !important;
+                }
+
+                .select2-container.inputerror {
+                    border: 1px solid;
+                }
+
+                .campo_errore {
+                    color: #c42d2d;
+                    font-size: 90%;
+                    line-height: 90%;
+                    margin-top: 4px;
+                }
+
+                .campo_errore p {
+                    margin-bottom: 5px;
+                }
+
+                .limit-number, .deduplica-campi {
+                    display: none;
+                    margin-top: 18px;
+                }
+
+                #torna {
+                    position: absolute;
+                    right: 15px;
+                    top: 15px;
+                }
+
+                #creaws, #creawsetorna, #modificamiscelata, #modificamiscelataetorna {
+                    display: none;
+                }
+
+                .crea-ws #creaws, .crea-ws #creawsetorna {
+                    display: inline-block;
+                }
+
+                .modifica-ws #modificamiscelata, .modifica-ws #modificamiscelataetorna {
+                    display: inline-block;
+                }
+            </style>
+        {% endblock %}
+        {% block javascripts %}
+            {{ parent() }}
+            {% javascripts 'js/main.js' %}
+                <script src="{{ asset_url }}"></script>
+            {% endjavascripts %}
+        {% endblock %}
+
+		{% block content %}
+		{% if entity %}
+<div class="container theme-showcase modifica-ws" data-idws="{{ entity.id }}" role="main" id="ws_maker_container">
+    {% else %}
+    <div class="container theme-showcase crea-ws" role="main" id="ws_maker_container">
+        {% endif %}
+        <div class="row">
+            <div class="col-sm-12">
+                <div class="panel panel-default">
+                    <div class="panel-heading col-md-12">
+                        <div class="col-md-12">
+                            <h3 id="titolo-pagina">
+                                {% if entity %}
+                                <i class="fa fa-pencil" aria-hidden="true"></i> Modifica Campo specifico
+                                (id: {{ entity.id }})
+                            </h3>
+                            {% else %}
+                                <i class="fa fa-pencil-square-o" aria-hidden="true"></i> Crea  Campo specifico
+                            {% endif %}
+                            </h3>
+
+                            <a id="torna" href="{{ admin.generateUrl('specificFields') }}" class="btn btn-primary">Torna
+                                al listato</a>
+                        </div>
+                    </div>
+                    <div class="col-md-12 panel-message" onclick="hideMessage()" style="display: none;"></div>
+                    <div class="panel-body">
+                        <form name="entity-form" action="" method="post" id="entity-form"
+                              style="margin-top:20px;clear:left;">
+                            <input type="hidden" name="id" value="{{ entity.id }}">
+
+                            <div class="form-group col-md-12">
+                                <label for="slug">Slug</label>
+                                <small class="form-text text-muted campo-help">Inserire il nome per la campo.</small>
+                                {% if entity %}
+                                    <input type="text" value="{{ entity.slug }}" name="slug" class="form-control"
+                                           id="slug" placeholder="Slug"/>
+                                {% else %}
+                                    <input type="text" name="slug" class="form-control" id="slug" placeholder="slug"/>
+                                {% endif %}
+                                <div class="campo_errore"></div>
+                            </div>
+
+                            <div class="form-group col-md-12">
+                                <label for="tipo">Tipo</label>
+                                <small class="form-text text-muted campo-help">Scegli il tipo di campo.</small>
+                                <select class="tipo-select" id="tipo" name="tipo">
+                                    <option value="int" {% if entity.tipo == 'int' %}selected{% endif %}>int</option>
+                                    <option value="varchar" {% if entity.tipo == 'varchar' %}selected{% endif %}>
+                                        varchar
+                                    </option>
+                                    <option value="datetime" {% if entity.tipo == 'datetime' %}selected{% endif %}>
+                                        datetime
+                                    </option>
+                                    <option value="date" {% if entity.tipo == 'date' %}selected{% endif %}>date</option>
+                                </select>
+                                <div class="campo_errore"></div>
+                            </div>
+
+                            <div class="form-group col-md-12">
+                                <label for="sanificazione">Funzioni di sanificazione</label>
+                                <small class="form-text text-muted campo-help">Scegli le funzioni da applicare al valore
+                                    inviato per il campo.</small>
+                                <select class="" id="sanificazione" name="sanificazione[]" multiple="multiple">
+                                    <option value="make_lower_string"
+                                            {% if 'make_lower_string' in entity.sanificazione %}selected{% endif %}>
+                                        make_lower_string
+                                    </option>
+                                    <option value="make_upper_string"
+                                            {% if 'make_upper_string' in entity.sanificazione %}selected{% endif %}>
+                                        make_upper_string
+                                    </option>
+                                    <option value="remove_white_spaces"
+                                            {% if 'remove_white_spaces' in entity.sanificazione %}selected{% endif %}>
+                                        remove_white_spaces
+                                    </option>
+                                </select>
+                                <div class="campo_errore"></div>
+                            </div>
+
+                            <div class="form-group col-md-12">
+                                <label for="">Funzioni di validazione</label>
+                                <small class="form-text text-muted campo-help">Attiva questa funzione e imposta
+                                    eventuali parametri.</small>
+
+                                <input type="checkbox" value="validate-check_max_length" id="validate-check_max_length"
+                                       name="validate-check_max_length"
+                                       {% if 'check_max_length' in entity.validazione|keys %}checked{% endif %}>
+                                <label for="validate-check_max_length">check_max_length:</label>
+                                <input type="number" name="validate-check_max_length-number"
+                                       id="validate-check_max_length-number"
+                                       value="{{ entity.validazione.check_max_length }}">
+                                <br/>
+
+                                <input type="checkbox" value="validate-check_min_length" id="validate-check_min_length"
+                                       name="validate-check_min_length"
+                                       {% if 'check_min_length' in entity.validazione|keys %}checked{% endif %}>
+                                <label for="validate-check_min_length">check_min_length:</label>
+                                <input type="number" name="validate-check_min_length-number"
+                                       id="validate-check_min_length-number"
+                                       value="{{ entity.validazione.check_min_length }}">
+                                <br/>
+
+                                <input type="checkbox" value="validate-check_exact_length"
+                                       id="validate-check_exact_length" name="validate-check_exact_length"
+                                       {% if 'check_exact_length' in entity.validazione|keys %}checked{% endif %}>
+                                <label for="validate-check_exact_length">check_exact_length:</label>
+                                <input type="number" name="validate-check_exact_length-number"
+                                       id="validate-check_exact_length-number"
+                                       value="{{ entity.validazione.check_exact_length }}">
+                                <br/>
+
+                                <input type="checkbox" value="validate-check_is_greather_than"
+                                       id="validate-check_is_greather_than" name="validate-check_is_greather_than"
+                                       {% if 'check_is_greather_than' in entity.validazione|keys %}checked{% endif %}>
+                                <label for="validate-check_is_greather_than">check_is_greather_than:</label>
+                                <input type="number" name="validate-check_is_greather_than-number"
+                                       id="validate-check_is_greather_than-number"
+                                       value="{{ entity.validazione.check_is_greather_than }}">
+                                <br/>
+
+                                <input type="checkbox" value="validate-check_is_less_than"
+                                       id="validate-check_is_less_than" name="validate-check_is_less_than"
+                                       {% if 'check_is_less_than' in entity.validazione|keys %}checked{% endif %}>
+                                <label for="validate-check_is_less_than">check_is_less_than:</label>
+                                <input type="number" name="validate-check_is_less_than-number"
+                                       id="validate-check_is_less_than-number"
+                                       value="{{ entity.validazione.check_is_less_than }}">
+                                <br/>
+
+                                <input type="checkbox" value="validate-check_equal" id="validate-check_equal"
+                                       name="validate-check_equal"
+                                       {% if 'check_equal' in entity.validazione|keys %}checked{% endif %}>
+                                <label for="validate-check_equal">check_equal:</label>
+                                <input type="text" name="validate-check_equal-number" id="validate-check_equal-number"
+                                       value="{{ entity.validazione.check_equal }}">
+                                <br/>
+
+                                <input type="checkbox" value="validate-check_in_values" id="validate-check_in_values"
+                                       name="validate-check_in_values"
+                                       {% if 'check_in_values' in entity.validazione|keys %}checked{% endif %}>
+                                <label for="validate-check_in_values">check_in_values:</label>
+                                <input type="text" name="validate-check_in_values-number"
+                                       id="validate-check_in_values-number"
+                                       value="{{ entity.validazione.check_in_values }}">
+                                <br/>
+
+                                <input type="checkbox" value="validate-check_is_email" id="validate-check_is_email"
+                                       name="validate-check_is_email"
+                                       {% if 'check_is_email' in entity.validazione|keys %}checked{% endif %}>
+                                <label for="validate-check_is_email">check_is_email</label>
+                                <br/>
+
+                                <input type="checkbox" value="validate-check_is_url" id="validate-check_is_url"
+                                       name="validate-check_is_url"
+                                       {% if 'check_is_url' in entity.validazione|keys %}checked{% endif %}>
+                                <label for="validate-check_is_url">check_is_url</label>
+                                <br/>
+
+                                <input type="checkbox" value="validate-check_is_ip" id="validate-check_is_ip"
+                                       name="validate-check_is_ip"
+                                       {% if 'check_is_ip' in entity.validazione|keys %}checked{% endif %}>
+                                <label for="validate-check_is_ip">check_is_ip</label>
+                                <br/>
+
+                                <input type="checkbox" value="validate-check_datetime_format"
+                                       id="validate-check_datetime_format" name="validate-check_datetime_format"
+                                       {% if 'check_datetime_format' in entity.validazione|keys %}checked{% endif %}>
+                                <label for="validate-check_datetime_format">check_datetime_format:</label>
+                                <input type="text" name="validate-check_datetime_format-number"
+                                       id="validate-check_datetime_format-number"
+                                       value="{{ entity.validazione.check_datetime_format }}">
+                                <br/>
+
+                                <input type="checkbox" value="validate-check_in_comuni" id="validate-check_in_comuni"
+                                       name="validate-check_in_comuni"
+                                       {% if 'check_in_comuni' in entity.validazione|keys %}checked{% endif %}>
+                                <label for="validate-check_in_comuni">check_in_comuni</label>
+                                <br/>
+
+                                <div class="campo_errore"></div>
+                            </div>
+
+                            <div class="form-group col-md-12">
+                                <button type="button" onclick="saveEntity()" id="creaws" class="btn btn-primary">Crea
+                                    Campo
+                                </button>
+                                <button type="button" onclick="saveEntity2()" id="creawsetorna"
+                                        class="btn btn-primary">Crea Campo e torna al listato
+                                </button>
+
+                                <button type="button" onclick="saveEntity()" id="modificamiscelata"
+                                        class="btn btn-primary">Modifica Campo
+                                </button>
+                                <button type="button" onclick="saveEntity2()" id="modificamiscelataetorna"
+                                        class="btn btn-primary">Modifica Campo e torna al listato
+                                </button>
+                            </div>
+                        </form>
+                    </div>
+                </div>
+            </div>
+        </div> <!-- row -->
+    </div>
+
+    <script>
+        //-- saving and processing
+        function saveEntity2() {
+            $('#torna').addClass('autoback');
+            saveEntity();
+        }
+
+        function saveEntity() {
+            $('#creaws').prop('disabled', true);
+            $('#creawsetorna').prop('disabled', true);
+            if (controlla_ws()) {
+
+                const data_send = $('#entity-form').serialize();
+
+                console.log(data_send);
+                _saveEntity(data_send);
+            } else {
+                $("html, body").animate({scrollTop: 0}, "fast");
+            }
+            $('#creaws').prop('disabled', false);
+            $('#creawsetorna').prop('disabled', false);
+        }
+
+        function _saveEntity(data_send) {
+            var ok = 0;
+            if ($('#ws_maker_container').hasClass('crea-ws')) {
+                var url_save = '{{ admin.generateUrl('saveSpecificField') }}';
+                ok = 1;
+            } else {
+                var url_save = '{{ admin.generateUrl('saveSpecificField') }}';
+                //get the id
+
+                if ($('#ws_maker_container').attr('data-idws') > 0) {
+                    data_send["id"] = $('#ws_maker_container').attr('data-idws');
+                    ok = 1;
+                }
+
+            }
+            if (ok === 1) {
+                var url_listato = '{{ admin.generateUrl('routes') }}';
+                var message = "";
+                $.ajax({
+                    url: url_save,
+                    data: data_send,
+                    success: function (inserito) {
+                        if ($('#torna').hasClass('autoback')) {
+                            if ($('#ws_maker_container').hasClass('crea-ws')) {
+                                window.location.href = url_listato + '?message=new&id=' + inserito['result'];
+                            } else {
+                                window.location.href = url_listato + '?message=edit&id=' + $('#ws_maker_container').attr('data-idws');
+                            }
+                        } else {
+                            //salva nuova
+                            if ($('#ws_maker_container').hasClass('crea-ws')) {
+                                $('.panel-message').html('<h3><i class="fa fa-check-circle-o" aria-hidden="true"></i> Campo creato (id: ' + inserito['result'] + ')</h3>').slideDown();
+                                $("html, body").animate({scrollTop: 0}, "fast");
+                                //change to modifica
+                                $('#ws_maker_container').removeClass('crea-ws').addClass('modifica-ws').attr('data-idws', inserito['result']);
+                                $('#titolo-pagina').html('<i class="fa fa-pencil" aria-hidden="true"></i> Campo modificato (id: ' + inserito['result'] + ')</h3>');
+                            } else {
+                                $('.panel-message').html('<h3><i class="fa fa-check-circle-o" aria-hidden="true"></i> Campo modificato (id: ' + inserito['result'] + ')</h3>').slideDown();
+                                $("html, body").animate({scrollTop: 0}, "fast");
+                            }
+
+                        }
+                        $('#creawsetorna').remove();
+                        $('#creaws').remove();
+                    },
+                    complete: function () {
+                    }
+                });
+            } else {
+                alert('Si &egrave; verificato un problema durante il salvataggio');
+            }
+        }
+
+
+        //controll on inputs
+        function controlla_ws() {
+            //azzero gli errori
+            $('.campo_errore').html('');
+            $('.inputerror').removeClass('inputerror');
+            $('.nomevuoto').removeClass('nomevuoto');
+            $('.limitevuoto').removeClass('limitevuoto');
+            $('.percentualevuota').removeClass('percentualevuota');
+            $('.rangepercentuale').removeClass('rangepercentuale');
+            $('.campovuoto').removeClass('campovuoto');
+            $('.campocaratteri').removeClass('campocaratteri');
+
+            if ($.trim($('#slug').val()).length === 0) {
+                showInputError($('#slug'), 'campovuoto');
+            }
+            if ($.trim($('#tipo').val()).length === 0) {
+                showInputError($('#schema'), 'campovuoto');
+            }
+
+            //if inputerror are present return false else return true
+            if ($('.inputerror').length > 0) {
+                return false;
+            } else {
+                return true;
+            }
+
+        }
+
+        function erroriPossibili() {
+            var errpossibili =
+                {
+                    'nomevuoto': 'Il nome non pu&ograve essere vuoto',
+                    'nomepresente': 'Il nome scelto &egrave; gi&agrave; presente nel db',
+                    'limitevuoto': 'Il limite non pu&ograve essere vuoto',
+                    'percentualevuota': 'La percentuale di freddde non pu&ograve; essere vuota',
+                    'rangepercentuale': 'La percentuale di freddde deve essere un numero fra 0 e 99',
+                    'campovuoto': 'Il campo non pu&ograve; essere vuoto',
+                    'campocaratteri': 'Il campo non pu&ograve; contenere caratteri particolari come <i>, ; : / | ? " \'</i>'
+                }
+            return errpossibili;
+        }
+
+        function removeInputError(input, errorcode) {
+            if (errorcode == -1) {
+                input.removeClass('inputerror');
+                if (input.closest('.form-group').find('.inputerror').length == 0) {
+                    input.closest('.form-group').find('.campo_errore').html('');
+                }
+            } else {
+                if (!input.hasClass('error-campovuoto') && !input.hasClass('error-campocaratteri')) {
+                    input.removeClass('inputerror');
+                }
+                if (input.closest('.form-group').find('.campo_errore .' + errorcode).length > 0) {
+                    var numberOfError = Number(input.closest('.form-group').find('.campo_errore .' + errorcode).attr('data-errorcount'));
+                    if (numberOfError > 1) {
+                        input.closest('.form-group').find('.campo_errore .' + errorcode).attr('data-errorcount', numberOfError - 1);
+                    } else {
+                        input.closest('.form-group').find('.campo_errore .' + errorcode).remove();
+                    }
+                }
+            }
+        }
+
+        function showInputError(input, errorcode) {
+            var errori = erroriPossibili();
+
+            input.addClass('inputerror');
+            if (input.closest('.form-group').find('.campo_errore .' + errorcode).length > 0) {
+                var numberOfError = Number(input.closest('.form-group').find('.campo_errore .' + errorcode).attr('data-errorcount'));
+                input.closest('.form-group').find('.campo_errore .' + errorcode).attr('data-errorcount', numberOfError + 1);
+            } else {
+                input.closest('.form-group').find('.campo_errore').append('<p class="' + errorcode + '" data-errorcount="1">' + errori[errorcode] + '</p>')
+            }
+        }
+
+        /*<--- WS SCRIPTS ---*/
+
+        function hideMessage() {
+            $('.panel-message').slideUp();
+        }
+
+    </script>
+    {% endblock %}
+

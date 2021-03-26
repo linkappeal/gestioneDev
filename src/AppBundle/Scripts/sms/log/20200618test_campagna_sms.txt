@@ -1,0 +1,401 @@
+2020-06-18,12-09-47
+
+
+
+/************************************************/ 
+2020-06-18,12-09-47
+ File che lancia i test per le campagne sms che lo richiedono 
+
+
+ Connesso a gestione! 
+
+
+ Abbiamo recuperato la campagna: Wind Iprospect 1K A con id 65.
+
+
+ update campagna-65 allo stato 1 RIUSCITO... info:   
+
+
+ Recuperiamo fornitore con id: 3  
+
+
+ messaggio in gsm KO, controllo che non superi i 70 caratteri  
+
+
+ update campagna-65 allo stato 6 RIUSCITO... info: errore: Messaggio non compatibile con gsm e superiore a 70 caratteri  
+
+
+ Esco  
+
+2020-06-18,12-14-48
+
+
+
+/************************************************/ 
+2020-06-18,12-14-48
+ File che lancia i test per le campagne sms che lo richiedono 
+
+
+ Connesso a gestione! 
+
+
+ Abbiamo recuperato la campagna: Wind Iprospect 1K A con id 65.
+
+
+ update campagna-65 allo stato 1 RIUSCITO... info:   
+
+
+ Recuperiamo fornitore con id: 3  
+
+
+ messaggio in gsm KO, controllo che non superi i 70 caratteri  
+
+
+ update campagna-65 allo stato 6 RIUSCITO... info: errore: Messaggio non compatibile con gsm e superiore a 70 caratteri  
+
+
+ Esco  
+
+2020-06-18,12-18-59
+
+
+
+/************************************************/ 
+2020-06-18,12-18-59
+ File che lancia i test per le campagne sms che lo richiedono 
+
+
+ Connesso a gestione! 
+
+
+ Abbiamo recuperato la campagna: Wind Iprospect 1K A con id 65.
+
+
+ update campagna-65 allo stato 1 RIUSCITO... info:   
+
+
+ Recuperiamo fornitore con id: 3  
+
+
+ messaggio gsm ok 
+
+
+ Preleviamo numeri di test.  
+
+
+ Abbiamo recuperato 1 numeri di test  divisi in 1 lanci.  
+
+
+ Lancio n. 1  
+
+
+ Lanciamo lo script del fornitore: Crossing Bulk.php 
+
+
+ Il lancio è andato OK 
+
+
+ update stato numero RIUSCITO per il numero con id: 2738832, id del fornitore: CRONET-db3d33733cc4-3f785e126650  
+
+
+ update campagna stato a 2 RIUSCITO.  
+
+
+ Esco  
+
+2020-06-18,12-21-02
+
+
+
+/************************************************/ 
+2020-06-18,12-21-02
+ File che lancia i test per le campagne sms che lo richiedono 
+
+
+ Connesso a gestione! 
+
+
+ Abbiamo recuperato la campagna: Wind Iprospect 1K A con id 65.
+
+
+ update campagna-65 allo stato 1 RIUSCITO... info:   
+
+
+ Recuperiamo fornitore con id: 3  
+
+
+ messaggio in gsm KO, controllo che non superi i 70 caratteri  
+
+
+ update campagna-65 allo stato 6 RIUSCITO... info: errore: Messaggio non compatibile con gsm e superiore a 70 caratteri  
+
+
+ Esco  
+
+2020-06-18,12-22-05
+
+
+
+/************************************************/ 
+2020-06-18,12-22-05
+ File che lancia i test per le campagne sms che lo richiedono 
+
+
+ Connesso a gestione! 
+
+
+ Abbiamo recuperato la campagna: Wind Iprospect 1K A con id 65.
+
+
+ update campagna-65 allo stato 1 RIUSCITO... info:   
+
+
+ Recuperiamo fornitore con id: 3  
+
+
+ messaggio in gsm KO, controllo che non superi i 70 caratteri  
+
+
+ update campagna-65 allo stato 6 RIUSCITO... info: errore: Messaggio non compatibile con gsm e superiore a 70 caratteri  
+
+
+ Esco  
+
+2020-06-18,12-24-20
+
+
+
+/************************************************/ 
+2020-06-18,12-24-20
+ File che lancia i test per le campagne sms che lo richiedono 
+
+
+ Connesso a gestione! 
+
+
+ Abbiamo recuperato la campagna: Wind Iprospect 1K A con id 65.
+
+
+ update campagna-65 allo stato 1 RIUSCITO... info:   
+
+
+ Recuperiamo fornitore con id: 3  
+
+
+ messaggio gsm ok 
+
+
+ Preleviamo numeri di test.  
+
+
+ Abbiamo recuperato 1 numeri di test  divisi in 1 lanci.  
+
+
+ Lancio n. 1  
+
+
+ Lanciamo lo script del fornitore: Crossing Bulk.php 
+
+
+ Il lancio è andato KO setto a 6 e esco 
+
+
+ Non abbiamo recuperato nessun numero di test. Settiamo la campagna con stato a 6 passo alla prossima campagna . Errore restituito dal fornitore: Possibly not a UTF-8 message text
+  
+
+
+ update campagna stato a 6 RIUSCITO.  
+
+
+ Esco  
+
+2020-06-18,12-25-56
+
+
+
+/************************************************/ 
+2020-06-18,12-25-56
+ File che lancia i test per le campagne sms che lo richiedono 
+
+
+ Connesso a gestione! 
+
+
+ Abbiamo recuperato la campagna: Wind Iprospect 1K A con id 65.
+
+
+ update campagna-65 allo stato 1 RIUSCITO... info:   
+
+
+ Recuperiamo fornitore con id: 3  
+
+
+ messaggio gsm ok 
+
+
+ Preleviamo numeri di test.  
+
+
+ Abbiamo recuperato 1 numeri di test  divisi in 1 lanci.  
+
+
+ Lancio n. 1  
+
+
+ Lanciamo lo script del fornitore: Crossing Bulk.php 
+
+
+ Il lancio è andato KO setto a 6 e esco 
+
+
+ Non abbiamo recuperato nessun numero di test. Settiamo la campagna con stato a 6 passo alla prossima campagna . Errore restituito dal fornitore: Possibly not a UTF-8 message text
+  
+
+
+ update campagna stato a 6 RIUSCITO.  
+
+
+ Esco  
+
+2020-06-18,12-28-05
+
+
+
+/************************************************/ 
+2020-06-18,12-28-05
+ File che lancia i test per le campagne sms che lo richiedono 
+
+
+ Connesso a gestione! 
+
+
+ Abbiamo recuperato la campagna: Wind Iprospect 1K B con id 67.
+
+
+ update campagna-67 allo stato 1 RIUSCITO... info:   
+
+
+ Recuperiamo fornitore con id: 3  
+
+
+ messaggio gsm ok 
+
+
+ Preleviamo numeri di test.  
+
+
+ Abbiamo recuperato 1 numeri di test  divisi in 1 lanci.  
+
+
+ Lancio n. 1  
+
+
+ Lanciamo lo script del fornitore: Crossing Bulk.php 
+
+
+ Il lancio è andato KO setto a 6 e esco 
+
+
+ Non abbiamo recuperato nessun numero di test. Settiamo la campagna con stato a 6 passo alla prossima campagna . Errore restituito dal fornitore: Possibly not a UTF-8 message text
+  
+
+
+ update campagna stato a 6 RIUSCITO.  
+
+
+ Esco  
+
+2020-06-18,12-42-56
+
+
+
+/************************************************/ 
+2020-06-18,12-42-56
+ File che lancia i test per le campagne sms che lo richiedono 
+
+
+ Connesso a gestione! 
+
+
+ Abbiamo recuperato la campagna: Wind Iprospect 1K A con id 65.
+
+
+ update campagna-65 allo stato 1 RIUSCITO... info:   
+
+
+ Recuperiamo fornitore con id: 3  
+
+
+ messaggio gsm ok 
+
+
+ Preleviamo numeri di test.  
+
+
+ Abbiamo recuperato 1 numeri di test  divisi in 1 lanci.  
+
+
+ Lancio n. 1  
+
+
+ Lanciamo lo script del fornitore: Crossing Bulk.php 
+
+
+ Il lancio è andato OK 
+
+
+ update stato numero RIUSCITO per il numero con id: 2738832, id del fornitore: CRONET-91c8415924cc-7eb68ecabf12  
+
+
+ update campagna stato a 2 RIUSCITO.  
+
+
+ Esco  
+
+2020-06-18,12-43-07
+
+
+
+/************************************************/ 
+2020-06-18,12-43-07
+ File che lancia i test per le campagne sms che lo richiedono 
+
+
+ Connesso a gestione! 
+
+
+ Abbiamo recuperato la campagna: Wind Iprospect 1K B con id 67.
+
+
+ update campagna-67 allo stato 1 RIUSCITO... info:   
+
+
+ Recuperiamo fornitore con id: 3  
+
+
+ messaggio gsm ok 
+
+
+ Preleviamo numeri di test.  
+
+
+ Abbiamo recuperato 1 numeri di test  divisi in 1 lanci.  
+
+
+ Lancio n. 1  
+
+
+ Lanciamo lo script del fornitore: Crossing Bulk.php 
+
+
+ Il lancio è andato OK 
+
+
+ update stato numero RIUSCITO per il numero con id: 2738833, id del fornitore: CRONET-bfd84604aca4-6e248084282e  
+
+
+ update campagna stato a 2 RIUSCITO.  
+
+
+ Esco  
+

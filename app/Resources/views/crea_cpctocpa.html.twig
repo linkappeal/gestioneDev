@@ -1,0 +1,425 @@
+{% extends base_template %}
+
+        {% block stylesheets %}
+            {{ parent() }}
+			{% stylesheets 'css/style.css'	%}
+				<link href="{{ asset_url }}" type="text/css" rel="stylesheet"/>
+				<link href="/css/datepicker/daterangepicker.css" type="text/css" rel="stylesheet"/>
+			{% endstylesheets %}
+			<style>
+			.panel-message{padding: 15px; background-color: #00a66973; text-align: center; font-size: 18px; cursor: pointer;}
+			
+			
+			.select2-container{width: 100%;}
+			.calendar-icon{cursor: pointer; font-size: 25px; padding-top: 5px;}
+			.data_fine_label span{font-size: 15px;padding-top: 6px; display: block;}
+			
+			
+			
+			/*CPC TO CPA*/
+			label {
+				margin-bottom:0px;
+			}
+			
+			.campo-help{
+				margin-bottom: 8px;
+				display:block;
+			}
+			
+			form {
+				padding-top:44px;
+			}
+			
+			input.inputerror, .inputerror{
+				border-color:#c42d2d !important;
+			}
+			.select2-container.inputerror{
+				border:1px solid;
+			}
+			.campo_errore {
+				color:#c42d2d;
+				font-size:90%;
+				line-height:90%;
+				margin-top:4px;
+			}
+			.campo_errore p{
+				margin-bottom:5px;
+			}
+			
+			
+			#torna{
+				position:absolute;
+				right:15px;
+				top:15px;
+			}
+			#creacpctocpa, #creacpctocpaetorna, #modificacpctocpa, #modificacpctocpaetorna {
+				display:none;
+			}
+			.crea-cpctocpa #creacpctocpa, .crea-cpctocpa #creacpctocpaetorna{
+				display: inline-block;
+			}
+			.modifica-cpctocpa #modificacpctocpa, .modifica-cpctocpa #modificacpctocpaetorna{
+				display: inline-block;
+			}
+			</style>
+		{% endblock %}
+        {% block javascripts %}
+                {{ parent() }}
+			{% javascripts 'js/main.js' %}
+				<script src="{{ asset_url }}"></script>
+			{% endjavascripts %}
+		{% endblock %}
+
+		{% block content %}
+		{% if questo %}
+			<div class="container theme-showcase modifica-cpctocpa" data-idcron="{{ questo['id'] }}" role="main" id="cpctocpa_maker_container">
+		{% else %}
+			<div class="container theme-showcase crea-cpctocpa" role="main" id="cpctocpa_maker_container">
+		{% endif %}
+			<div class="row">
+				<div class="col-sm-12">
+					<div class="panel panel-default">
+						<div class="panel-heading col-md-12">
+							<div class="col-md-12">
+								<h3 id="titolo-pagina">
+								{% if questo %}
+									<i class="fa fa-pencil" aria-hidden="true"></i> Modifica cron  cpc to cpa (id: {{ questo['id'] }})</h3>
+								{% else %}
+									<i class="fa fa-pencil-square-o" aria-hidden="true"></i> Crea un nuovo cron cpc to cpa
+								{% endif %}
+								</h3>
+								
+								<a id="torna" href="{{admin.generateUrl('lista')}}" class="btn btn-primary">Torna al listato</a>
+							</div>
+						</div>
+						<div class="col-md-12 panel-message" onclick="hideMessage()" style="display: none;"></div>
+						<div class="panel-body">
+							<form name="login" action="" method="post" id="insert-pixel-form" style="margin-top:20px;clear:left;">
+								<div class="form-group col-md-12">
+									<label for="nome">Slug campagna</label>
+									
+									<small  class="form-text text-muted campo-help">Scegliere la campagna sulla quale attivare il cron.</small>
+									<select class="campagna-select" id="campagna-select" name="campagna-select" >
+											<option value="" data-codice="">Seleziona una campagna</option>
+											{% for idcampagna in idcampagne %}
+												{% if questo and questo['nome'] == idcampagna %}
+												<option value="{{idcampagna}}" selected="selected">{{idcampagna}}</option>
+												{% else %}
+												<option value="{{idcampagna}}">{{idcampagna}}</option>
+												{% endif %}
+															
+											{% endfor %}
+									</select>
+									<div class="campo_errore"></div>
+									
+									
+								</div>
+								
+								<div class="form-group col-md-12">
+									<label for="attiva">Cpc</label>
+									<small  class="form-text text-muted campo-help">Setta il valore del cpc in euro. Usa la virgola come separatore decimale</small>
+									{% if questo %}
+									<input type="number" value="{{ questo['cpc'] }}"  name="cpc" class="form-control" id="cpc" step=".01"/>
+									{% else %}
+									<input type="number" name="cpc" class="form-control" id="cpc" step=".01"/>
+									{% endif %}
+									
+									
+									<div class="campo_errore"></div>
+								</div>
+								<div class="form-group col-md-12">
+									<label for="percentuale">Cpa Benchmark</label>
+									<small  class="form-text text-muted campo-help">Setta il valore della cpa  in euro. Usa la virgola come separatore decimale</small>
+									{% if questo %}
+									<input type="number" value="{{ questo['cpa'] }}" name="cpa" class="form-control" id="cpa" step=".01"/>
+									{% else %}
+									<input type="number" name="cpa" class="form-control" id="cpa" step=".01"/>
+									{% endif %}
+									
+									<div class="campo_errore"></div>
+									
+									
+								</div>
+								<div class="form-group col-md-12">
+									<label for="attiva">Attiva</label>
+									<small  class="form-text text-muted campo-help">Scegli se attivare il cron.</small>
+									<select class="attiva-select" id="attiva" name="attiva">
+										{% if questo and questo['attivo']==0%}
+										<option value="1" data-codice="1" >Attivo</option>
+										<option value="0" data-codice="0" selected="selected">Non attivo</option>
+										{% else %}
+										<option value="1" data-codice="1" selected="selected">Attivo</option>
+										<option value="0" data-codice="0" >Non attivo</option>
+										{% endif %}
+									</select>
+									
+									<div class="campo_errore"></div>
+								</div>
+								
+								
+								<div class="form-group col-md-12">
+									<button type="button" onclick="salvaCpctocpa()" id="creacpctocpa" class="btn btn-primary">Crea cron</button>
+									<button type="button" onclick="salvaCpctocpa2()" id="creacpctocpaetorna" class="btn btn-primary">Crea cron e torna al listato</button>
+									
+									<button type="button" onclick="salvaCpctocpa()" id="modificacpctocpa" class="btn btn-primary">Modifica cron</button>
+									<button type="button" onclick="salvaCpctocpa2()" id="modificacpctocpaetorna" class="btn btn-primary">Modifica cron e torna al listato</button>
+								</div>
+							 </form>
+						</div>
+					</div>
+				</div>
+			</div> <!-- row -->
+		</div>
+		 
+		
+		<script>
+			
+		$(document).ready(function(){
+			
+			{% if questo %}
+				
+			{% endif %}
+			
+		
+		 });
+		 
+		 
+		 /*--- CPCTOCPA SCRIPTS --->*/
+		 //--UI
+		 //aggiungi e rimuovi hotsource
+		
+		
+		
+		
+		
+			
+		//-- saving and processing
+		function salvaCpctocpa2() {
+			$('#torna').addClass('autoback');
+			salvaCpctocpa();
+		}
+		 function salvaCpctocpa(){
+			$('#creacpctocpa').prop('disabled', true);
+			$('#creacpctocpaetorna').prop('disabled', true);
+			if(controlla_cpctocpa()){
+				var nome		 		= $('#campagna-select').val();
+				var cpc 				= $('#cpc').val();
+				var cpa				= $('#cpa').val();
+				var attiva		 	= $('#attiva').val();
+				
+				data_send = {	nome				: nome, 
+								cpc			: cpc,
+								cpa 		: cpa,
+								attiva 				: attiva,
+							};
+								
+				saveCpctocpa(data_send);
+			}else{
+				$("html, body").animate({ scrollTop: 0 }, "fast");
+			}
+			$('#creacpctocpa').prop('disabled', false);
+			$('#creacpctocpaetorna').prop('disabled', false);
+			
+		 }
+		 function saveCpctocpa(data_send){
+			var ok=0;
+			if($('#cpctocpa_maker_container').hasClass('crea-cpctocpa')){
+				var url_save = '{{admin.generateUrl('salvaCpctocpa')}}';
+				ok=1;
+			}else{
+				var url_save = '{{admin.generateUrl('editCpctocpa')}}';
+				//get the id
+				
+				if($('#cpctocpa_maker_container').attr('data-idcron')>0 ){
+					data_send["id"] = $('#cpctocpa_maker_container').attr('data-idcron');
+					ok=1;
+				}
+				
+			}
+			if(ok==1){
+			var url_listato = '{{admin.generateUrl('lista')}}';
+			var message="";
+			$.ajax({url: url_save,
+					data: data_send,
+					success: function(inserito){
+					if($('#torna').hasClass('autoback')){
+						if($('#cpctocpa_maker_container').hasClass('crea-cpctocpa')){
+							window.location.href =url_listato+'?Messaggio=MisCrea&IdMisc='+inserito['result'];
+						}else{
+							window.location.href =url_listato+'?Messaggio=MisMod&IdMisc='+ $('#cpctocpa_maker_container').attr('data-idcron');
+						}
+					}else{
+						//salva nuova
+						if($('#cpctocpa_maker_container').hasClass('crea-cpctocpa')){
+							$('.panel-message').html('<h3><i class="fa fa-check-circle-o" aria-hidden="true"></i> Cron creato (id '+inserito['result']+')</h3>').slideDown();
+							$("html, body").animate({ scrollTop: 0 }, "fast");
+							//change to modifica
+							$('#cpctocpa_maker_container').removeClass('crea-cpctocpa').addClass('modifica-cpctocpa').attr('data-idcron', inserito['result']);
+							$('#titolo-pagina').html('<i class="fa fa-pencil" aria-hidden="true"></i> Modifica cron cpc to cpa (id: '+inserito['result']+')</h3>');
+						}else{
+							$('.panel-message').html('<h3><i class="fa fa-check-circle-o" aria-hidden="true"></i> Cron modificato (id '+inserito['result']+')</h3>').slideDown();
+							$("html, body").animate({ scrollTop: 0 }, "fast");
+						
+					
+							
+						}
+						
+					}
+					$('#creacpctocpaetorna').remove();
+					$('#creacpctocpa').remove();
+					},
+					 complete: function(){
+					}
+				});
+			}else{alert('si &egrave; verificato un problema dusrante il salvataggio');}
+		 }
+		 
+		 //funzioni di calcolo
+		 
+		 
+		 //controll on inputs
+		 function controlla_cpctocpa(){
+			//azzero gli errori
+			$('.campo_errore').html('');
+			$('.inputerror').removeClass('inputerror');
+			$('.nomevuoto').removeClass('nomevuoto');
+			$('.campovuoto').removeClass('campovuoto');
+			$('.campocaratteri').removeClass('campocaratteri');
+			
+			//check name
+			checkName();
+			//check hotsources, cold sources, mixed destination
+			checkNumber('cpc');
+			checkNumber('cpa');
+			//if inputerror are present return false else return true
+			if($('.inputerror').length>0){
+				return false;
+			}else{
+				return true;
+			}
+			
+		 }
+		 
+		 //controlla il nome
+		 $(document).on('change', '#campagna-select', function(){
+			checkName();
+		 });
+		 function checkName(){
+			//se il nome è già presente a db segna come errore
+			removeInputError($('#campagna-select'), -1);
+			var nomiinuso=[{% for cron in crons %}
+				{% if questo %}
+					{% if questo['nome'] != cron['nome'] %}"{{cron['nome']}}",{% endif %}
+					{% else %}
+						"{{cron['nome']}}",
+					{% endif %}
+				{% endfor %}];
+			if(checkemptyInput($('#campagna-select'))==2){
+				var errorstring ='nomevuoto';
+				showInputError($('#campagna-select'), errorstring);
+			}
+			var nomescelto=$('#campagna-select').val();
+			if($.inArray( nomescelto, nomiinuso) !=-1){
+				var errorstring ='nomepresente';
+				showInputError($('#campagna-select'), errorstring);
+			}
+		 }
+		
+		 function checkemptyInput(campo){
+			//se il campo è vuoto aggiungi l'errore sotto l'input
+			if($.trim(campo.val()).length === 0){
+				return 2;
+			}else{
+				return 1;
+			}
+		 }
+		 
+		 $(document).on('change', '#cpc', function(){
+			checkNumber('cpc');
+		 });
+		 $(document).on('change', '#cpa', function(){
+			checkNumber('cpa');
+		 });
+		 function checkNumber(htmlid){
+			removeInputError($('#'+htmlid), -1);
+			//se il valore è vuoto
+			if(checkemptyInput($('#'+htmlid))==2){
+				var errorstring ='campovuoto';
+				showInputError($('#'+htmlid), errorstring);
+			}else if(Number($('#'+htmlid).val()) <=0  ){
+				var errorstring ='numerononnaturale';
+				showInputError($('#'+htmlid), errorstring);
+			}
+			
+		 }
+		
+		
+		
+		 function erroriPossibili(){
+		 var errpossibili=
+			{
+				'nomevuoto':'Lo slug campagna non pu&ograve essere vuoto',
+				'nomepresente':'Esiste già un cron su questa campagna',
+				'numerononnaturale':'il numero deve essere superiore a 0',
+				'campovuoto':'Il campo non pu&ograve; essere vuoto',
+				'campocaratteri':'Il campo non pu&ograve; contenere caratteri particolari come <i>, ; : / | ? " \'</i>'
+			}
+			return errpossibili;
+		 }
+		 function removeInputError(input, errorcode) {
+			if(errorcode==-1){
+				input.removeClass('inputerror');
+				if(input.closest('.form-group').find('.inputerror').length == 0){
+					input.closest('.form-group').find('.campo_errore').html('');
+				}
+			}else{
+				if(!input.hasClass('error-campovuoto') && !input.hasClass('error-campocaratteri')){
+					input.removeClass('inputerror');
+				}
+				var errori= erroriPossibili();
+				if(input.closest('.form-group').find('.campo_errore .'+errorcode).length>0){
+					var numberOfError=Number(input.closest('.form-group').find('.campo_errore .'+errorcode).attr('data-errorcount'));
+					if(numberOfError>1){
+						input.closest('.form-group').find('.campo_errore .'+errorcode).attr('data-errorcount',numberOfError-1);
+					}else{
+						input.closest('.form-group').find('.campo_errore .'+errorcode).remove();
+					}
+				}
+			}
+		 }
+		 
+		 function showInputError(input, errorcode) {
+			var errori= erroriPossibili();
+			/*if(input.prop('tagName')=='SELECT'){
+				input=input.prev('.select2-container');
+				alert (input.attr('id'));
+			}*/
+				input.addClass('inputerror');
+			if(input.closest('.form-group').find('.campo_errore .'+errorcode).length>0){
+				var numberOfError=Number(input.closest('.form-group').find('.campo_errore .'+errorcode).attr('data-errorcount'));
+				input.closest('.form-group').find('.campo_errore .'+errorcode).attr('data-errorcount',numberOfError+1);
+			}else{
+				input.closest('.form-group').find('.campo_errore').append('<p class="'+errorcode+'" data-errorcount="1">'+errori[errorcode]+'</p>')
+			}
+		 }
+		 /*<--- CPC TO CPA SCRIPTS ---*/
+		
+		
+		
+		 
+		 
+		 
+	
+		 
+		
+		 
+		 function hideMessage(){
+			$('.panel-message').slideUp();
+		 }
+		 /* --- FUNZIONI DI MODIFICA ---*/
+		 
+		 
+		
+		 </script>
+		 {% endblock %}
+

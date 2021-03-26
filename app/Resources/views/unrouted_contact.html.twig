@@ -1,0 +1,198 @@
+{% extends base_template %}
+
+        {% block stylesheets %}
+            {{ parent() }}
+            {% stylesheets
+                'css/style.css'
+                'css/data_tables/style-table.css' %}
+                <link href="{{ asset_url }}" type="text/css" rel="stylesheet"/>
+                <link href="https://gitcdn.github.io/bootstrap-toggle/2.2.2/css/bootstrap-toggle.min.css"
+                      rel="stylesheet">
+                <link href="/css/datepicker/daterangepicker.css" type="text/css" rel="stylesheet"/>
+            {% endstylesheets %}
+
+            <style>
+                .panel-message {
+                    padding: 15px;
+                    background-color: #00a66973;
+                    text-align: center;
+                    font-size: 18px;
+                    cursor: pointer;
+                }
+
+                #torna {
+                    position: absolute;
+                    right: 15px;
+                    top: 15px;
+                }
+
+                #report-options {
+                    float: right;
+                    margin-top: 12px;
+                    padding-bottom: 25px;
+                }
+
+                #report-options > div {
+                    display: inline-block;
+                    vertical-align: top;
+                    padding-left: 6px;
+                }
+
+                #report-options label {
+                    margin-bottom: 0px;
+                    font-weight: 600;
+                }
+
+                #reportTableContainer {
+                    clear: both;
+                    padding-top: 25px;
+                    width: 100%;
+                }
+
+                .table-bordered > thead > tr > th, .table-bordered > tbody > tr > th, .table-bordered > tfoot > tr > th, .table-bordered > thead > tr > td, .table-bordered > tbody > tr > td, .table-bordered > tfoot > tr > td {
+                    border: 1px solid #d8d8d8;
+                    text-align: left;
+                }
+
+                .Rbodytable:nth-child(odd) {
+                    background-color: #f1f1f1;
+                }
+
+                .Rbodytable.RbodytableTotals {
+                    background-color: #444444;
+                    color: #FFF;
+                    font-weight: bold;
+                }
+
+                .Rsuperheadtable, .Rheadtable {
+                    background-color: #225886;
+                    color: #FFF;
+                }
+
+                .Rheadtable {
+                    background-color: #5587b3;
+                }
+
+                .Rheadtable .Rgranulo, .Rsuperheadtable .Rtotali, .Rsuperheadtable .Rgranulo {
+                    background-color: #FFF;
+                    border-color: #FFF;
+                }
+
+                .Rsuperheadtable .Rtotali, .Rheadtable .Rgranulo {
+                    border-right-color: #d8d8d8;
+                }
+
+                td.Rgranulo {
+                    font-weight: bold;
+                    text-align: left !important;
+                }
+
+                .Rsuperheadtable {
+                    text-transform: uppercase;
+                    font-wheigth: bold;
+                }
+
+                #general-info {
+                    float: left;
+                    padding-top: 35px;
+                    padding-bottom: 35px;
+                    font-weight: bold;
+                }
+
+                #general-info span {
+                    font-weight: normal;
+                    text-transform: capitalize;
+                }
+
+                small.percvalue {
+                    font-weight: 300 !important;
+                }
+
+                .modal-body p b {
+                    text-transform: capitalize;
+                }
+            </style>
+        {% endblock %}
+        {% block content %}
+
+
+
+            <div class="container theme-showcase crea-miscelata" role="main" id="miscelata_maker_container">
+
+                <div class="row">
+                    <div class="col-sm-12">
+                        <div class="panel panel-default">
+                            <div class="panel-heading col-md-12">
+                                <div class="col-md-12">
+                                    <h3><i class="fa fa-bar-chart" aria-hidden="true"></i>
+                                        Anagrafica: {{ entity.id }}
+                                    </h3>
+                                    <a id="torna" href="{{ admin.generateUrl('unrouted') }}" class="btn btn-primary">Torna
+                                        al listato</a>
+                                </div>
+                            </div>
+                            <div class="col-md-12 panel-message" onclick="hideMessage()" style="display: none;"></div>
+                            <div class="panel-body">
+                                <div id="general-info">
+                                    <span></span><br>
+                                </div>
+                                <div id="report-options">
+                                    <div>
+                                        <a title="Candida per nuovo tentativo"
+                                           href="{{ admin.generateUrl('unrouted', {'retry': retry}) }}"
+                                           class="btn btn-sm btn-default"><i class="fa fa-refresh"
+                                                                             aria-hidden="true"></i></a>
+                                        <a title="Scarta"
+                                           href="{{ admin.generateUrl('unrouted', {'trash': entity.id}) }}"
+                                           class="btn btn-sm btn-default"><i class="fa fa-trash" aria-hidden="true"></i></a>
+                                    </div>
+
+                                </div>
+                                <div id="reportTableContainer">
+                                    <table class="table table-bordered">
+                                        <tr class="Rheadtable">
+                                            <th>Campo</th>
+                                            <th>Valore</th>
+                                        </tr>
+                                        {% for key,value in entity %}
+                                            {% if value is iterable %}
+                                                {% for subkey,subvalue in value %}
+                                                    {% if subvalue is iterable %}
+                                                        {% for subsubkey,subsubvalue in subvalue %}
+                                                            <tr>
+                                                                <td>{{ key }}.{{ subkey }}.{{ subsubkey }}</td>
+                                                                <td>{{ subsubvalue }}</td>
+                                                            </tr>
+                                                        {% endfor %}
+                                                    {% else %}
+                                                        <tr>
+                                                            <td>{{ key }}.{{ subkey }}</td>
+                                                            <td>{{ subvalue }}</td>
+                                                        </tr>
+                                                    {% endif %}
+                                                {% endfor %}
+                                            {% else %}
+                                                <tr>
+                                                    <td>{{ key }}</td>
+                                                    <td>{{ value }}</td>
+                                                </tr>
+                                            {% endif %}
+                                        {% endfor %}
+                                    </table>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <script src="https://gitcdn.github.io/bootstrap-toggle/2.2.2/js/bootstrap-toggle.min.js"></script>
+
+                <script type="text/javascript" src="/js/datepicker/moment.js"></script>
+                <script>
+                    function hideMessage() {
+                        $('.panel-message').slideUp();
+                    }
+                </script>
+
+            </div> <!-- /container-fluid -->
+        {% endblock %}
+

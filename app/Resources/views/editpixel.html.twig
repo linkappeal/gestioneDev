@@ -1,0 +1,151 @@
+{% extends base_template %}
+	{% block stylesheets %}
+		 {{ parent() }}
+		<link href="https://gitcdn.github.io/bootstrap-toggle/2.2.2/css/bootstrap-toggle.min.css" rel="stylesheet">
+		<link rel="stylesheet" href="{{ asset('css/style.css') }}" />
+		{% stylesheets 'css/style.css'	%}
+			<link href="{{ asset_url }}" type="text/css" rel="stylesheet"/>
+		{% endstylesheets %}
+	
+	{% endblock %}
+	{% block javascripts %}
+		{{ parent() }}
+		<!-- <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.1.1/jquery.min.js"></script> -->
+		<script src="https://gitcdn.github.io/bootstrap-toggle/2.2.2/js/bootstrap2-toggle.min.js"></script>
+		<script>
+		function aggiorna(obj){
+			var e = document.getElementById("vars");
+			var target = document.getElementById("pixel");
+			//var strUser = e.options[e.selectedIndex].value;
+			var strUser = obj.getAttribute('data-value')
+			if(strUser!=''){
+				console.log(strUser);
+				insertAtCursor(target, strUser);
+				e.selectedIndex =0;
+			}
+		}
+		function insertAtCursor(myField, myValue) {
+			//IE support
+			if (document.selection) {
+				myField.focus();
+				sel = document.selection.createRange();
+				sel.text = myValue;
+			}
+			//MOZILLA and others
+			else if (myField.selectionStart || myField.selectionStart == '0') {
+				var startPos = myField.selectionStart;
+				var endPos = myField.selectionEnd;
+				myField.value = myField.value.substring(0, startPos)
+					+ myValue
+					+ myField.value.substring(endPos, myField.value.length);
+			} else {
+				myField.value += myValue;
+			}
+		}
+	 </script>
+	{% endblock %}
+
+	{% block content %}
+		{% if pixel %}
+		<div class="container theme-showcase" role="main">
+		<nav class="navbar navbar-default">
+		  <div class="container-fluid">
+			<!-- Brand and toggle get grouped for better mobile display -->
+			<div class="navbar-header">
+			  <button type="button" class="navbar-toggle collapsed" data-toggle="collapse" data-target="#bs-example-navbar-collapse-1" aria-expanded="false">
+				<span class="sr-only">Toggle navigation</span>
+				<span class="icon-bar"></span>
+				<span class="icon-bar"></span>
+				<span class="icon-bar"></span>
+			  </button>
+			  <a class="navbar-brand" href="#">Pixel Manager</a>
+			</div>
+			<div class="collapse navbar-collapse" id="bs-example-navbar-collapse-1">
+			  <ul class="nav navbar-nav">
+				<li ><a href="{{ admin.generateUrl('pixelmanager')}}">Lista Pixel<span class="sr-only">(current)</span></a></li>
+				<li class="active"><a href="{{ admin.generateUrl('addpixel')}}">Nuovo Pixel<span class="sr-only">(current)</span></a></li>
+			  </ul>
+			  <ul class="nav navbar-nav navbar-right">
+			  </ul>
+			</div><!-- /.navbar-collapse -->
+		  </div><!-- /.container-fluid -->
+		</nav>
+		
+			<div class="row">
+				<div class="col-sm-12">
+				{% if aggiornato == true %}
+					<div class="alert alert-success" role="alert">
+						<strong>Pixel {{pixel.cplNumber}} Aggiornato!</strong> Id Campagna: {{pixel.idCampagna }} - {{ pixel.descrizione }}
+					</div>
+				{% endif %}
+					<div class="panel panel-default">
+						<div class="panel-heading">
+						  <h3 class="panel-title">Modifica Pixel id: {{ pixel.id }}</h3>
+						</div>
+						<div class="panel-body">
+							<form name="login" action={{ admin.generateUrl('editpixel', {'pixelid': pixel.id}) }} method="post" id="insert-pixel-form">
+							<div class="form-group">
+								<label for="dominio">ID della campagna</label>
+								<input type="text" name="idcampagna" id="idcampagna" class="form-control" placeholder="Inserisci una campagna" value="{{ pixel.idCampagna }}" />
+								<small id="emailHelp" class="form-text text-muted">Inserirel'ID della campagna.</small>
+							</div>
+							<div class="form-group">
+								<label for="dominio">Codice CPL associato al pixel</label>
+								<input type="text" name="cplnumber" class="form-control" id="cplnumber" placeholder="Codice CPL" value="{{ pixel.cplNumber }}" />
+								<small id="emailHelp" class="form-text text-muted">Inserire il codice dell'editore nel formato cplXX.</small>
+							</div>
+							<div class="form-group">
+								<label for="dominio">False Media</label>
+								<input type="text" name="codebase" id="codebase" class="form-control" placeholder="False Media del cpl" value="{{ pixel.codebase }}" />
+								<small id="emailHelp" class="form-text text-muted">Falsemedia generato, associato al codice CPL.</small>
+							</div>
+							<div class="form-group error">
+								<label for="payout_code">Payout code</label>
+								<input type="text" name="payout_code" class="form-control" id="payout_code" placeholder="Codice Payout" value="{{ pixel.payoutcode }}" />
+								<small id="emailHelp" class="form-text text-muted">Inserire il codice payout (solitamente 1 => business, 2 => Consumer) da associare al pixel.</small>
+								<div id="payout_code_errore"></div>
+							</div>
+								<input type="hidden" name="runrun" id="runrun" value="runner" />
+								<div class="form-group">
+									<label for="exampleTextarea">Codice pixel</label>
+									<div class="dropdown">
+										<button class="btn btn-primary dropdown-toggle" type="button" data-toggle="dropdown">Variabili dinamiche
+										<span class="caret"></span></button>
+										<ul class="dropdown-menu">
+											<li><a href="javascript:void(0)" onclick="aggiorna(this)" data-value="{ORDERID}">Id Ordine (sub_id)</a></li>
+											<li><a href="javascript:void(0)" onclick="aggiorna(this)" data-value="{BANNERID}">Id banner</a></li>
+											<li><a href="javascript:void(0)" onclick="aggiorna(this)" data-value="{AFFILIATEID}">Id Affiliato</a></li>
+											<li><a href="javascript:void(0)" onclick="aggiorna(this)" data-value="{PRODUCTID}">Id Prodotto</a></li>
+											<li><a href="javascript:void(0)" onclick="aggiorna(this)" data-value="{DATA2}">Dato Custom 2</a></li>
+											<li><a href="javascript:void(0)" onclick="aggiorna(this)" data-value="{DATA2}">Dato Custom 2</a></li>
+										</ul>
+									</div>
+									<textarea class="form-control"  name="pixel" id="pixel" rows="3">{{ pixel.pixel }}</textarea>
+									<small id="emailHelp" class="form-text text-muted">Tag consentiti: img, js ed iframe. Puoi inserire variabili dinamiche all'interno del codice cliccando su <strong>Variabili dinamiche</strong></small>
+								</div>
+								<div class="form-group">
+									<label for="dominio">Descrizione</label>
+									<input type="text" name="descrizione" class="form-control" id="descrizione" placeholder="Descrizione breve" value="{{ pixel.descrizione }}" />
+									<small id="emailHelp" class="form-text text-muted">Breve descrizione del pixel - Es. nome della campagna seguita dal numero cpl.</small>
+								</div>
+								<div class="form-group">
+									<label for="dominio">Pixel attivo</label>
+									<input name="attivo" id="attivo-toggle" type="checkbox" 
+									{% if pixel.attivo == 1 %}checked{% endif %}
+									data-toggle="toggle">
+								</div>
+								<script>
+									$(function() {
+										$('#attivo-toggle').bootstrapToggle();
+									})
+								</script>
+								<input type="hidden" name="azione" value="update" />
+								<input type="submit" class="btn btn-primary" name="submit" value="Aggiorna" />
+							 </form>
+						</div>
+					</div>
+				</div>
+			</div> <!-- row -->
+		 </div>
+		 {% endif %}
+	{% endblock %}

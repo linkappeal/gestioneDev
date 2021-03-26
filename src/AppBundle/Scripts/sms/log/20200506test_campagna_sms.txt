@@ -1,0 +1,535 @@
+2020-05-06,09-38-31
+
+
+
+/************************************************/ 
+2020-05-06,09-38-31
+ File che lancia i test per le campagne sms che lo richiedono 
+
+
+ Connesso a gestione! 
+
+
+ Esco  
+
+2020-05-06,09-39-27
+
+
+
+/************************************************/ 
+2020-05-06,09-39-27
+ File che lancia i test per le campagne sms che lo richiedono 
+
+
+ Connesso a gestione! 
+
+
+ Esco  
+
+2020-05-06,09-40-21
+
+
+
+/************************************************/ 
+2020-05-06,09-40-21
+ File che lancia i test per le campagne sms che lo richiedono 
+
+
+ Connesso a gestione! 
+
+
+ Abbiamo recuperato la campagna: test_new_sms con id 54.
+
+
+ update campagna-54 allo stato 1 RIUSCITO.  
+
+
+ Recuperiamo fornitore con id: 1  
+
+
+ messaggio gsm ok 
+
+
+ Preleviamo numeri di test.  
+
+
+ Non abbiamo recuperato nessun numero di test. Settiamo la campagna con stato a 6.  
+
+
+ update campagna-54 allo stato 6 RIUSCITO.  
+
+
+ Esco  
+
+2020-05-06,10-01-50
+
+
+
+/************************************************/ 
+2020-05-06,10-01-50
+ File che lancia i test per le campagne sms che lo richiedono 
+
+
+ Connesso a gestione! 
+
+
+ Esco  
+
+2020-05-06,10-02-13
+
+
+
+/************************************************/ 
+2020-05-06,10-02-13
+ File che lancia i test per le campagne sms che lo richiedono 
+
+
+ Connesso a gestione! 
+
+
+ Abbiamo recuperato la campagna: test_new_sms con id 54.
+
+
+ update campagna-54 allo stato 1 RIUSCITO.  
+
+
+ Recuperiamo fornitore con id: 1  
+
+
+ messaggio gsm ok 
+
+
+ Preleviamo numeri di test.  
+
+
+ Non abbiamo recuperato nessun numero di test. Settiamo la campagna con stato a 6.  
+
+
+ update campagna-54 allo stato 6 RIUSCITO.  
+
+
+ Esco  
+
+2020-05-06,10-02-59
+
+
+
+/************************************************/ 
+2020-05-06,10-02-59
+ File che lancia i test per le campagne sms che lo richiedono 
+
+
+ Connesso a gestione! 
+
+
+ Abbiamo recuperato la campagna: test_new_sms con id 54.
+
+
+ update campagna-54 allo stato 1 RIUSCITO.  
+
+
+ Recuperiamo fornitore con id: 1  
+
+
+ messaggio gsm ok 
+
+
+ Preleviamo numeri di test.  
+
+
+ Abbiamo recuperato 1 numeri di test  divisi in 1 lanci.  
+
+
+ Lancio n. 1  
+
+
+ Lanciamo lo script del fornitore: purebross.php 
+
+
+ Il lancio è andato OK 
+
+
+ update stato numerii RIUSCITO  
+
+
+ update campagna stato a 2 RIUSCITO.  
+
+
+ Esco  
+
+2020-05-06,10-05-00
+
+
+
+/************************************************/ 
+2020-05-06,10-05-00
+ File che lancia i test per le campagne sms che lo richiedono 
+
+
+ Connesso a gestione! 
+
+
+ Abbiamo recuperato la campagna: test_new_sms con id 54.
+
+
+ update campagna-54 allo stato 1 RIUSCITO.  
+
+
+ Recuperiamo fornitore con id: 1  
+
+
+ messaggio gsm ok 
+
+
+ Preleviamo numeri di test.  
+
+
+ Abbiamo recuperato 1 numeri di test  divisi in 1 lanci.  
+
+
+ Lancio n. 1  
+
+
+ Lanciamo lo script del fornitore: purebross.php 
+
+
+ Il lancio è andato OK 
+
+
+ update stato numerii RIUSCITO  
+
+
+ update campagna stato a 2 RIUSCITO.  
+
+
+ Esco  
+
+2020-05-06,10-15-30
+
+
+
+/************************************************/ 
+2020-05-06,10-15-30
+ File che lancia i test per le campagne sms che lo richiedono 
+
+
+ Connesso a gestione! 
+
+
+ Abbiamo recuperato la campagna: test_new_sms con id 54.
+
+
+ update campagna-54 allo stato 1 RIUSCITO.  
+
+
+ Recuperiamo fornitore con id: 1  
+
+
+ messaggio gsm ok 
+
+
+ Preleviamo numeri di test.  
+
+
+ Abbiamo recuperato 1 numeri di test  divisi in 1 lanci.  
+
+
+ Lancio n. 1  
+
+
+ Lanciamo lo script del fornitore: purebross.php 
+
+
+ Il lancio è andato OK 
+
+
+ update stato numerii RIUSCITO  
+
+
+ update campagna stato a 2 RIUSCITO.  
+
+
+ Esco  
+
+2020-05-06,10-30-39
+
+
+
+/************************************************/ 
+2020-05-06,10-30-39
+ File che lancia i test per le campagne sms che lo richiedono 
+
+
+ Connesso a gestione! 
+
+
+ Abbiamo recuperato la campagna: test_new_sms con id 54.
+
+
+ update campagna-54 allo stato 1 RIUSCITO.  
+
+
+ Recuperiamo fornitore con id: 1  
+
+
+ messaggio gsm ok 
+
+
+ Preleviamo numeri di test.  
+
+
+ Abbiamo recuperato 1 numeri di test  divisi in 1 lanci.  
+
+
+ Lancio n. 1  
+
+
+ Lanciamo lo script del fornitore: purebross.php 
+
+
+ Il lancio è andato OK 
+
+
+ update stato numerii RIUSCITO  
+
+
+ update campagna stato a 2 RIUSCITO.  
+
+
+ Esco  
+
+2020-05-06,10-31-31
+
+
+
+/************************************************/ 
+2020-05-06,10-31-31
+ File che lancia i test per le campagne sms che lo richiedono 
+
+
+ Connesso a gestione! 
+
+
+ Abbiamo recuperato la campagna: test_new_sms con id 54.
+
+
+ update campagna-54 allo stato 1 RIUSCITO.  
+
+
+ Recuperiamo fornitore con id: 1  
+
+
+ messaggio gsm ok 
+
+
+ Preleviamo numeri di test.  
+
+
+ Abbiamo recuperato 1 numeri di test  divisi in 1 lanci.  
+
+
+ Lancio n. 1  
+
+
+ Lanciamo lo script del fornitore: purebross.php 
+
+
+ Il lancio è andato OK 
+
+
+ update stato numerii RIUSCITO  
+
+
+ update campagna stato a 2 RIUSCITO.  
+
+
+ Esco  
+
+2020-05-06,10-34-28
+
+
+
+/************************************************/ 
+2020-05-06,10-34-28
+ File che lancia i test per le campagne sms che lo richiedono 
+
+
+ Connesso a gestione! 
+
+
+ Abbiamo recuperato la campagna: test_new_sms con id 54.
+
+
+ update campagna-54 allo stato 1 RIUSCITO.  
+
+
+ Recuperiamo fornitore con id: 1  
+
+
+ messaggio gsm ok 
+
+
+ Preleviamo numeri di test.  
+
+
+ Abbiamo recuperato 1 numeri di test  divisi in 1 lanci.  
+
+
+ Lancio n. 1  
+
+
+ Lanciamo lo script del fornitore: purebross.php 
+
+
+ Il lancio è andato OK 
+
+
+ update stato numerii RIUSCITO  
+
+
+ Attenzione update campagna stato a 2 FALLITO.  
+
+
+ Esco  
+
+2020-05-06,10-36-18
+
+
+
+/************************************************/ 
+2020-05-06,10-36-18
+ File che lancia i test per le campagne sms che lo richiedono 
+
+
+ Connesso a gestione! 
+
+
+ Abbiamo recuperato la campagna: test_new_sms con id 54.
+
+
+ update campagna-54 allo stato 1 RIUSCITO.  
+
+
+ Recuperiamo fornitore con id: 1  
+
+
+ messaggio gsm ok 
+
+
+ Preleviamo numeri di test.  
+
+
+ Abbiamo recuperato 1 numeri di test  divisi in 1 lanci.  
+
+
+ Lancio n. 1  
+
+
+ Lanciamo lo script del fornitore: purebross.php 
+
+
+ Il lancio è andato OK 
+
+
+ update stato numerii RIUSCITO  
+
+
+ update campagna stato a 2 RIUSCITO.  
+
+
+ Esco  
+
+2020-05-06,10-40-11
+
+
+
+/************************************************/ 
+2020-05-06,10-40-11
+ File che lancia i test per le campagne sms che lo richiedono 
+
+
+ Connesso a gestione! 
+
+
+ Abbiamo recuperato la campagna: test_new_sms con id 54.
+
+
+ update campagna-54 allo stato 1 RIUSCITO.  
+
+
+ Recuperiamo fornitore con id: 1  
+
+
+ messaggio gsm ok 
+
+
+ Preleviamo numeri di test.  
+
+
+ Abbiamo recuperato 1 numeri di test  divisi in 1 lanci.  
+
+
+ Lancio n. 1  
+
+
+ Lanciamo lo script del fornitore: purebross.php 
+
+
+ Il lancio è andato OK 
+
+
+ update stato numerii RIUSCITO  
+
+
+ update campagna stato a 2 RIUSCITO.  
+
+
+ Esco  
+
+2020-05-06,10-41-22
+
+
+
+/************************************************/ 
+2020-05-06,10-41-22
+ File che lancia i test per le campagne sms che lo richiedono 
+
+
+ Connesso a gestione! 
+
+
+ Abbiamo recuperato la campagna: test_new_sms con id 54.
+
+
+ update campagna-54 allo stato 1 RIUSCITO.  
+
+
+ Recuperiamo fornitore con id: 1  
+
+
+ messaggio gsm ok 
+
+
+ Preleviamo numeri di test.  
+
+
+ Abbiamo recuperato 1 numeri di test  divisi in 1 lanci.  
+
+
+ Lancio n. 1  
+
+
+ Lanciamo lo script del fornitore: purebross.php 
+
+
+ Il lancio è andato KO setto a 6 e esco 
+
+
+ Non abbiamo recuperato nessun numero di test. Settiamo la campagna con stato a 6 passo alla prossima campagna . Errore restituito dal fornitore: Credentials rejected  
+
+
+ update campagna stato a 6 RIUSCITO.  
+
+
+ Esco  
+

@@ -1,0 +1,573 @@
+2020-06-17,14-27-39
+
+
+
+/************************************************/ 
+2020-06-17,14-27-39
+ File che lancia i test per le campagne sms che lo richiedono 
+
+
+ Connesso a gestione! 
+
+
+ Abbiamo recuperato la campagna: Test invio crossing bulk con id 60.
+
+
+ update campagna-60 allo stato 1 RIUSCITO... info:   
+
+
+ Recuperiamo fornitore con id: 3  
+
+
+ messaggio gsm ok 
+
+
+ Preleviamo numeri di test.  
+
+
+ Abbiamo recuperato 2 numeri di test  divisi in 1 lanci.  
+
+
+ Lancio n. 1  
+
+
+ Lanciamo lo script del fornitore: Crossing Bulk.php 
+
+
+ Il lancio è andato KO setto a 6 e esco 
+
+
+ Non abbiamo recuperato nessun numero di test. Settiamo la campagna con stato a 6 passo alla prossima campagna . Errore restituito dal fornitore: Cannot parse JSON in POST HTTP request
+  
+
+
+ update campagna stato a 6 RIUSCITO.  
+
+
+ Esco  
+
+2020-06-17,14-31-06
+
+
+
+/************************************************/ 
+2020-06-17,14-31-06
+ File che lancia i test per le campagne sms che lo richiedono 
+
+
+ Connesso a gestione! 
+
+
+ Abbiamo recuperato la campagna: Test invio crossing bulk con id 60.
+
+
+ update campagna-60 allo stato 1 RIUSCITO... info:   
+
+
+ Recuperiamo fornitore con id: 3  
+
+
+ messaggio gsm ok 
+
+
+ Preleviamo numeri di test.  
+
+
+ Abbiamo recuperato 2 numeri di test  divisi in 1 lanci.  
+
+
+ Lancio n. 1  
+
+
+ Lanciamo lo script del fornitore: Crossing Bulk.php 
+
+
+ Il lancio è andato KO setto a 6 e esco 
+
+
+ Non abbiamo recuperato nessun numero di test. Settiamo la campagna con stato a 6 passo alla prossima campagna . Errore restituito dal fornitore: Cannot parse JSON in POST HTTP request
+  
+
+
+ update campagna stato a 6 RIUSCITO.  
+
+
+ Esco  
+
+2020-06-17,14-31-47
+
+
+
+/************************************************/ 
+2020-06-17,14-31-47
+ File che lancia i test per le campagne sms che lo richiedono 
+
+
+ Connesso a gestione! 
+
+
+ Abbiamo recuperato la campagna: Test invio crossing bulk con id 60.
+
+
+ update campagna-60 allo stato 1 RIUSCITO... info:   
+
+
+ Recuperiamo fornitore con id: 3  
+
+
+ messaggio gsm ok 
+
+
+ Preleviamo numeri di test.  
+
+
+ Abbiamo recuperato 2 numeri di test  divisi in 1 lanci.  
+
+
+ Lancio n. 1  
+
+
+ Lanciamo lo script del fornitore: Crossing Bulk.php 
+
+
+ Il lancio è andato KO setto a 6 e esco 
+
+
+ Non abbiamo recuperato nessun numero di test. Settiamo la campagna con stato a 6 passo alla prossima campagna . Errore restituito dal fornitore: Cannot parse JSON in POST HTTP request
+  
+
+
+ update campagna stato a 6 RIUSCITO.  
+
+
+ Esco  
+
+2020-06-17,14-34-46
+
+
+
+/************************************************/ 
+2020-06-17,14-34-46
+ File che lancia i test per le campagne sms che lo richiedono 
+
+
+ Connesso a gestione! 
+
+
+ Abbiamo recuperato la campagna: Test invio crossing bulk con id 60.
+
+
+ update campagna-60 allo stato 1 RIUSCITO... info:   
+
+
+ Recuperiamo fornitore con id: 3  
+
+
+ messaggio gsm ok 
+
+
+ Preleviamo numeri di test.  
+
+
+ Abbiamo recuperato 2 numeri di test  divisi in 1 lanci.  
+
+
+ Lancio n. 1  
+
+
+ Lanciamo lo script del fornitore: Crossing Bulk.php 
+
+
+ Il lancio è andato OK 
+
+
+ update campagna stato a 2 RIUSCITO.  
+
+
+ Esco  
+
+2020-06-17,14-51-50
+
+
+
+/************************************************/ 
+2020-06-17,14-51-50
+ File che lancia i test per le campagne sms che lo richiedono 
+
+
+ Connesso a gestione! 
+
+
+ Abbiamo recuperato la campagna: Test invio crossing bulk con id 60.
+
+
+ update campagna-60 allo stato 1 RIUSCITO... info:   
+
+
+ Recuperiamo fornitore con id: 3  
+
+
+ messaggio gsm ok 
+
+
+ Preleviamo numeri di test.  
+
+
+ Abbiamo recuperato 2 numeri di test  divisi in 1 lanci.  
+
+
+ Lancio n. 1  
+
+
+ Lanciamo lo script del fornitore: Crossing Bulk.php 
+
+
+ Il lancio è andato OK 
+
+
+ update campagna stato a 2 RIUSCITO.  
+
+
+ Esco  
+
+2020-06-17,14-52-47
+
+
+
+/************************************************/ 
+2020-06-17,14-52-47
+ File che lancia i test per le campagne sms che lo richiedono 
+
+
+ Connesso a gestione! 
+
+
+ Abbiamo recuperato la campagna: Test invio crossing bulk con id 60.
+
+
+ update campagna-60 allo stato 1 RIUSCITO... info:   
+
+
+ Recuperiamo fornitore con id: 3  
+
+
+ messaggio gsm ok 
+
+
+ Preleviamo numeri di test.  
+
+
+ Abbiamo recuperato 2 numeri di test  divisi in 1 lanci.  
+
+
+ Lancio n. 1  
+
+
+ Lanciamo lo script del fornitore: Crossing Bulk.php 
+
+
+ Il lancio è andato OK 
+
+
+ update stato numero RIUSCITO per il numero con id: 2666475, id del fornitore: non presente  
+
+
+ update stato numero RIUSCITO per il numero con id: 2706476, id del fornitore: non presente  
+
+
+ update campagna stato a 2 RIUSCITO.  
+
+
+ Esco  
+
+2020-06-17,14-54-55
+
+
+
+/************************************************/ 
+2020-06-17,14-54-55
+ File che lancia i test per le campagne sms che lo richiedono 
+
+
+ Connesso a gestione! 
+
+
+ Abbiamo recuperato la campagna: Test invio crossing bulk con id 60.
+
+
+ update campagna-60 allo stato 1 RIUSCITO... info:   
+
+
+ Recuperiamo fornitore con id: 3  
+
+
+ messaggio gsm ok 
+
+
+ Preleviamo numeri di test.  
+
+
+ Abbiamo recuperato 2 numeri di test  divisi in 1 lanci.  
+
+
+ Lancio n. 1  
+
+
+ Lanciamo lo script del fornitore: Crossing Bulk.php 
+
+
+ Il lancio è andato OK 
+
+
+ update stato numero RIUSCITO per il numero con id: 2666475, id del fornitore: non presente  
+
+
+ update stato numero RIUSCITO per il numero con id: 2706476, id del fornitore: non presente  
+
+
+ update campagna stato a 2 RIUSCITO.  
+
+
+ Esco  
+
+2020-06-17,14-56-20
+
+
+
+/************************************************/ 
+2020-06-17,14-56-20
+ File che lancia i test per le campagne sms che lo richiedono 
+
+
+ Connesso a gestione! 
+
+
+ Abbiamo recuperato la campagna: Test invio crossing bulk con id 60.
+
+
+ update campagna-60 allo stato 1 RIUSCITO... info:   
+
+
+ Recuperiamo fornitore con id: 3  
+
+
+ messaggio gsm ok 
+
+
+ Preleviamo numeri di test.  
+
+
+ Abbiamo recuperato 2 numeri di test  divisi in 1 lanci.  
+
+
+ Lancio n. 1  
+
+
+ Lanciamo lo script del fornitore: Crossing Bulk.php 
+
+
+ Il lancio è andato OK 
+
+
+ update stato numero RIUSCITO per il numero con id: 2666475, id del fornitore: CRONET-dcf19780db3a-beb8e08bb97f  
+
+
+ update stato numero RIUSCITO per il numero con id: 2706476, id del fornitore: CRONET-2aa856bcc421-aae56ae1345e  
+
+
+ update campagna stato a 2 RIUSCITO.  
+
+
+ Esco  
+
+2020-06-17,17-40-48
+
+
+
+/************************************************/ 
+2020-06-17,17-40-48
+ File che lancia i test per le campagne sms che lo richiedono 
+
+
+ Connesso a gestione! 
+
+
+ Abbiamo recuperato la campagna: Test invio crossing bulk con id 60.
+
+
+ update campagna-60 allo stato 1 RIUSCITO... info:   
+
+
+ Recuperiamo fornitore con id: 3  
+
+
+ messaggio gsm ok 
+
+
+ Preleviamo numeri di test.  
+
+
+ Abbiamo recuperato 2 numeri di test  divisi in 1 lanci.  
+
+
+ Lancio n. 1  
+
+
+ Lanciamo lo script del fornitore: Crossing Bulk.php 
+
+
+ Il lancio è andato OK 
+
+
+ update stato numero RIUSCITO per il numero con id: 2666475, id del fornitore: CRONET-517f9ac6a9a5-278d09b5702e  
+
+
+ update stato numero RIUSCITO per il numero con id: 2706476, id del fornitore: CRONET-de39fc92fa88-94ec00cd468c  
+
+
+ update campagna stato a 2 RIUSCITO.  
+
+
+ Esco  
+
+2020-06-17,18-04-12
+
+
+
+/************************************************/ 
+2020-06-17,18-04-12
+ File che lancia i test per le campagne sms che lo richiedono 
+
+
+ Connesso a gestione! 
+
+
+ Abbiamo recuperato la campagna: Test invio crossing bulk con id 60.
+
+
+ update campagna-60 allo stato 1 RIUSCITO... info:   
+
+
+ Recuperiamo fornitore con id: 3  
+
+
+ messaggio gsm ok 
+
+
+ Preleviamo numeri di test.  
+
+
+ Abbiamo recuperato 1 numeri di test  divisi in 1 lanci.  
+
+
+ Lancio n. 1  
+
+
+ Lanciamo lo script del fornitore: Crossing Bulk.php 
+
+
+ Il lancio è andato OK 
+
+
+ update campagna stato a 2 RIUSCITO.  
+
+
+ Esco  
+
+2020-06-17,18-13-06
+
+
+
+/************************************************/ 
+2020-06-17,18-13-06
+ File che lancia i test per le campagne sms che lo richiedono 
+
+
+ Connesso a gestione! 
+
+
+ Abbiamo recuperato la campagna: Test invio crossing bulk con id 60.
+
+
+ update campagna-60 allo stato 1 RIUSCITO... info:   
+
+
+ Recuperiamo fornitore con id: 3  
+
+
+ messaggio gsm ok 
+
+
+ Preleviamo numeri di test.  
+
+
+ Abbiamo recuperato 1 numeri di test  divisi in 1 lanci.  
+
+
+ Lancio n. 1  
+
+
+ Lanciamo lo script del fornitore: Crossing Bulk.php 
+
+
+ Il lancio è andato OK 
+
+
+ update stato numero RIUSCITO per il numero con id: 2706476, id del fornitore: CRONET-5546d801c425-c4d4e12ade66  
+
+
+ update campagna stato a 2 RIUSCITO.  
+
+
+ Esco  
+
+2020-06-17,18-14-17
+
+
+
+/************************************************/ 
+2020-06-17,18-14-17
+ File che lancia i test per le campagne sms che lo richiedono 
+
+
+ Connesso a gestione! 
+
+
+ Abbiamo recuperato la campagna: Test invio crossing bulk con id 60.
+
+
+ update campagna-60 allo stato 4 RIUSCITO... info:   
+
+
+ Ho settato lo stato campagna a 4  
+
+
+ Recuperiamo fornitore con id: 3  
+
+
+ messaggio gsm ok 
+
+
+ Preleviamo numeri di test.  
+
+
+ Abbiamo recuperato 1 numeri di test  divisi in 1 lanci.  
+
+
+ Lancio n. 1  
+
+
+ Lanciamo lo script del fornitore: Crossing Bulk.php 
+
+
+ Il lancio è andato OK 
+
+
+ update stato numero RIUSCITO per il numero con id: 2666475, id del fornitore: CRONET-1a07ac968abf-f8a3213c9629  
+
+
+ update campagna stato a 5 RIUSCITO.  
+
+
+ Esco  
+

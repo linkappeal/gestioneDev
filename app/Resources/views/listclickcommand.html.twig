@@ -1,0 +1,419 @@
+{% extends base_template %}
+
+        {% block stylesheets %}
+            {{ parent() }}
+                {% stylesheets
+                        'css/style.css'
+                        'css/data_tables/style-table.css'
+                %}
+					<link href="{{ asset_url }}" type="text/css" rel="stylesheet"/>
+					<link href="https://gitcdn.github.io/bootstrap-toggle/2.2.2/css/bootstrap-toggle.min.css" rel="stylesheet">
+                {% endstylesheets %}
+			
+				<style>
+					.messaggio{padding: 15px; font-size: 19px; text-align: center; background-color: #00a65aa6;cursor:pointer;}
+					.messaggio .fa{margin-right: 15px;font-size: 30px;}
+					.no-padding{padding:0!important;}
+					.selectable{width: 100%;padding:8px;position: relative;cursor:pointer;}
+					.btnover{ position: relative; margin: 10 auto;	}
+					.overbox{display: none; background: rgba(0, 136, 204, 0.5); position: absolute; top: 0; left: 0; width: 100%;text-align: center; padding:5px;}
+					.color-deactive{color: red;}
+					.color-active{color: green; }
+					.form-group input {width: 450;}
+					.form-group {margin-top: 10px;}
+					.principale{background: #fafafa;border: solid 1px #eee;padding:20px;}
+					.border-left{border-left: solid 2px #3498db;}
+					.box-submit{margin-top:20px;}
+					#listatoCC_wrapper{    margin-top: 20px;}
+					.btn-addnew {margin-top: 20px;}
+					table#listatoCC td{vertical-align: middle;}
+				</style>
+        {% endblock %}
+        {% block content %}
+	<div class="container-fluid">
+		<div class="row">
+		
+			{% if app.request.query.get('messaggio') is not empty %}
+				<div class="row messaggio" onclick="closeMessage()">
+					<i class="fa fa-info-circle"></i>
+					{{ app.request.query.get('messaggio') }}
+				</div>
+			{% endif %}
+			
+			<div class="row principale">
+				<div class="col-md-6">
+					<h2 class="title-box">Aggiungi un nuovo tracciamento</h2>
+				</div>
+				<div class="col-md-6">
+					<button onclick="cleanForm()" class="btn-addnew btn btn-default">Aggiungi nuovo</button>
+				</div>
+			</div>
+			<div class="row principale" id="box-form">
+				<form method="POST" action="{{ admin.generateUrl('insertclickcommand') }}">
+					<!-- left col-->
+					<div class="col-md-6 border-left">
+						<div class="col-md-12 form-group">
+							<input class="form-control" type="text" name="id_campagna" placeholder="Identificativo della campagna" />
+						</div>
+						<div class="col-md-12 form-group">
+							<input class="form-control" type="text" name="id_prodotto" placeholder="Id prodotto" />
+						</div>
+						<div class="col-md-12 form-group">
+							<input class="form-control" type="text" name="descrizione" placeholder="Descrizione" />
+						</div>
+						<div class="col-md-12">
+							<div class="col-md-4 form-group">Redirect</div>
+							<div class="col-md-8 form-group"><input type="checkbox" id="redirect-ck"checked class="btoggle" data-box="redirect" data-toggle="toggle"></div>
+							<div class="redirect-box form-group">
+								<input class="form-control" type="text" name="url_redirect" placeholder="URL di redirect" />
+								<div class="form-group">
+									<div class="col-md-4">Accoda parametri al redirect?</div>
+									<div class="col-md-8"><input type="checkbox" name="accorda_redirect" value="1" id="hide-url-toggle" data-on="Si" data-off="No" data-toggle="toggle"></div>
+								</div>
+							</div>
+						</div>
+					</div>
+					
+					<!-- right col-->
+					<div class="col-md-6 border-left">
+						<div class="col-md-12 form-group">
+							<div class="col-md-4">Nascondi URL?</div>
+							<div class="col-md-8"><input type="checkbox" name="hide_redirect" id="hide-url-toggle" data-on="Si" data-off="No" data-toggle="toggle"></div>
+						</div>
+						
+						<div class="col-md-12 form-group">
+							<div class="col-md-4">Attivo?</div>
+							<div class="col-md-8"><input type="checkbox" value="1" checked name="attivo" id="hide-url-toggle" data-on="Si" data-off="No" data-toggle="toggle"></div>
+						</div>
+						<div class="col-md-12 form-group">
+							<div class="col-md-4">In diretta</div>
+							<div class="col-md-8"><input type="checkbox" value="1" checked name="indiretta" id="hide-url-toggle" data-on="Si" data-off="No" data-toggle="toggle"></div>
+						</div>
+						<div class="col-md-12 form-group">
+							<div class="col-md-4 form-group">Media</div>
+							<div class="col-md-8 form-group"><input type="checkbox" class="btoggle" data-box="media" data-toggle="toggle"></div>
+							<div class="media-box" style="display: none;">
+								<input class="form-control" type="text" name="media" value="" placeholder="codice media" />
+							</div>
+						</div>
+						<div class="col-md-12 form-group">
+							<div class="col-md-4 form-group">Altri parametri</div>
+							<div class="col-md-8 form-group"><input type="checkbox" class="btoggle" data-box="pars" data-toggle="toggle"></div>
+							<div class="pars-box" style="display: none;">
+								<input class="form-control" type="text" name="parametri" value="" placeholder="Parametri con &" />
+								<p id="email_help" class="help-block">Inserisci i parametri nel formato <strong>parametro1</strong>=<strong>valore1</strong>&amp;<strong>parametro2</strong>=<strong>valore2</strong>. Per inserire il timestamp scrivere il valore nel formato <b>{timestamp}</b></p>	
+							</div>
+						</div>
+					</div>
+					<div class="col-md-12 box-submit">
+					<input type="hidden" name="action" value="genera" />
+					<input type="hidden" name="id" value="" />
+						<button type="submit" class="btn btn-default runbtn">Genera Tracciamento</button>
+					</div>
+				</form>
+			</div>
+		
+			<table 
+			   id="listatoCC" 
+			   class="table table-striped table-bordered table-hover" cellspacing="0" width="100%">
+				<thead>
+					<tr>
+						<th>ID</th><th>Descrizione</th><th>Id campagna</th><th>Id Prodotto</th><th>Redirect</th><th>Rewrite</th><th>Click Command</th><th>Pixel Cliente</th><th>Stato</th><th>Azioni</th>
+					</tr>
+				</thead>
+			<tbody>
+			{% for clickcommand in clickcommands %}
+				<tr id="cc_row_{{ clickcommand.idr }}">
+					<td>
+						<div class="red-{{ clickcommand.idr }}-id">{{ clickcommand.idr }}</div>
+					</td>
+					<td>
+						{{ clickcommand.descrizione|length > 40 ? clickcommand.descrizione|slice(0, 40) ~ '...' : clickcommand.descrizione }}
+						<div style="display:none" class="red-{{ clickcommand.idr }}-descrizione">
+							{{ clickcommand.descrizione }}	
+						</div>
+					</td>
+					<td>
+						<div class="red-{{ clickcommand.idr }}-id_campagna">
+							{{ clickcommand.id_campagna }}
+						</div>
+					</td>
+					<td>
+						<div class="red-{{ clickcommand.idr }}-id_prodotto">
+							{{ clickcommand.id_prodotto }}
+						</div>
+					</td>
+					<td class="no-padding">
+						<div class="selectable">
+							{% if clickcommand.url_redirect != "DISATTIVO" %}
+								{{ clickcommand.url_redirect|length > 30 ? clickcommand.url_redirect|slice(0, 30) ~ '...' : clickcommand.url_redirect }}
+							{% else %}
+								{{ clickcommand.url_redirect }}
+							{% endif %}
+							<span style="display:none;" class="txt_copy red-{{ clickcommand.idr }}-redirect">
+								{{ clickcommand.url_redirect }}
+							</span>
+							{{ clickcommand.cp_redirect | raw}}
+						</div>			
+					</td>
+					<td>
+						<div class="red-{{ clickcommand.idr }}-rewrite">
+							{{ clickcommand.rewrite_campagna }}
+						</div>
+					</td>
+					<td class="no-padding">
+						<div class="selectable">
+							{{ clickcommand.click_command|length > 30 ? clickcommand.click_command|slice(0, 30) ~ '...' : clickcommand.click_command }}
+							{{ clickcommand.cp_clickc | raw}}
+						</div>
+					</td>
+					<td class="no-padding">
+						<div class="selectable">
+							{{ clickcommand.pixel|length > 30 ? clickcommand.pixel|slice(0, 30) ~ '...' : clickcommand.pixel }}
+							{{ clickcommand.px_clickc | raw}}
+						</div>
+					</td>
+					<td>
+						<div class="red-{{ clickcommand.idr }}-attivo">
+							{{ clickcommand.attivo | raw }}
+						</div>
+					</td>
+					<td>
+						<a href="javascript:void(0)" 	onclick="modifica('{{ clickcommand.idr }}')"			 class="btn btn-sm btn-default"><i class="fa fa-pencil-square" aria-hidden="true"></i></a>
+						<a href="javascript:void(0);" 	onclick="confermaEliminazione('{{ clickcommand.idr }}')" class="btn btn-sm btn-default"><i class="fa fa-window-close" aria-hidden="true"></i></a>
+					</td>
+					<input type="hidden" class="red-{{ clickcommand.idr }}-parametri" value="{{ clickcommand.parametri}}" />
+				</tr>
+			{% endfor %}
+			</tbody>
+		</table>		
+	</div>
+	<script src="https://cdnjs.cloudflare.com/ajax/libs/datatables/1.10.12/js/jquery.dataTables.min.js"></script>
+	<script src="https://cdnjs.cloudflare.com/ajax/libs/datatables/1.10.12/js/dataTables.bootstrap.min.js"></script>
+	<script src="https://cdn.datatables.net/fixedcolumns/3.2.3/js/dataTables.fixedColumns.min.js"></script>
+	<script src="https://gitcdn.github.io/bootstrap-toggle/2.2.2/js/bootstrap-toggle.min.js"></script>
+	<script>
+		function copia(el){
+			console.log('elem',$(el).closest("textarea"));
+			$(el).closest("textarea").html().select();
+			document.execCommand("copy");
+		}
+		function confermaEliminazione(id){
+			$('.id_cc-modal').html(id);
+			var url = "{{ admin.generateUrl('deleteclickcommand') }}"; 
+			$('#confirm').modal({
+			  backdrop: 'static',
+			  keyboard: false
+			}).one('click', '#delete', function(e) {
+				$.ajax({url: url,
+				data: { id : id},
+				success: function(result){
+					if(result.eliminato==true){ // pixel non presente
+						$('#cc_row_' + id).fadeOut('slow').remove();
+					}
+				}});
+			});
+		}
+		
+		function closeMessage(){
+			$('.messaggio').slideUp();
+		}
+		function cleanForm(){
+			$('.title-box').html('Aggiungi nuovo tracciamento');
+			$('input[name="id"]').val('');
+			$('input[name="id_campagna"]').val('');
+			$('input[name="id_prodotto"]').val('');
+			$('input[name="descrizione"]').val('');
+			$('input[name="url_redirect"]').val('');
+			$('#redirect-ck').prop('checked', true);
+			$('.redirect-box').fadeIn('fast');
+			$('input[name="attivo"]').prop('checked', true).change();
+			$('input[name="hide_redirect"]').prop('checked', false).change();
+			$('input[name="indiretta"]').prop('checked', true).change();
+			$('input[name="accorda_redirect"]').prop('checked', false).change();
+			$('input[name="parametri"]').val('');
+			
+			$('input[name="action"]').val('genera');
+			$('.runbtn').html('Genera Tracciamento');
+		}
+		
+		function modifica(id){
+			var selbase 	= '.red-' + id + '-';
+			var red = {
+							id_campagna : $(selbase + 'id_campagna'	).text().trim(),
+							id_prodotto : $(selbase + 'id_prodotto'	).text().trim(),
+							descrizione : $(selbase + 'descrizione'	).text().trim(),
+							redirect 	: $(selbase + 'redirect'	).text().trim(),
+							rewrite 	: $(selbase + 'rewrite'		).text().trim(),
+							attivo 		: $(selbase + 'attivo'		).text().trim(),
+							parametri 	: $(selbase + 'parametri'	).text().trim(),
+			};
+			
+			$('.title-box').html('Modifica redirect <strong>'+red.id_campagna+'</strong>');
+			$('input[name="id"]').val(id);
+			$('input[name="id_campagna"]').val(red.id_campagna);
+			$('input[name="id_prodotto"]').val(red.id_prodotto);
+			$('input[name="descrizione"]').val(red.descrizione);
+			if(red.redirect!='DISATTIVO'){
+				$('#redirect-ck').prop('checked', true).change();
+				$('input[name="url_redirect"]').val(red.redirect);
+				$('.redirect-box').fadeIn('fast');
+			}else{
+				$('#redirect-ck').prop('checked', false).change();
+				$('input[name="url_redirect"]').val('');
+				$('.redirect-box').fadeOut('fast');
+			}
+			if(red.attivo=='ATTIVO'){
+				$('input[name="attivo"]').prop('checked', true).change();
+			}else{
+				$('input[name="attivo"]').prop('checked', false).change();
+			}
+			if(red.rewrite!='NESSUN REWRITE'){
+				$('input[name="hide_redirect"]').prop('checked', true).change();
+			}else{
+				$('input[name="hide_redirect"]').prop('checked', false).change();
+			}
+			
+			var parametri = red.parametri.trim();
+			var pars = {};
+			if(parametri!=''){
+				var pars = JSON.parse(parametri);
+				if(pars.ind.trim()!==''){
+					$('input[name="indiretta"]').prop('checked', true).change();
+				}else{
+					$('input[name="indiretta"]').prop('checked', false).change();
+				}
+			}
+			$('input[name="action"]').val('edit');
+			$('.runbtn').html('Modifica');
+			$("html, body").animate({ scrollTop: 0 }, "fast");
+			$('.principale').effect("highlight", {}, 500);
+		}
+			
+	$(function() {
+		
+		if($('.messaggio').length){
+			$(".messaggio").delay(2500).slideUp();
+		}
+		$('.click-copy').on('click', function(){
+			$(this).prev(".txt_copy").fadeIn(5).select();
+			//console.log($(this).prev(".txt_copy").select());
+			document.execCommand("copy");
+			$(this).prev(".txt_copy").fadeOut(5);
+		});
+		
+		$('#redirect-toggle').bootstrapToggle({ on: 'Enabled', off: 'Disabled' });
+		$('#hide-url-toggle').bootstrapToggle({ on: 'Si', off: 'No' });
+		
+		$('.btoggle').change(function() {
+			var box = $(this).data('box');
+			if($(this).prop('checked')){
+				$('.'+ box +'-box').fadeIn();
+			}else{
+				$('.'+ box +'-box').fadeOut();
+			}
+		});
+		
+		$('.selectable').mouseover(function(){
+			$(this).children('.overbox').fadeIn('fast');
+		}).mouseleave(function() {
+			$(this).children('.overbox').fadeOut('fast');
+		  });
+		  
+		var table = $('#listatoCC').
+			DataTable( {
+				"order": [[ 0, "desc" ]],
+						
+				scrollY:        "500px",
+				scrollX:        true,
+				scrollCollapse: true,
+				paging:         true,
+				"scrollX": true,
+				fixedHeader: true,
+				 "lengthMenu": [[10, 25, 50, -1], [10, 25, 50, "All"]],
+				dom:
+						"<'row'<'col-sm-12'<'box box-primary'<'box-body'<'col-md-6 search_filter'><'col-md-6'f>>>>>" +
+						"<'row'<'col-sm-12'tr>>" +
+						"<'row'<'col-sm-6'i><'col-sm-6'l>>"+
+						"<'row'<'col-sm-12 text-center'p>>",
+				buttons: [
+						{ extend: 'csv', text: '<i class="fa fa-download"></i>  Esporta in CSV' }
+				],
+				language: {
+					search: "Cerca in tutte le colonne:"
+				},
+				language: {
+					search: "<strong>Cerca in tutte le colonne</strong>",
+					paginate: {
+								first:      "Prima",
+								previous:   "Predecente",
+								next:       "Successiva",
+								last:       "Ultima"
+							},
+					lengthMenu: "<strong>Risultati per pagina</strong> _MENU_",
+					info: "Pagina _PAGE_ di _PAGES_",
+				},
+			});
+		// FILTRI RICERCA
+		var search_html_row = '<div class="col-md-12">';
+		$('#listatoCC thead th').each(function (index) {
+	
+			var title = $(this).text();
+			if($(this).hasClass('search')){
+				search_html_row += '<div class="col-md-4"><input class="form-control table_input_s sear_'+index+'" type="text" placeholder="Cerca '+title+'" /></div>';
+				
+			}else if($(this).hasClass('search_drop')){
+			
+				var options = table.column(index).data().unique();
+				var options_html = '';
+
+				$.each( options, function(indice, valore ){
+					options_html += '<option value="' + valore.replace(/<\/?[^>]+(>|$)/g, "") + '">'+valore.replace(/<\/?[^>]+(>|$)/g, "")+'</option>';
+				});
+
+				search_html_row += '<div class="col-md-4">'
+										+'<select class="table_select2 sear_'+index+'">'
+											+'<option value="">Filtra ' + title + '</option>'
+											+ options_html 												
+										+'</select>'
+									+'</div>';
+			}
+		} );
+		search_html_row += '</div>';
+		
+		$('.search_filter').html(search_html_row);
+
+		table.columns().every( function () {
+			var that = this;
+			$( '.sear_'+that[0]).on( 'keyup change', function () {
+				if ( that.search() !== this.value ) {
+					that.search( '^'+this.value,true).draw();
+				}
+			} );
+		});
+		$('.table_select2').select2();
+	})
+	</script>
+			<!-- finestra modale -->
+			<div class="modal fade" id="confirm">
+			  <div class="modal-dialog" role="document">
+				<div class="modal-content">
+				  <div class="modal-header">
+					<button type="button" class="close" data-dismiss="modal" aria-label="Close">
+					  <span aria-hidden="true">&times;</span>
+					</button>
+					<h5 class="modal-title">Stai eliminando il click-command  con ID: <span class="id_cc-modal"></span></h5>
+				  </div>
+				  <div class="modal-body">
+					<p>Sei sicuro di voler eliminare il  click-command con ID: <span class="id_cc-modal"></span>?</p>
+				  </div>
+				  <div class="modal-footer">
+					<button type="button" class="btn btn-primary" data-dismiss="modal" id="delete">Si, Elimina</button>
+					<button type="button" class="btn btn-secondary" data-dismiss="modal">Annulla</button>
+				  </div>
+				</div>
+			  </div>
+			</div>
+		</div> <!-- row -->
+		{% endblock %}
+

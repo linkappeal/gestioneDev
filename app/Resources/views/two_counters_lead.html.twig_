@@ -1,0 +1,233 @@
+{% extends base_template %}
+
+{% block stylesheets %}
+    {{ parent() }}
+	{% stylesheets 
+            'css/style_counter.css' 
+            'css/datepick.css'
+        %}
+	<link href="{{ asset_url }}" type="text/css" rel="stylesheet"/>
+        <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/font-awesome/4.6.0/css/font-awesome.min.css">
+        <link href="https://fonts.googleapis.com/css?family=Lobster" rel="stylesheet">
+        <link href="https://fonts.googleapis.com/css?family=Oswald:300,400,700" rel="stylesheet">
+	{% endstylesheets %}
+        
+
+{% endblock %}
+
+{% block javascripts %}
+    {{ parent() }}
+        {% javascripts
+
+                'js/jquery.plugin.js'
+                'js/jquery.datepick.js'
+        %}
+        <script src="{{ asset_url }}"></script>
+        {% endjavascripts %}
+    <script type="text/javascript">
+        jQuery(document).ready(function ($) {
+			//$.datepicker.setDefaults($.datepicker.regional['it']);
+                        
+                        var loader = $('#loader');
+                        
+                        $("#data_conteggio").datepick({
+                                rangeSelect: true,
+                                showTrigger: "<i class='fa fa-calendar'></i>",
+			        dateFormat: 'dd/mm/yy',
+				onSelect: function() {
+					var data = $("#data_conteggio").val();
+					console.log(data);
+					if(data!=''){
+						var url = "{{admin.generateUrl('countbyrangedata')}}";
+						loader.fadeIn('fast');
+						console.log(data);
+						$.ajax({url: url,
+							data: { data : data },
+							success: function(result){
+								console.log("result",result);
+								if(result.stato==true){ // pixel non presente
+									$('.data_label').html(data);
+									var html = '<p class="statistic-counter">'+ result.totale + '</p>';
+									if(result.totale_indirette != '0'){
+										html += '<h4 class="titolo_indiretta">Di cui indirette:</h4>';
+										html += '<p class="indirette-counter">'+result.totale_indirette+'</p>';                                                    
+										$('.contatore-ricerca').after(html);
+									 }  
+									html += '<h4 class="titolo_off">off-target</h4><p class="statistic-counter">' + result.totale_notpassed + "</p>";
+									$('.contatore-ricerca').html(html);
+									$('.contatore-ricerca').nextAll().remove();
+								}
+						}}).done(function() {
+							loader.fadeOut('fast');
+						});
+					}
+				}
+
+                        });
+			{# {{dump(admin.datagrid.filters.campagna)}}#}
+		});
+		function countByData() {
+			var data = $("#data_conteggio").val();
+		} 
+		function mostraDettagliCampagna(blocco){
+			$('.campaign_details-'+blocco).toggle();
+		}
+	</script>
+{% endblock %}
+
+{%- block actions -%}
+{% include 'SonataAdminBundle:CRUD:action_buttons.html.twig' %}
+{%- endblock -%}
+
+{# {% block tab_menu %}{{ knp_menu_render(admin.sidemenu(action), {'currentClass' : 'active', 'template': sonata_admin.adminPool.getTemplate('tab_menu_template')}, 'twig') }}{% endblock %} #}
+
+{% block list_table %}
+
+    <div class="col-xs-12 col-md-12">
+        <div class="box box-primary">
+            <div class="box-body">
+                <section id="counter" class="counter">
+                    <div class="main_counter_area">
+                        <div class="one-overlay p-y-3">
+                            <div class="container">
+                                <div class="row">
+                                    <div class="col-md-12 text-center titolo_primario"><h3 class="box-title">Conteggio Anagrafiche</h3></div>
+                                </div>
+                                <div class="row">
+								<div class="main_counter_content text-center white-text wow fadeInUp">
+									<div class="col-md-3">
+										<h4 class="titoli_blocchi">Altro ieri ({{ "now"|date_modify("- 2 day") | date("d/m") }})
+											<div class="single_counter_box">
+												<p class="statistic-counter">{% if postyesterday is defined %}{{ postyesterday }}{% else %}0{% endif %}</p>
+												{% if postyesterday_indirette is defined and postyesterday_indirette > 0 %}
+												<h4 class="titolo_indiretta">Di cui indirette:</h4>
+												<p class="indirette-counter">{{postyesterday_indirette}}</p>
+												{% endif %}
+												<h4 class="titolo_off">off-target</h4>
+												<p class="statistic-counter">
+													{% if postyesterday_notpassed is defined %}
+														{{ postyesterday_notpassed }}
+													{% else %}
+														0
+													{% endif %}
+												</p>
+											</div>
+										</h4>
+									</div>
+										<div class="col-md-3">   
+											<h4 class="titoli_blocchi">Ieri ({{ "now"|date_modify("- 1 day") | date("d/m") }})
+												<div class="single_counter_box">
+													<p class="statistic-counter">
+														{% if yesterday is defined %}
+															{{ yesterday }}
+														{% else %}
+															0
+														{% endif %}
+													</p>
+													<span class="mostra-dettagli-counter" onclick="mostraDettagliCampagna('ieri')">Mostra dettagli</span>
+												
+													<ul class="dettaglio_campagna campaign_details-ieri" style="display:none;">
+													{% for campaign in yesterday_campaign %}
+														<li class="lista-campagna"><span class="list-campaign-name">{{ campaign.cliente|e }} - {{ campaign.name|e }}</span><span class="list-campaign-count">{{ campaign.num|e }}</span></li>
+													{% endfor %}
+													</ul>
+												
+													{% if yesterday_indirette is defined and yesterday_indirette > 0 %}
+														<h4 class="titolo_indiretta">Di cui indirette:</h4>
+														<p class="indirette-counter">
+														{{yesterday_indirette}}</p>
+													{% endif %}
+													<h4 class="titolo_off">off-target</h4>
+													<p class="statistic-counter">
+														{% if yesterday_notpassed is defined %}
+																{{ yesterday_notpassed }}
+															</p>
+														{% else %}
+															0
+														{% endif %}
+													</p>
+                                                                                                        
+                                                                                                        <span class="mostra-dettagli-counter" onclick="mostraDettagliCampagna('ieri_not')">Mostra dettagli</span>
+												        <ul class="dettaglio_campagna campaign_details-ieri_not" style="display:none;">
+													{% for campaign in yesterday_offtarget %}
+														<li class="lista-campagna"><span class="list-campaign-name">{{ campaign.cliente|e }} - {{ campaign.name|e }}</span><span class="list-campaign-count">{{ campaign.num|e }}</span></li>
+													{% endfor %}
+													</ul>
+                                                                                                        
+												</div>
+											</h4>
+										</div>
+									<div class="col-md-3">
+										<h4 class="titoli_blocchi">Oggi ({{ "now"|date("d/m") }})
+											<div class="single_counter_box">
+												   <small class="last-cron-text">
+													<i class="fa fa-clock-o fa-lg" aria-hidden="true"></i>
+														Ultimo cron {{ data_script }}
+											           </small> 
+												
+												<p class="statistic-counter">
+													{% if today is defined %}
+														{{today}}
+													{% else %}
+														0
+													{% endif %}
+												</p>
+												<span class="mostra-dettagli-counter" onclick="mostraDettagliCampagna('oggi')">Mostra dettagli</span>
+												<ul class="dettaglio_campagna campaign_details-oggi" style="display:none;">
+													{% for campaign in today_campaign %}
+														<li class="lista-campagna"><span class="list-campaign-name">{{ campaign.cliente|e }} - {{ campaign.name|e }}</span><span class="list-campaign-count">{{ campaign.num|e }}</span></li>
+													{% endfor %}
+												</ul>
+												
+												{% if today_indirette is defined and today_indirette > 0 %}
+													<h4 class="titolo_indiretta">
+														Di cui indirette:
+													</h4>
+													<p class="indirette-counter">
+														{{today_indirette}}
+													</p>
+                               
+												{% endif %}
+												<h4 class="titolo_off">off-target</h4>
+												<p class="statistic-counter">
+													{% if today_notpassed is defined %}
+														{{today_notpassed}}
+													{% else %}
+														0
+													{% endif %}
+												</p>
+                                                                                                
+                                                                                                <span class="mostra-dettagli-counter" onclick="mostraDettagliCampagna('oggi_not')">Mostra dettagli</span>
+                                                                                                <ul class="dettaglio_campagna campaign_details-oggi_not" style="display:none;">
+                                                                                                {% for campaign in today_offtarget %}
+                                                                                                        <li class="lista-campagna"><span class="list-campaign-name">{{ campaign.cliente|e }} - {{ campaign.name|e }}</span><span class="list-campaign-count">{{ campaign.num|e }}</span></li>
+                                                                                                {% endfor %}
+                                                                                                </ul>                                                                                                
+											</div>
+										</h4>
+									</div>
+									
+										<div class="col-md-3">   
+											<h4 class="titoli_blocchi">
+												<input type="hidden"  id="data_conteggio" name="data_conteggio" class="form-control">
+												Data: <span class="data_label"></span>
+												<div class="single_counter_box">
+													<div class="contatore-ricerca">
+														<img id="loader" style="display:none;" src="/images/loader.gif" />
+													</div>
+												</div>
+											</h4>
+										</div>
+									</div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </section><!-- End of counter Section -->
+            </div>
+        </div>
+    </div>
+{% endblock %}
+
+
+
