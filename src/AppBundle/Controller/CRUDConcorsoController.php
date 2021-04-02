@@ -458,7 +458,8 @@ class CRUDConcorsoController extends Controller
 				$array_values['giorno_i'] =	$giorno;
 			}
 			// modifica del 05-01-18: i fornitori tracciano solo se tutte le roivacy partener sono flaggate.
-			$sql_medias .= "  and l.privacy_partner !='' group by media";
+			//$sql_medias .= "  and l.privacy_partner !='' group by media";
+            $sql_medias .= " group by media";
 			
 			$em 	= $this->getDoctrine()->getManager('concorso_man');
 			$stmt 	= $em->getConnection()->prepare($sql_medias);
@@ -1054,7 +1055,7 @@ class CRUDConcorsoController extends Controller
 		}
 		return $mesi; 
 	}
-	
+
 	private function getClienteTotal($cliente_id){
 		try{
 			$totali = 0;
