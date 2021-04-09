@@ -1,8 +1,28 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <project version="4">
+  <component name="BranchesTreeState">
+    <expand>
+      <path>
+        <item name="ROOT" type="e8cecc67:BranchNodeDescriptor" />
+        <item name="LOCAL_ROOT" type="e8cecc67:BranchNodeDescriptor" />
+      </path>
+      <path>
+        <item name="ROOT" type="e8cecc67:BranchNodeDescriptor" />
+        <item name="REMOTE_ROOT" type="e8cecc67:BranchNodeDescriptor" />
+      </path>
+      <path>
+        <item name="ROOT" type="e8cecc67:BranchNodeDescriptor" />
+        <item name="REMOTE_ROOT" type="e8cecc67:BranchNodeDescriptor" />
+        <item name="GROUP_NODE:gestioneDev" type="e8cecc67:BranchNodeDescriptor" />
+      </path>
+    </expand>
+    <select />
+  </component>
   <component name="ChangeListManager">
     <list default="true" id="b201f8b7-90ad-40ee-a6ae-efb29b131cac" name="Default Changelist" comment="">
+      <change beforePath="$PROJECT_DIR$/.idea/deployment.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/deployment.xml" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/AppBundle/Scripts/update_leaduni.php" beforeDir="false" afterPath="$PROJECT_DIR$/src/AppBundle/Scripts/update_leaduni.php" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -79,7 +99,12 @@
     <property name="ASKED_SHARE_PROJECT_CONFIGURATION_FILES" value="true" />
     <property name="RunOnceActivity.OpenProjectViewOnStart" value="true" />
     <property name="SHARE_PROJECT_CONFIGURATION_FILES" value="true" />
-    <property name="WebServerToolWindowFactoryState" value="true" />
+    <property name="WebServerToolWindowFactoryState" value="false" />
+    <property name="WebServerToolWindowPanel.toolwindow.highlight.mappings" value="true" />
+    <property name="WebServerToolWindowPanel.toolwindow.highlight.symlinks" value="true" />
+    <property name="WebServerToolWindowPanel.toolwindow.show.date" value="false" />
+    <property name="WebServerToolWindowPanel.toolwindow.show.permissions" value="false" />
+    <property name="WebServerToolWindowPanel.toolwindow.show.size" value="false" />
     <property name="vue.rearranger.settings.migration" value="true" />
   </component>
   <component name="SpellCheckerSettings" RuntimeDictionaries="0" Folders="0" CustomDictionaries="0" DefaultDictionary="application-level" UseSingleDictionary="true" transferred="true" />
@@ -92,6 +117,10 @@
       <updated>1616766619816</updated>
       <workItem from="1616766621204" duration="1117000" />
       <workItem from="1616768068512" duration="107000" />
+      <workItem from="1616768287069" duration="4153000" />
+      <workItem from="1617375983742" duration="1089000" />
+      <workItem from="1617377089660" duration="1527000" />
+      <workItem from="1617981347103" duration="713000" />
     </task>
     <task id="LOCAL-00001" summary="Initial commit">
       <created>1616767033497</created>
@@ -121,29 +150,89 @@
       <option name="project" value="LOCAL" />
       <updated>1616767607652</updated>
     </task>
-    <option name="localTasksCounter" value="5" />
+    <task id="LOCAL-00005" summary="- Inserimento checkbox nel file &quot;tracciamento_pixel.html.twig&quot; line: 184/186 &amp; 299/301&#10;&#10;- Modifica query nel file &quot;TracciamentoPixelController.php&quot; line: 106 //aggiunto l'operatore NOT">
+      <created>1616768440678</created>
+      <option name="number" value="00005" />
+      <option name="presentableId" value="LOCAL-00005" />
+      <option name="project" value="LOCAL" />
+      <updated>1616768440678</updated>
+    </task>
+    <task id="LOCAL-00006" summary="- Fix QUERY partner: line 461">
+      <created>1617377977735</created>
+      <option name="number" value="00006" />
+      <option name="presentableId" value="LOCAL-00006" />
+      <option name="project" value="LOCAL" />
+      <updated>1617377977735</updated>
+    </task>
+    <option name="localTasksCounter" value="7" />
     <servers />
   </component>
   <component name="TypeScriptGeneratedFilesManager">
     <option name="version" value="3" />
   </component>
+  <component name="Vcs.Log.Tabs.Properties">
+    <option name="TAB_STATES">
+      <map>
+        <entry key="MAIN">
+          <value>
+            <State />
+          </value>
+        </entry>
+      </map>
+    </option>
+    <option name="oldMeFiltersMigrated" value="true" />
+  </component>
   <component name="VcsManagerConfiguration">
     <MESSAGE value="Test di commit" />
     <MESSAGE value="Initial commit" />
-    <option name="LAST_COMMIT_MESSAGE" value="Initial commit" />
+    <MESSAGE value="- Inserimento checkbox nel file &quot;tracciamento_pixel.html.twig&quot; line: 184/186 &amp; 299/301&#10;&#10;- Modifica query nel file &quot;TracciamentoPixelController.php&quot; line: 106 //aggiunto l'operatore NOT" />
+    <MESSAGE value="- Fix QUERY partner: line 461" />
+    <option name="LAST_COMMIT_MESSAGE" value="- Fix QUERY partner: line 461" />
   </component>
   <component name="WindowStateProjectService">
-    <state x="351" y="0" key="CommitChangelistDialog2" timestamp="1616767607269">
+    <state x="352" y="15" key="#Deployment" timestamp="1616768654384">
       <screen x="0" y="0" width="1920" height="1040" />
     </state>
-    <state x="351" y="0" key="CommitChangelistDialog2/-1440.0.1440.860/0.0.1920.1040@0.0.1920.1040" timestamp="1616767607269" />
-    <state x="352" y="127" key="Vcs.Push.Dialog.v2" timestamp="1616767619875">
+    <state x="352" y="15" key="#Deployment/-1440.0.1440.860/0.0.1920.1040@0.0.1920.1040" timestamp="1616768654384" />
+    <state x="578" y="168" key="#Inspections" timestamp="1616773719424">
       <screen x="0" y="0" width="1920" height="1040" />
     </state>
-    <state x="352" y="127" key="Vcs.Push.Dialog.v2/-1440.0.1440.860/0.0.1920.1040@0.0.1920.1040" timestamp="1616767619875" />
+    <state x="578" y="168" key="#Inspections/-1440.0.1440.860/0.0.1920.1040@0.0.1920.1040" timestamp="1616773719424" />
+    <state x="552" y="165" key="#com.intellij.execution.impl.EditConfigurationsDialog" timestamp="1617376933194">
+      <screen x="0" y="0" width="1920" height="1040" />
+    </state>
+    <state x="552" y="165" key="#com.intellij.execution.impl.EditConfigurationsDialog/-1440.0.1440.860/0.0.1920.1040@0.0.1920.1040" timestamp="1617376933194" />
+    <state x="304" y="0" key="CommitChangelistDialog2" timestamp="1617377975341">
+      <screen x="0" y="0" width="1920" height="1040" />
+    </state>
+    <state x="304" y="0" key="CommitChangelistDialog2/-1440.0.1440.860/0.0.1920.1040@0.0.1920.1040" timestamp="1617377975341" />
+    <state x="133" y="85" key="DiffContextDialog" timestamp="1616768339614">
+      <screen x="0" y="0" width="1920" height="1040" />
+    </state>
+    <state x="133" y="85" key="DiffContextDialog/-1440.0.1440.860/0.0.1920.1040@0.0.1920.1040" timestamp="1616768339614" />
+    <state x="92" y="92" width="1736" height="856" key="DirDiffDialog" timestamp="1616769216504">
+      <screen x="0" y="0" width="1920" height="1040" />
+    </state>
+    <state x="92" y="92" width="1736" height="856" key="DirDiffDialog/-1440.0.1440.860/0.0.1920.1040@0.0.1920.1040" timestamp="1616769216504" />
+    <state x="634" y="160" key="FileChooserDialogImpl" timestamp="1616768514969">
+      <screen x="0" y="0" width="1920" height="1040" />
+    </state>
+    <state x="634" y="160" key="FileChooserDialogImpl/-1440.0.1440.860/0.0.1920.1040@0.0.1920.1040" timestamp="1616768514969" />
+    <state x="352" y="127" key="Vcs.Push.Dialog.v2" timestamp="1617377982412">
+      <screen x="0" y="0" width="1920" height="1040" />
+    </state>
+    <state x="352" y="127" key="Vcs.Push.Dialog.v2/-1440.0.1440.860/0.0.1920.1040@0.0.1920.1040" timestamp="1617377982412" />
+    <state x="688" y="400" key="com.intellij.openapi.vcs.update.UpdateOrStatusOptionsDialogupdate-v2" timestamp="1616768508815">
+      <screen x="0" y="0" width="1920" height="1040" />
+    </state>
+    <state x="688" y="400" key="com.intellij.openapi.vcs.update.UpdateOrStatusOptionsDialogupdate-v2/-1440.0.1440.860/0.0.1920.1040@0.0.1920.1040" timestamp="1616768508815" />
     <state x="666" y="387" key="git4idea.remote.GitConfigureRemotesDialog" timestamp="1616766829727">
       <screen x="0" y="0" width="1920" height="1040" />
     </state>
     <state x="666" y="387" key="git4idea.remote.GitConfigureRemotesDialog/-1440.0.1440.860/0.0.1920.1040@0.0.1920.1040" timestamp="1616766829727" />
+    <state x="810" y="368" key="publish.login" timestamp="1616768616986">
+      <screen x="0" y="0" width="1920" height="1040" />
+    </state>
+    <state x="810" y="368" key="publish.login/-1440.0.1440.860/0.0.1920.1040@0.0.1920.1040" timestamp="1616768616986" />
   </component>
 </project>
