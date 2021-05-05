@@ -1,5 +1,8 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <project version="4">
+  <component name="AutoImportSettings">
+    <option name="autoReloadType" value="SELECTIVE" />
+  </component>
   <component name="BranchesTreeState">
     <expand>
       <path>
@@ -21,8 +24,15 @@
   <component name="ChangeListManager">
     <list default="true" id="b201f8b7-90ad-40ee-a6ae-efb29b131cac" name="Default Changelist" comment="">
       <change beforePath="$PROJECT_DIR$/.idea/deployment.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/deployment.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/.idea/php.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/php.xml" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/AppBundle/Scripts/update_leaduni.php" beforeDir="false" afterPath="$PROJECT_DIR$/src/AppBundle/Scripts/update_leaduni.php" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/app/Resources/views/Emails/alert_prod_bypdo.html.twig" beforeDir="false" afterPath="$PROJECT_DIR$/app/Resources/views/Emails/alert_prod_bypdo.html.twig" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/app/Resources/views/blacklister.html.twig" beforeDir="false" afterPath="$PROJECT_DIR$/app/Resources/views/blacklister.html.twig" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/rotte.txt" beforeDir="false" afterPath="$PROJECT_DIR$/rotte.txt" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/AppBundle/Admin/BlacklisterAdmin.php" beforeDir="false" afterPath="$PROJECT_DIR$/src/AppBundle/Admin/BlacklisterAdmin.php" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/AppBundle/Controller/BlacklisterAdminController.php" beforeDir="false" afterPath="$PROJECT_DIR$/src/AppBundle/Controller/BlacklisterAdminController.php" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/AppBundle/Controller/CRUDConcorsoController.php" beforeDir="false" afterPath="$PROJECT_DIR$/src/AppBundle/Controller/CRUDConcorsoController.php" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/web/css/ac74def.css" beforeDir="false" afterPath="$PROJECT_DIR$/web/css/ac74def.css" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -35,6 +45,12 @@
   </component>
   <component name="Git.Settings">
     <option name="RECENT_GIT_ROOT_PATH" value="$PROJECT_DIR$" />
+  </component>
+  <component name="JsFlowSettings">
+    <service-enabled>true</service-enabled>
+    <exe-path />
+    <other-services-enabled>true</other-services-enabled>
+    <auto-save>true</auto-save>
   </component>
   <component name="PhpWorkspaceProjectConfiguration">
     <include_path>
@@ -98,16 +114,39 @@
   <component name="PropertiesComponent">
     <property name="ASKED_SHARE_PROJECT_CONFIGURATION_FILES" value="true" />
     <property name="RunOnceActivity.OpenProjectViewOnStart" value="true" />
-    <property name="SHARE_PROJECT_CONFIGURATION_FILES" value="true" />
     <property name="WebServerToolWindowFactoryState" value="false" />
     <property name="WebServerToolWindowPanel.toolwindow.highlight.mappings" value="true" />
     <property name="WebServerToolWindowPanel.toolwindow.highlight.symlinks" value="true" />
     <property name="WebServerToolWindowPanel.toolwindow.show.date" value="false" />
     <property name="WebServerToolWindowPanel.toolwindow.show.permissions" value="false" />
     <property name="WebServerToolWindowPanel.toolwindow.show.size" value="false" />
+    <property name="last_opened_file_path" value="$PROJECT_DIR$/var/cache/dev" />
+    <property name="settings.editor.selected.configurable" value="project.propVCSSupport.Mappings" />
     <property name="vue.rearranger.settings.migration" value="true" />
   </component>
+  <component name="RecentsManager">
+    <key name="CopyFile.RECENT_KEYS">
+      <recent name="C:\Users\Dev\Desktop\Francesco\lead_ext\var\cache\dev" />
+      <recent name="C:\Users\Dev\Desktop\Francesco\lead_ext\src\AppBundle\Admin" />
+      <recent name="C:\Users\Dev\Desktop\Francesco\lead_ext\app\Resources\views" />
+      <recent name="C:\Users\Dev\Desktop\Francesco\lead_ext\src\AppBundle\Controller" />
+    </key>
+  </component>
+  <component name="RunManager">
+    <configuration name="Unnamed" type="PHPUnitRunConfigurationType" factoryName="PHPUnit" nameIsGenerated="true">
+      <CommandLine>
+        <PhpTestInterpreterSettings>
+          <option name="interpreterName" value="root@10.0.14.49:22 password" />
+        </PhpTestInterpreterSettings>
+      </CommandLine>
+      <TestRunner configuration_file="/var/www/html/lead_extract/phpunit.xml.dist" coverage_engine="PHPDBG" directory="$PROJECT_DIR$" />
+      <method v="2" />
+    </configuration>
+  </component>
   <component name="SpellCheckerSettings" RuntimeDictionaries="0" Folders="0" CustomDictionaries="0" DefaultDictionary="application-level" UseSingleDictionary="true" transferred="true" />
+  <component name="SvnConfiguration">
+    <configuration>C:\Users\Dev\AppData\Roaming\Subversion</configuration>
+  </component>
   <component name="TaskManager">
     <task active="true" id="Default" summary="Default task">
       <changelist id="b201f8b7-90ad-40ee-a6ae-efb29b131cac" name="Default Changelist" comment="" />
@@ -120,7 +159,31 @@
       <workItem from="1616768287069" duration="4153000" />
       <workItem from="1617375983742" duration="1089000" />
       <workItem from="1617377089660" duration="1527000" />
-      <workItem from="1617981347103" duration="713000" />
+      <workItem from="1617981347103" duration="1506000" />
+      <workItem from="1618234433843" duration="5170000" />
+      <workItem from="1618240644425" duration="12000" />
+      <workItem from="1618490172567" duration="845000" />
+      <workItem from="1618565072055" duration="4820000" />
+      <workItem from="1618818696514" duration="26342000" />
+      <workItem from="1618903032198" duration="22363000" />
+      <workItem from="1618931298326" duration="1375000" />
+      <workItem from="1618991494018" duration="169000" />
+      <workItem from="1619003313900" duration="15641000" />
+      <workItem from="1619077229238" duration="5454000" />
+      <workItem from="1619087164744" duration="16158000" />
+      <workItem from="1619107633702" duration="235000" />
+      <workItem from="1619164094616" duration="23409000" />
+      <workItem from="1619430882357" duration="13770000" />
+      <workItem from="1619510977131" duration="23553000" />
+      <workItem from="1619596095050" duration="1122000" />
+      <workItem from="1619598494887" duration="25654000" />
+      <workItem from="1619682056151" duration="18288000" />
+      <workItem from="1619767295327" duration="1290000" />
+      <workItem from="1619772686473" duration="23349000" />
+      <workItem from="1620026907977" duration="22410000" />
+      <workItem from="1620125315550" duration="12377000" />
+      <workItem from="1620142455294" duration="1736000" />
+      <workItem from="1620204165737" duration="20000" />
     </task>
     <task id="LOCAL-00001" summary="Initial commit">
       <created>1616767033497</created>
@@ -164,7 +227,14 @@
       <option name="project" value="LOCAL" />
       <updated>1617377977735</updated>
     </task>
-    <option name="localTasksCounter" value="7" />
+    <task id="LOCAL-00007" summary="- Fix controllo se il valore che si sta per inserire è nullo oppure &quot;non presente&quot; e se il campo è nella blacklist andiamo oltre. line:1413-1423&#10;  &#10; -Fix inserimento di due cases nei campi dal momento che sono presenti in lead_uni. line: 1394-1396">
+      <created>1617982278078</created>
+      <option name="number" value="00007" />
+      <option name="presentableId" value="LOCAL-00007" />
+      <option name="project" value="LOCAL" />
+      <updated>1617982278078</updated>
+    </task>
+    <option name="localTasksCounter" value="8" />
     <servers />
   </component>
   <component name="TypeScriptGeneratedFilesManager">
@@ -187,25 +257,54 @@
     <MESSAGE value="Initial commit" />
     <MESSAGE value="- Inserimento checkbox nel file &quot;tracciamento_pixel.html.twig&quot; line: 184/186 &amp; 299/301&#10;&#10;- Modifica query nel file &quot;TracciamentoPixelController.php&quot; line: 106 //aggiunto l'operatore NOT" />
     <MESSAGE value="- Fix QUERY partner: line 461" />
-    <option name="LAST_COMMIT_MESSAGE" value="- Fix QUERY partner: line 461" />
+    <MESSAGE value="- Fix controllo se il valore che si sta per inserire è nullo oppure &quot;non presente&quot; e se il campo è nella blacklist andiamo oltre. line:1413-1423&#10;  &#10; -Fix inserimento di due cases nei campi dal momento che sono presenti in lead_uni. line: 1394-1396" />
+    <option name="LAST_COMMIT_MESSAGE" value="- Fix controllo se il valore che si sta per inserire è nullo oppure &quot;non presente&quot; e se il campo è nella blacklist andiamo oltre. line:1413-1423&#10;  &#10; -Fix inserimento di due cases nei campi dal momento che sono presenti in lead_uni. line: 1394-1396" />
   </component>
   <component name="WindowStateProjectService">
-    <state x="352" y="15" key="#Deployment" timestamp="1616768654384">
+    <state x="333" y="10" key="#CLI_Interpreters" timestamp="1618490242085">
       <screen x="0" y="0" width="1920" height="1040" />
     </state>
-    <state x="352" y="15" key="#Deployment/-1440.0.1440.860/0.0.1920.1040@0.0.1920.1040" timestamp="1616768654384" />
+    <state x="333" y="10" key="#CLI_Interpreters/-1440.0.1440.860/0.0.1920.1040@0.0.1920.1040" timestamp="1618490242085" />
+    <state x="352" y="15" key="#Deployment" timestamp="1617982807960">
+      <screen x="0" y="0" width="1920" height="1040" />
+    </state>
+    <state x="352" y="15" key="#Deployment/-1440.0.1440.860/0.0.1920.1040@0.0.1920.1040" timestamp="1617982807960" />
     <state x="578" y="168" key="#Inspections" timestamp="1616773719424">
       <screen x="0" y="0" width="1920" height="1040" />
     </state>
     <state x="578" y="168" key="#Inspections/-1440.0.1440.860/0.0.1920.1040@0.0.1920.1040" timestamp="1616773719424" />
-    <state x="552" y="165" key="#com.intellij.execution.impl.EditConfigurationsDialog" timestamp="1617376933194">
+    <state x="478" y="75" key="#Options" timestamp="1617982526990">
       <screen x="0" y="0" width="1920" height="1040" />
     </state>
-    <state x="552" y="165" key="#com.intellij.execution.impl.EditConfigurationsDialog/-1440.0.1440.860/0.0.1920.1040@0.0.1920.1040" timestamp="1617376933194" />
-    <state x="304" y="0" key="CommitChangelistDialog2" timestamp="1617377975341">
+    <state x="478" y="75" key="#Options/-1440.0.1440.860/0.0.1920.1040@0.0.1920.1040" timestamp="1617982526990" />
+    <state x="40" y="291" key="#SQL_Dialects" timestamp="1619697203478">
       <screen x="0" y="0" width="1920" height="1040" />
     </state>
-    <state x="304" y="0" key="CommitChangelistDialog2/-1440.0.1440.860/0.0.1920.1040@0.0.1920.1040" timestamp="1617377975341" />
+    <state x="40" y="291" key="#SQL_Dialects/-1440.0.1440.860/0.0.1920.1040@0.0.1920.1040" timestamp="1619697203478" />
+    <state x="359" y="0" key="#SSH_Configurations" timestamp="1618931430214">
+      <screen x="0" y="0" width="1920" height="1040" />
+    </state>
+    <state x="359" y="0" key="#SSH_Configurations/-1440.0.1440.860/0.0.1920.1040@0.0.1920.1040" timestamp="1618931430214" />
+    <state x="0" y="20" key="#Servers" timestamp="1618490346793">
+      <screen x="0" y="0" width="1920" height="1040" />
+    </state>
+    <state x="0" y="20" key="#Servers/-1440.0.1440.860/0.0.1920.1040@0.0.1920.1040" timestamp="1618490346793" />
+    <state x="334" y="10" key="#Test_Frameworks" timestamp="1618491016758">
+      <screen x="0" y="0" width="1920" height="1040" />
+    </state>
+    <state x="334" y="10" key="#Test_Frameworks/-1440.0.1440.860/0.0.1920.1040@0.0.1920.1040" timestamp="1618491016758" />
+    <state x="224" y="99" width="1254" height="877" key="#com.intellij.execution.impl.EditConfigurationsDialog" timestamp="1618490391826">
+      <screen x="0" y="0" width="1920" height="1040" />
+    </state>
+    <state x="224" y="99" width="1254" height="877" key="#com.intellij.execution.impl.EditConfigurationsDialog/-1440.0.1440.860/0.0.1920.1040@0.0.1920.1040" timestamp="1618490391826" />
+    <state x="524" y="285" key="#com.intellij.fileTypes.FileTypeChooser" timestamp="1618841368623">
+      <screen x="0" y="0" width="1920" height="1040" />
+    </state>
+    <state x="524" y="285" key="#com.intellij.fileTypes.FileTypeChooser/-1440.0.1440.860/0.0.1920.1040@0.0.1920.1040" timestamp="1618841368623" />
+    <state x="333" y="0" key="CommitChangelistDialog2" timestamp="1617982275260">
+      <screen x="0" y="0" width="1920" height="1040" />
+    </state>
+    <state x="333" y="0" key="CommitChangelistDialog2/-1440.0.1440.860/0.0.1920.1040@0.0.1920.1040" timestamp="1617982275260" />
     <state x="133" y="85" key="DiffContextDialog" timestamp="1616768339614">
       <screen x="0" y="0" width="1920" height="1040" />
     </state>
@@ -214,18 +313,58 @@
       <screen x="0" y="0" width="1920" height="1040" />
     </state>
     <state x="92" y="92" width="1736" height="856" key="DirDiffDialog/-1440.0.1440.860/0.0.1920.1040@0.0.1920.1040" timestamp="1616769216504" />
-    <state x="634" y="160" key="FileChooserDialogImpl" timestamp="1616768514969">
+    <state x="634" y="160" key="FileChooserDialogImpl" timestamp="1619443335800">
       <screen x="0" y="0" width="1920" height="1040" />
     </state>
-    <state x="634" y="160" key="FileChooserDialogImpl/-1440.0.1440.860/0.0.1920.1040@0.0.1920.1040" timestamp="1616768514969" />
-    <state x="352" y="127" key="Vcs.Push.Dialog.v2" timestamp="1617377982412">
+    <state x="634" y="160" key="FileChooserDialogImpl/-1440.0.1440.860/0.0.1920.1040@0.0.1920.1040" timestamp="1619443335800" />
+    <state width="1852" height="248" key="GridCell.Tab.0.bottom" timestamp="1618932673001">
       <screen x="0" y="0" width="1920" height="1040" />
     </state>
-    <state x="352" y="127" key="Vcs.Push.Dialog.v2/-1440.0.1440.860/0.0.1920.1040@0.0.1920.1040" timestamp="1617377982412" />
-    <state x="688" y="400" key="com.intellij.openapi.vcs.update.UpdateOrStatusOptionsDialogupdate-v2" timestamp="1616768508815">
+    <state width="1852" height="248" key="GridCell.Tab.0.bottom/-1440.0.1440.860/0.0.1920.1040@0.0.1920.1040" timestamp="1618932673001" />
+    <state width="1852" height="248" key="GridCell.Tab.0.center" timestamp="1618932673001">
       <screen x="0" y="0" width="1920" height="1040" />
     </state>
-    <state x="688" y="400" key="com.intellij.openapi.vcs.update.UpdateOrStatusOptionsDialogupdate-v2/-1440.0.1440.860/0.0.1920.1040@0.0.1920.1040" timestamp="1616768508815" />
+    <state width="1852" height="248" key="GridCell.Tab.0.center/-1440.0.1440.860/0.0.1920.1040@0.0.1920.1040" timestamp="1618932673001" />
+    <state width="1852" height="248" key="GridCell.Tab.0.left" timestamp="1618932673001">
+      <screen x="0" y="0" width="1920" height="1040" />
+    </state>
+    <state width="1852" height="248" key="GridCell.Tab.0.left/-1440.0.1440.860/0.0.1920.1040@0.0.1920.1040" timestamp="1618932673001" />
+    <state width="1852" height="248" key="GridCell.Tab.0.right" timestamp="1618932673001">
+      <screen x="0" y="0" width="1920" height="1040" />
+    </state>
+    <state width="1852" height="248" key="GridCell.Tab.0.right/-1440.0.1440.860/0.0.1920.1040@0.0.1920.1040" timestamp="1618932673001" />
+    <state x="665" y="79" key="RollbackChangesDialog" timestamp="1618240558133">
+      <screen x="0" y="0" width="1920" height="1040" />
+    </state>
+    <state x="665" y="79" key="RollbackChangesDialog/-1440.0.1440.860/0.0.1920.1040@0.0.1920.1040" timestamp="1618240558133" />
+    <state x="218" y="0" key="SettingsEditor" timestamp="1618931588203">
+      <screen x="0" y="0" width="1920" height="1040" />
+    </state>
+    <state x="218" y="0" key="SettingsEditor/-1440.0.1440.860/0.0.1920.1040@0.0.1920.1040" timestamp="1618931588203" />
+    <state x="352" y="127" key="Vcs.Push.Dialog.v2" timestamp="1617982281542">
+      <screen x="0" y="0" width="1920" height="1040" />
+    </state>
+    <state x="352" y="127" key="Vcs.Push.Dialog.v2/-1440.0.1440.860/0.0.1920.1040@0.0.1920.1040" timestamp="1617982281542" />
+    <state x="92" y="92" width="1736" height="856" maximized="true" key="com.intellij.history.integration.ui.views.FileHistoryDialog" timestamp="1620142755280">
+      <screen x="0" y="0" width="1920" height="1040" />
+    </state>
+    <state x="92" y="92" width="1736" height="856" maximized="true" key="com.intellij.history.integration.ui.views.FileHistoryDialog/-1440.0.1440.860/0.0.1920.1040@0.0.1920.1040" timestamp="1620142755280" />
+    <state x="688" y="400" key="com.intellij.openapi.vcs.update.UpdateOrStatusOptionsDialogupdate-v2" timestamp="1617982646722">
+      <screen x="0" y="0" width="1920" height="1040" />
+    </state>
+    <state x="688" y="400" key="com.intellij.openapi.vcs.update.UpdateOrStatusOptionsDialogupdate-v2/-1440.0.1440.860/0.0.1920.1040@0.0.1920.1040" timestamp="1617982646722" />
+    <state x="92" y="92" width="1736" height="856" key="dock-window-1" timestamp="1618841638394">
+      <screen x="0" y="0" width="1920" height="1040" />
+    </state>
+    <state x="92" y="92" width="1736" height="856" key="dock-window-1/-1440.0.1440.860/0.0.1920.1040@0.0.1920.1040" timestamp="1618841638394" />
+    <state x="672" y="136" width="1165" height="904" key="find.popup" timestamp="1619796875798">
+      <screen x="0" y="0" width="1920" height="1040" />
+    </state>
+    <state x="672" y="136" width="1165" height="904" key="find.popup/-1440.0.1440.860/0.0.1920.1040@0.0.1920.1040" timestamp="1619796875798" />
+    <state x="471" y="82" key="ftp.server.browser" timestamp="1618491015331">
+      <screen x="0" y="0" width="1920" height="1040" />
+    </state>
+    <state x="471" y="82" key="ftp.server.browser/-1440.0.1440.860/0.0.1920.1040@0.0.1920.1040" timestamp="1618491015331" />
     <state x="666" y="387" key="git4idea.remote.GitConfigureRemotesDialog" timestamp="1616766829727">
       <screen x="0" y="0" width="1920" height="1040" />
     </state>
@@ -234,5 +373,24 @@
       <screen x="0" y="0" width="1920" height="1040" />
     </state>
     <state x="810" y="368" key="publish.login/-1440.0.1440.860/0.0.1920.1040@0.0.1920.1040" timestamp="1616768616986" />
+    <state x="447" y="226" key="run.anything.popup" timestamp="1620137811751">
+      <screen x="0" y="0" width="1920" height="1040" />
+    </state>
+    <state x="447" y="226" key="run.anything.popup/-1440.0.1440.860/0.0.1920.1040@0.0.1920.1040" timestamp="1620137811751" />
+    <state x="453" y="0" width="1009" height="1470" key="search.everywhere.popup" timestamp="1618842330179">
+      <screen x="0" y="0" width="1920" height="1040" />
+    </state>
+    <state x="453" y="0" width="1009" height="1470" key="search.everywhere.popup/-1440.0.1440.860/0.0.1920.1040@0.0.1920.1040" timestamp="1618842330179" />
+  </component>
+  <component name="XDebuggerManager">
+    <breakpoint-manager>
+      <breakpoints>
+        <line-breakpoint enabled="true" type="php">
+          <url>file://$PROJECT_DIR$/app/Resources/views/blacklister.html.twig</url>
+          <line>324</line>
+          <option name="timeStamp" value="1" />
+        </line-breakpoint>
+      </breakpoints>
+    </breakpoint-manager>
   </component>
 </project>
