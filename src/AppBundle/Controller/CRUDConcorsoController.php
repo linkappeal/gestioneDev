@@ -726,6 +726,7 @@ class CRUDConcorsoController extends Controller
 					
 				}
 			}
+
 			
 			
 			
@@ -748,6 +749,8 @@ class CRUDConcorsoController extends Controller
 											<div class="col-md-3 totali_media">' . $totInterne . '/'.$totEsterne.'</div>
 											<div class="col-md-2 totali_media"> <strong>'.($totInterne+$totEsterne).'</strong></div>
 										</div>';
+                    $totale_clienti_int="";
+                    $totale_clienti_est="";
 					$totale_clienti_int += $totInterne;
 					$totale_clienti_est += $totEsterne;
 				}

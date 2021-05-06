@@ -296,9 +296,12 @@
   blacklister_show                            ANY        ANY      ANY    /admin/blacklister/{id}/show                        
   blacklister_export                          ANY        ANY      ANY    /admin/blacklister/export                           
   blacklister_blacklister                     ANY        ANY      ANY    /admin/blacklister/blacklister                      
-  blacklister_searchContact                   ANY        ANY      ANY    /admin/blacklister/searchContact                    
+  blacklister_searchContact                   ANY        ANY      ANY    /admin/blacklister/searchContact
+  blacklister_searchContactAll                ANY        ANY      ANY    /admin/blacklister/searchContactAll
   blacklister_blacklist                       ANY        ANY      ANY    /admin/blacklister/blacklist                        
-  blacklister_revblacklist                    ANY        ANY      ANY    /admin/blacklister/revblacklist                     
+  blacklister_revblacklist                    ANY        ANY      ANY    /admin/blacklister/revblacklist
+  blacklister_thisblacklist                   ANY        ANY      ANY    /admin/blacklister/thisblacklist
+  blacklister_thisrevblacklist                ANY        ANY      ANY    /admin/blacklister/thisrevblacklist
   fos_user_security_login                     GET|POST   ANY      ANY    /login                                              
   fos_user_security_check                     POST       ANY      ANY    /login_check                                        
   fos_user_security_logout                    GET|POST   ANY      ANY    /logout                                             

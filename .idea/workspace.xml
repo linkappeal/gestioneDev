@@ -183,7 +183,8 @@
       <workItem from="1620026907977" duration="22410000" />
       <workItem from="1620125315550" duration="12377000" />
       <workItem from="1620142455294" duration="1736000" />
-      <workItem from="1620204165737" duration="20000" />
+      <workItem from="1620204165737" duration="2891000" />
+      <workItem from="1620288379961" duration="16515000" />
     </task>
     <task id="LOCAL-00001" summary="Initial commit">
       <created>1616767033497</created>
@@ -234,7 +235,14 @@
       <option name="project" value="LOCAL" />
       <updated>1617982278078</updated>
     </task>
-    <option name="localTasksCounter" value="8" />
+    <task id="LOCAL-00008" summary="- [blacklister] dividere il bottone di blacklist in blacklist tutti - solo questo record&#10;- [blacklister] al click sul pulsante blacklist far partire il loader fino a quando non ha completato la procedura di blacklisting&#10;- [blacklister] aggiungere filtri di ricerca (solo anagrafiche esterne si/no)&#10;- [blacklister] dare la possibilità di fare ricerca su un multiriga dei cellulari">
+      <created>1620204430120</created>
+      <option name="number" value="00008" />
+      <option name="presentableId" value="LOCAL-00008" />
+      <option name="project" value="LOCAL" />
+      <updated>1620204430120</updated>
+    </task>
+    <option name="localTasksCounter" value="9" />
     <servers />
   </component>
   <component name="TypeScriptGeneratedFilesManager">
@@ -258,7 +266,8 @@
     <MESSAGE value="- Inserimento checkbox nel file &quot;tracciamento_pixel.html.twig&quot; line: 184/186 &amp; 299/301&#10;&#10;- Modifica query nel file &quot;TracciamentoPixelController.php&quot; line: 106 //aggiunto l'operatore NOT" />
     <MESSAGE value="- Fix QUERY partner: line 461" />
     <MESSAGE value="- Fix controllo se il valore che si sta per inserire è nullo oppure &quot;non presente&quot; e se il campo è nella blacklist andiamo oltre. line:1413-1423&#10;  &#10; -Fix inserimento di due cases nei campi dal momento che sono presenti in lead_uni. line: 1394-1396" />
-    <option name="LAST_COMMIT_MESSAGE" value="- Fix controllo se il valore che si sta per inserire è nullo oppure &quot;non presente&quot; e se il campo è nella blacklist andiamo oltre. line:1413-1423&#10;  &#10; -Fix inserimento di due cases nei campi dal momento che sono presenti in lead_uni. line: 1394-1396" />
+    <MESSAGE value="- [blacklister] dividere il bottone di blacklist in blacklist tutti - solo questo record&#10;- [blacklister] al click sul pulsante blacklist far partire il loader fino a quando non ha completato la procedura di blacklisting&#10;- [blacklister] aggiungere filtri di ricerca (solo anagrafiche esterne si/no)&#10;- [blacklister] dare la possibilità di fare ricerca su un multiriga dei cellulari" />
+    <option name="LAST_COMMIT_MESSAGE" value="- [blacklister] dividere il bottone di blacklist in blacklist tutti - solo questo record&#10;- [blacklister] al click sul pulsante blacklist far partire il loader fino a quando non ha completato la procedura di blacklisting&#10;- [blacklister] aggiungere filtri di ricerca (solo anagrafiche esterne si/no)&#10;- [blacklister] dare la possibilità di fare ricerca su un multiriga dei cellulari" />
   </component>
   <component name="WindowStateProjectService">
     <state x="333" y="10" key="#CLI_Interpreters" timestamp="1618490242085">
@@ -301,10 +310,10 @@
       <screen x="0" y="0" width="1920" height="1040" />
     </state>
     <state x="524" y="285" key="#com.intellij.fileTypes.FileTypeChooser/-1440.0.1440.860/0.0.1920.1040@0.0.1920.1040" timestamp="1618841368623" />
-    <state x="333" y="0" key="CommitChangelistDialog2" timestamp="1617982275260">
+    <state x="0" y="0" key="CommitChangelistDialog2" timestamp="1620204428043">
       <screen x="0" y="0" width="1920" height="1040" />
     </state>
-    <state x="333" y="0" key="CommitChangelistDialog2/-1440.0.1440.860/0.0.1920.1040@0.0.1920.1040" timestamp="1617982275260" />
+    <state x="0" y="0" key="CommitChangelistDialog2/-1440.0.1440.860/0.0.1920.1040@0.0.1920.1040" timestamp="1620204428043" />
     <state x="133" y="85" key="DiffContextDialog" timestamp="1616768339614">
       <screen x="0" y="0" width="1920" height="1040" />
     </state>
@@ -341,10 +350,14 @@
       <screen x="0" y="0" width="1920" height="1040" />
     </state>
     <state x="218" y="0" key="SettingsEditor/-1440.0.1440.860/0.0.1920.1040@0.0.1920.1040" timestamp="1618931588203" />
-    <state x="352" y="127" key="Vcs.Push.Dialog.v2" timestamp="1617982281542">
+    <state x="794" y="399" key="VCS.EditChangelistDialog" timestamp="1620204505580">
       <screen x="0" y="0" width="1920" height="1040" />
     </state>
-    <state x="352" y="127" key="Vcs.Push.Dialog.v2/-1440.0.1440.860/0.0.1920.1040@0.0.1920.1040" timestamp="1617982281542" />
+    <state x="794" y="399" key="VCS.EditChangelistDialog/-1440.0.1440.860/0.0.1920.1040@0.0.1920.1040" timestamp="1620204505579" />
+    <state x="352" y="127" key="Vcs.Push.Dialog.v2" timestamp="1620204443865">
+      <screen x="0" y="0" width="1920" height="1040" />
+    </state>
+    <state x="352" y="127" key="Vcs.Push.Dialog.v2/-1440.0.1440.860/0.0.1920.1040@0.0.1920.1040" timestamp="1620204443865" />
     <state x="92" y="92" width="1736" height="856" maximized="true" key="com.intellij.history.integration.ui.views.FileHistoryDialog" timestamp="1620142755280">
       <screen x="0" y="0" width="1920" height="1040" />
     </state>
@@ -357,10 +370,10 @@
       <screen x="0" y="0" width="1920" height="1040" />
     </state>
     <state x="92" y="92" width="1736" height="856" key="dock-window-1/-1440.0.1440.860/0.0.1920.1040@0.0.1920.1040" timestamp="1618841638394" />
-    <state x="672" y="136" width="1165" height="904" key="find.popup" timestamp="1619796875798">
+    <state x="672" y="136" width="1165" height="904" key="find.popup" timestamp="1620205950639">
       <screen x="0" y="0" width="1920" height="1040" />
     </state>
-    <state x="672" y="136" width="1165" height="904" key="find.popup/-1440.0.1440.860/0.0.1920.1040@0.0.1920.1040" timestamp="1619796875798" />
+    <state x="672" y="136" width="1165" height="904" key="find.popup/-1440.0.1440.860/0.0.1920.1040@0.0.1920.1040" timestamp="1620205950639" />
     <state x="471" y="82" key="ftp.server.browser" timestamp="1618491015331">
       <screen x="0" y="0" width="1920" height="1040" />
     </state>
@@ -377,10 +390,10 @@
       <screen x="0" y="0" width="1920" height="1040" />
     </state>
     <state x="447" y="226" key="run.anything.popup/-1440.0.1440.860/0.0.1920.1040@0.0.1920.1040" timestamp="1620137811751" />
-    <state x="453" y="0" width="1009" height="1470" key="search.everywhere.popup" timestamp="1618842330179">
+    <state x="453" y="0" width="1009" height="1470" key="search.everywhere.popup" timestamp="1620307228211">
       <screen x="0" y="0" width="1920" height="1040" />
     </state>
-    <state x="453" y="0" width="1009" height="1470" key="search.everywhere.popup/-1440.0.1440.860/0.0.1920.1040@0.0.1920.1040" timestamp="1618842330179" />
+    <state x="453" y="0" width="1009" height="1470" key="search.everywhere.popup/-1440.0.1440.860/0.0.1920.1040@0.0.1920.1040" timestamp="1620307228211" />
   </component>
   <component name="XDebuggerManager">
     <breakpoint-manager>

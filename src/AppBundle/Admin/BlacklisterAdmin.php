@@ -26,9 +26,13 @@ class BlacklisterAdmin extends AbstractAdmin {
 		 //webservices
          $collection->add('blacklister', 'blacklister');
 		 $collection->add('searchContact', 'searchContact');
+         $collection->add('searchContactAll', 'searchContactAll');
+
 		 
 		 $collection->add('blacklist', 'blacklist');
 		 $collection->add('revblacklist', 'revblacklist');
+         $collection->add('thisblacklist', 'thisblacklist');
+         $collection->add('thisrevblacklist', 'thisrevblacklist');
        
 		
         $collection->remove('list');

@@ -45,6 +45,15 @@
 							animation: spin 2s linear infinite;
 						}
 
+					.mini-loader1 {
+						border: 10px solid #f3f3f3; /* Light grey */
+						border-top: 10px solid #3498db; /* Blue */
+						border-radius: 50%;
+						width: 60px;
+						height: 60px;
+						animation: spin 2s linear infinite;
+					}
+
 						@keyframes spin {
 							0% { transform: rotate(0deg); }
 							100% { transform: rotate(360deg); }
@@ -113,10 +122,23 @@
 						#search-container {
 							background-color:#ccc;
 						}
-						.sceglicampo, .value-blk {
-							margin-bottom:6px;
+						.sceglicampo{
+							margin-bottom:20px;
+							width: 10%;
 						}
 						.value-blk {
+							margin-bottom:3px;
+						}
+						.filtro, .value-blk {
+						margin-bottom:6px;
+						}
+						.value-blk {
+							width: auto;
+						}
+						.value-filter-int {
+							width: auto;
+						}
+						.value-filter-ext {
 							width: auto;
 						}
 						#searchThis {text-align:center;
@@ -165,9 +187,13 @@
 						td.body-v > div {padding-left:30px;position:relative;}
 						td.body-v > div > div.typoOfT {position:absolute; width:30px;height:100%;background-color:#ccc;left:0px;}
 						td.body-v > div > div.typoOfT > span{position:absolute;height:30px;top:calc(50% - 18px);left:6px;transform:rotate(-90deg);font-weight:bold;}
+						.blk-button-rev-this, .blk-button-this {display:none;}
+						tr.blacklisted .blk-button-rev-this, tr.not-blacklisted .blk-button-this {display:block;}
+
+						td.body-v > div > div.typoOfT > span{position:absolute;height:30px;top:calc(50% - 18px);left:6px;transform:rotate(-90deg);font-weight:bold;}
 						.blk-button-rev, .blk-button {display:none;}
 						tr.blacklisted .blk-button-rev, tr.not-blacklisted .blk-button {display:block;}
-						
+
 						.contatto-tr-title, .contatto-tr-data {
 							border:1px solid #999;
 						}
@@ -256,6 +282,28 @@
 						.Log-non-presente .copialog{
 							display:none;
 						}
+						#loader-id-blacklister {
+							position: absolute;
+							top: 50%;
+							left: 50%;
+							font-size: 50px;
+							color: white;
+							transform: translate(-50%,-50%);
+							-ms-transform: translate(-50%,-50%);
+						}
+						#overlay {
+							position: fixed;
+							display: none;
+							width: 100%;
+							height: 100%;
+							top: 0;
+							left: 0;
+							right: 0;
+							bottom: 0;
+							background-color: rgba(0,0,0,0.5);
+							z-index: 2;
+							cursor: pointer;
+						}
 				</style>
         {% endblock %}
         {% block content %}
@@ -270,14 +318,50 @@
 						<small id="TitleHelp" class="form-text text-muted"><em><span style="text-decoration: underline;"><strong>Nota :</strong></span></em> E' possibile effettuare una ricerca con il like solo sul cellulare solo come prrimo parametro.</small>
 					</div>
 				</div>
+				<br><br>
 				<div class="col-md-12 panel-message" onclick="hideMessage()" style="display: none;"></div>
 				<div class="panel-body">
 					<div id="search-container">
 						<h4>Cerca Contatto</h4>
 						<div class="search-row-blk active" id="search-row-blk1">
-							<select class="sceglicampo"><option value="cellulare" selected="selected">Cellulare</option><option value="email">Email</option><option value="nome">Nome</option><option value="cognome">Cognome</option></select>
-							<input class="value-blk form-control" type="text" value="" placeholder="">
-							
+							<select class="sceglicampo">
+								<option value="cellulare" selected="selected">Cellulare</option>
+								<option value="email">Email</option>
+								<option value="nome">Nome</option>
+								<option value="cognome">Cognome</option>
+							</select>
+							<input id="cerca-txt" class="value-blk form-control" type="text" value="" placeholder="" style="display:block;width: 180px"><br>
+							<textarea id="TxtArea" class="value-blk form-control" rows="4" cols="50" value="" placeholder="" style="display:none"></textarea>
+							<div id="ch-multiriga" class="multiriga">
+{#									<input id="check-multiriga" type="checkbox" > &nbsp;Modalità multiriga#}
+								<label for="check-multiriga" style="font-size: 15px">Modalità multiriga</label><br>
+									<input type="checkbox"  id="check-multiriga" data-on="Attiva" data-off="Disattiva" data-toggle="toggle">
+
+							</div>
+							<br /><br />
+							<div id="scegli">
+								<h4> Scegli dove effettuare la ricerca: </h4>
+							</div>
+
+							<div  id="filtro" class="filtro">
+{#								<input class="value-filter-int" id="cont-int" type="checkbox" value="int" checked style="display:block"> &nbsp;Anagrafiche interne#}
+{#								&nbsp;&nbsp;&nbsp;&nbsp;#}
+{#								<input class="value-filter-ext" id="cont-ext" type="checkbox" value="est" checked style="display:block"> &nbsp;Anagrafiche esterne#}
+								<input class="value-filter-int" type="checkbox"  id="cont-int" value="int" data-on="Si" data-off="No" data-toggle="toggle" checked style="display:block">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<label for="cont-int">Anagrafiche Interne</label>
+								&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+								<input class="value-filter-ext" type="checkbox"  id="cont-ext" value="est" data-on="Si" data-off="No" data-toggle="toggle" checked style="display:block">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<label for="cont-int">Anagrafiche Esterne</label>
+
+
+
+							</div>
+
+							<div id="info" style="text-align:right">
+
+							</div>
+							<br><br>
+							<script>
+
+							</script>
 						</div>
 						<div class="add-and-row">Aggiungi campo di ricerca</div>
 						
@@ -287,6 +371,7 @@
 						</div>
 						<div class="remove-and-row">Rimuovi campo di ricerca</div>
 						<button id="searchThis" class="btn btn-primary">cerca</button>
+						<button id="clearScreen" class="btn btn-secondary" style="float:right;">clear</button>
 					</div>
 					
 					<div id="search-result">
@@ -317,9 +402,12 @@
 					var data_send = {};
 					data_send["first-field"]='id';
 					data_send["first-value"]={{ ProdId }};
+					data_send["filter-ext"]='est';
+					data_send["filter-int"]='int';
 					data_send["second-field"]='prodambiente';
 					data_send["second-value"]='{{ ProdAmbiente }}';
-					var url_search = '{{admin.generateUrl('searchContact')}}';
+
+					var url_search = '{{admin.generateUrl('searchContactAll')}}';
 					$('#search-result').html('<p>Searching dbs</p><div class="mini-loader"></div>');
 					$.ajax({url: url_search,
 						data: data_send,
@@ -338,9 +426,115 @@
 				
 			
 	})
-	
-	
-	
+		 $(function(event) {
+			 $('#cont-int').bootstrapToggle({on: 'Si', off: 'No'})
+			 $('#cont-int').change(function() {
+				 if($(this).prop('checked')){
+					 $('#cont-int').val('int');
+				 }
+				 else{
+					 $('#cont-int').val('');
+				 }
+			 })
+		 });
+
+		 $(function(event) {
+			 $('#cont-ext').bootstrapToggle({on: 'Si', off: 'No'})
+			 $('#cont-ext').change(function() {
+				 if($(this).prop('checked')){
+					 $('#cont-ext').val('est');
+				 }
+				 else{
+					 $('#cont-ext').val('');
+				 }
+			 })
+		 });
+
+
+		 $(function(event) {
+			 $('#check-multiriga').bootstrapToggle({on: 'Attiva', off: 'Disattiva'})
+			 $('#check-multiriga').change(function() {
+				 if($(this).prop('checked')){
+					 $('#cerca-txt').removeClass();
+					 $('#TxtArea').addClass('value-blk form-control');
+					 $('#cerca-txt').attr('style','display:none');
+					 $('#cerca-txt').val('');
+					 $('#TxtArea').attr('style','display:block');
+					 $('#searchThis').attr('id','searchAll');
+					 $('#filtro').attr('style','display:none;text-align:right');
+					 $('#info').attr('style','display:block;text-align:right');
+					 $('#info').append("<p id='info-txt'><B>La ricerca verrà effettuata automaticamente in tutte le anagrafiche</B></p>")
+					 $('#scegli').attr('style','display:none');
+					 $('.blk-button btn btn-primary').removeClass();
+				 }
+				 else{
+					 $('#TxtArea').removeClass();
+					 $('#cerca-txt').addClass('value-blk form-control');
+					 $('#TxtArea').attr('style','display:none');
+					 $('#TxtArea').val('');
+					 $('#cerca-txt').attr('style','display:block');
+					 $('#searchAll').attr('id','searchThis');
+					 $('#scegli').attr('style','display:block');
+					 $('#filtro').attr('style','display:block');
+					 $('#info').attr('style','display:block;text-align:right');
+					 $('#info-txt').remove();
+				 }
+			 })
+		 });
+
+
+	// $(document).on('ifChecked', '#check-multiriga', function(event) {
+	// 	$('#cerca-txt').removeClass();
+	// 	$('#TxtArea').addClass('value-blk form-control');
+	// 	$('#cerca-txt').attr('style','display:none');
+	// 	$('#cerca-txt').val('');
+	// 	$('#TxtArea').attr('style','display:block');
+	// 	$('#searchThis').attr('id','searchAll');
+	// 	$('#filtro').attr('style','display:none;text-align:right');
+	// 	$('#info').attr('style','display:block;text-align:right');
+	// 	$('#info').append("<p id='info-txt'><B>La ricerca verrà effettuata automaticamente in tutte le anagrafiche</B></p>")
+	// 	$('#scegli').attr('style','display:none');
+	// 	$('.blk-button btn btn-primary').removeClass();
+	// });
+	//
+	// $(document).on('ifUnchecked', '#check-multiriga', function(event) {
+	// 	$('#TxtArea').removeClass();
+	// 	$('#cerca-txt').addClass('value-blk form-control');
+	// 	$('#TxtArea').attr('style','display:none');
+	// 	$('#TxtArea').val('');
+	// 	$('#cerca-txt').attr('style','display:block');
+	// 	$('#searchAll').attr('id','searchThis');
+	// 	$('#scegli').attr('style','display:block');
+	// 	$('#filtro').attr('style','display:block');
+	// 	$('#info').attr('style','display:block;text-align:right');
+	// 	$('#info-txt').remove();
+	//
+	// });
+
+	$(document).on('ifChecked', '#cont-int', function(event) {
+		$('#cont-int').val('int');
+	});
+
+	$(document).on('ifChecked', '#cont-ext', function(event) {
+		$('#cont-ext').val('est');
+	});
+
+	$(document).on('ifUnchecked', '#cont-ext', function(event) {
+		$('#cont-ext').val('');
+	});
+
+	$(document).on('ifUnchecked', '#cont-int', function(event) {
+		$('#cont-int').val('');
+	});
+
+
+	$(document).on('click','#clearScreen', function (){
+		$('#cerca-txt').val('');
+		$('#TxtArea').val('');
+		$('#search-result').empty();
+	});
+
+
 	$(document).on('click', '#searchThis', function(){
 			var ok=check_fields_ok();
 			if(ok==true){
@@ -350,6 +544,8 @@
 					if(count==1){
 						data_send["first-field"]=$(this).find('select.sceglicampo').val();
 						data_send["first-value"]=$(this).find('.value-blk').val();
+						data_send["filter-int"]=$(this).find('.value-filter-int').val();
+						data_send["filter-ext"]=$(this).find('.value-filter-ext').val();
 					}else{
 						data_send["second-field"]=$(this).find('select.sceglicampo').val();
 						data_send["second-value"]=$(this).find('.value-blk').val();
@@ -372,11 +568,53 @@
 				});
 			}
 	});
+
+		 $(document).on('click', '#searchAll', function(){
+			 var ok=check_fields_ok_all();
+			 if(ok==true){
+				 var data_send = {};
+				 var count=1;
+				 $('.search-row-blk.active').each(function(){
+					 if(count==1){
+						 data_send["first-field"]=$(this).find('select.sceglicampo').val();
+						 data_send["first-value"]=$(this).find('.value-blk').val();
+					 }else{
+						 data_send["second-field"]=$(this).find('select.sceglicampo').val();
+						 data_send["second-value"]=$(this).find('.value-blk').val();
+					 }
+					 count= count+1;
+				 });
+				 var url_search = '{{admin.generateUrl('searchContactAll')}}';
+				 $('#search-result').html('<p>Searching dbs</p><div class="mini-loader"></div>');
+				 $.ajax({
+					 url: url_search,
+					 data: data_send,
+					 success: function(risposta){
+						 //console.log(risposta);
+						 $('#search-result').html(risposta['contatti-intHtml']);
+
+
+
+					 },
+					 complete: function(){
+					 }
+				 });
+			 }
+		 });
+
+
+
+
+
+
+
 	$(document).on('click', '.add-and-row', function(){
+		$('#ch-multiriga').attr('style','display:none');
 		$('#search-container').addClass('second-field-active');
 		$('.second-search-row-blk').addClass('active');
 	});
 	$(document).on('click', '.remove-and-row', function(){
+		$('#ch-multiriga').attr('style','display:inline');
 		$('#search-container').removeClass('second-field-active');
 		$('.second-search-row-blk').removeClass('active');
 		
@@ -391,107 +629,261 @@
   
    });
 	$(document).on('click', 'tr.not-blacklisted .blk-button', function(){
-	
+
 			var data_send = {};
 			var count=1;
-			if($(this).closest('#interne').length>0){
-				data_send["type"]="int";
+			if($(this).closest('#interne').length>0 || $(this).closest('#esterne').length>0) {
 				data_send["id"] = $(this).closest('tr.not-blacklisted').attr('data-id');
-				data_send["cell"]= $(this).closest('tr.not-blacklisted').attr('data-cell');
-			}else{
-				data_send['type']='est';
-				data_send['id'] = $(this).closest('tr.not-blacklisted').attr('data-id');
-				data_send['cell']=$(this).closest('tr.not-blacklisted').attr('data-cell');
-				//data_send['cell']='';
+				data_send["cell"] = $(this).closest('tr.not-blacklisted').attr('data-cell');
+				data_send["type"] = "all";
 			}
-			
+
+			// if($(this).closest('#interne').length>0){
+			// 	//data_send["type"]="int";
+			// 	data_send["id"] = $(this).closest('tr.not-blacklisted').attr('data-id');
+			// 	data_send["cell"]= $(this).closest('tr.not-blacklisted').attr('data-cell');
+			// }else{
+			// 	//data_send['type']='est';
+			// 	data_send['id'] = $(this).closest('tr.not-blacklisted').attr('data-id');
+			// 	data_send['cell']=$(this).closest('tr.not-blacklisted').attr('data-cell');
+			// 	//data_send['cell']='';
+			// }
+
 			var url_bl = '{{admin.generateUrl('blacklist')}}';
 			$(this).text('blacklistando');
-			
+			$('#overlay').attr("style","display:block");
+
 			$.ajax({
 				url: url_bl,
 				data: data_send,
 				success: function(risposta){
 					console.log(risposta);
-					if(risposta['type']=='int'){
-						var type='interne';
-					}else{
-						var type='esterne';
+					// if(risposta['type']=='int'){
+					// 	var type='interne';
+					// }else{
+					// 	var type='esterne';
+					// }
+					if (risposta['type']=='all'){
+						var type='all';
 					}
+
 					var Ok=0;
 					if(risposta['id']!='' && risposta['statusid']=='ok'){
 						$('#'+type+' tr.contatto-tr-title.not-blacklisted[data-id="'+risposta['id']+'"] .body-v').append('<div class="show-blacklist">Blacklistato ora</div>');
 						$('#'+type+' tr.contatto-tr[data-id="'+risposta['id']+'"]').removeClass('not-blacklisted').addClass('blacklisted');
+						$('#overlay').attr("style","display:none");
 						Ok=Ok+1;
-						
 					}
-					
-					if(type=='interne' && risposta['cell']!='' && risposta['statuscell']=='ok'){
-						$('#'+type+' tr.contatto-tr-title.not-blacklisted[data-cell="'+risposta['cell']+'"] .body-v').append('<div class="show-blacklist">Blacklistato ora</div>');
+
+					if(type=='all' && risposta['cell']!='' && risposta['statuscell']=='ok' && risposta['statusid']=='ok'){
+						$('#esterne tr.contatto-tr-title.not-blacklisted[data-cell="'+risposta['cell']+'"] .body-v').append('<div class="show-blacklist">Blacklistato ora</div>');
+						$('#esterne tr.contatto-tr[data-cell="'+risposta['cell']+'"]').removeClass('not-blacklisted').addClass('blacklisted');
+
+						$('#interne tr.contatto-tr-title.not-blacklisted[data-cell="'+risposta['cell']+'"] .body-v').append('<div class="show-blacklist">Blacklistato ora</div>');
 						$('#interne tr.contatto-tr[data-cell="'+risposta['cell']+'"]').removeClass('not-blacklisted').addClass('blacklisted');
+						$('#overlay').attr("style","display:none");
 						Ok=Ok+1;
 					}
+
+					if(risposta['statuscell']=='ko' && risposta['statusid']=='ko' ){
+						Ok=null;
+						$('#overlay').attr("style","display:none");
+					}
+
 					if(Ok==0){
 						alert('si è verificato un problema, riprovare o contattare il supporto tecnico di linkappeal');
+						$('#overlay').attr("style","display:none");
+					}else if(Ok==null){
+						alert("Non è possibile blacklistare tutti gli elementi: CELLULARE NON PRESENTE! ");
+						$('#overlay').attr("style","display:none");
 					}
 				},
 				complete: function(){
 				}
 			});
-			$(this).text('blacklista');
-		
+			$(this).text('Blacklista tutti');
+
 	});
-	$(document).on('click', 'tr.blacklisted .blk-button-rev', function(){	
+
+         $(document).on('click', 'tr.not-blacklisted .blk-button-this', function(){
+             var data_send = {};
+             var count=1;
+             if($(this).closest('#interne').length>0){
+                 data_send["type"]="int";
+                 data_send["id"] = $(this).closest('tr.not-blacklisted').attr('data-id');
+                 data_send["cell"]= $(this).closest('tr.not-blacklisted').attr('data-cell');
+             }else{
+                 data_send['type']='est';
+                 data_send['id'] = $(this).closest('tr.not-blacklisted').attr('data-id');
+                 data_send['cell']=$(this).closest('tr.not-blacklisted').attr('data-cell');
+                 //data_send['cell']='';
+             }
+
+             var url_bl = '{{admin.generateUrl('thisblacklist')}}';
+             $(this).text('blacklistando');
+			 $('#overlay').attr("style","display:block");
+
+			 $.ajax({
+                 url: url_bl,
+                 data: data_send,
+                 success: function(risposta){
+                     console.log(risposta);
+                     if(risposta['type']=='int'){
+                         var type='interne';
+                     }else{
+                         var type='esterne';
+                     }
+                     var Ok=0;
+                     if(risposta['id']!='' && risposta['statusid']=='ok'){
+                         $('#'+type+' tr.contatto-tr-title.not-blacklisted[data-id="'+risposta['id']+'"] .body-v').append('<div class="show-blacklist">Blacklistato ora</div>');
+                         $('#'+type+' tr.contatto-tr[data-id="'+risposta['id']+'"]').removeClass('not-blacklisted').addClass('blacklisted');
+						 $('#overlay').attr("style","display:none");
+                         Ok=Ok+1;
+
+                     }
+                     if(type=='interne' && risposta['cell']!='' && risposta['statuscell']=='ok'){
+                         $('#'+type+' tr.contatto-tr-title.not-blacklisted[data-id="'+risposta['id']+'"] .body-v').append('<div class="show-blacklist">Blacklistato ora</div>');
+                         $('#interne tr.contatto-tr[data-id="'+risposta['id']+'"]').removeClass('not-blacklisted').addClass('blacklisted');
+						 $('#overlay').attr("style","display:none");
+                         Ok=Ok+1;
+                     }
+                     if(risposta['statuscell']=='ko' && risposta['statusid']=='ko'){
+						 Ok=null;
+						 $('#overlay').attr("style","display:none");
+					 }
+                     if(Ok==0){
+                         alert('Si è verificato un problema, riprovare o contattare il supporto tecnico di linkappeal');
+						 $('#overlay').attr("style","display:none");
+                     }else if(Ok==null){
+						 alert("Non è possibile blacklistare questo elemento: CELLULARE NON PRESENTE! ");
+						 $('#overlay').attr("style","display:none");
+					 }
+
+                 },
+                 complete: function(){
+                 }
+             });
+			 $(this).text('Blacklista questo record');
+
+         });
+
+
+		 $(document).on('click', 'tr.blacklisted .blk-button-rev-this', function(){
+			 var data_send = {};
+			 var count=1;
+			 if($(this).closest('#interne').length>0){
+				 data_send["type"]="int";
+				 data_send["id"] = $(this).closest('tr.blacklisted').attr('data-id');
+				 data_send["cell"]= $(this).closest('tr.blacklisted').attr('data-cell');
+			 }else{
+				 data_send['type']='est';
+				 data_send['id'] = $(this).closest('tr.blacklisted').attr('data-id');
+				 data_send['cell']=$(this).closest('tr.blacklisted').attr('data-cell');
+				 //data_send['cell']='';
+			 }
+
+			 var url_bl = '{{admin.generateUrl('thisrevblacklist')}}';
+			 $(this).text('rimuovendo');
+			 $('#overlay').attr("style","display:block");
+			 $.ajax({
+				 url: url_bl,
+				 data: data_send,
+				 success: function(risposta){
+					 console.log(risposta);
+					 if(risposta['type']=='int'){
+						 var type='interne';
+					 }else{
+						 var type='esterne';
+					 }
+					 var Ok=0;
+					 if(risposta['id']!='' && risposta['statusid']=='ok'){
+						 $('#'+type+' tr.contatto-tr-title.blacklisted[data-id="'+risposta['id']+'"] .show-blacklist').remove();
+						 $('#'+type+' tr.contatto-tr[data-id="'+risposta['id']+'"]').removeClass('blacklisted').addClass('not-blacklisted');
+						 $('#overlay').attr("style","display:none");
+						 Ok=Ok+1;
+					 }
+
+					 if(type=='interne' && risposta['cell']!='' && risposta['statuscell']=='ok'){
+						 $('#'+type+' tr.contatto-tr-title.blacklisted[data-id="'+risposta['id']+'"] .show-blacklist').remove();
+						 $('#interne tr.contatto-tr[data-id="'+risposta['id']+'"]').removeClass('blacklisted').addClass('not-blacklisted');
+						 $('#overlay').attr("style","display:none");
+						 Ok=Ok+1;
+					 }
+					 if(Ok==0){
+						 alert('si è verificato un problema, riprovare o contattare il supporto tecnico di linkappeal');
+                         $('#overlay').attr("style","display:none");
+					 }
+
+				 },
+				 complete: function(){
+				 }
+			 });
+			 $(this).text('Rimuovi questo record dalla blacklist');
+		 });
+
+
+
+	$(document).on('click', 'tr.blacklisted .blk-button-rev', function(){
 		var data_send = {};
 			var count=1;
-			if($(this).closest('#interne').length>0){
-				data_send["type"]="int";
+			if($(this).closest('#interne').length>0 || $(this).closest('#esterne').length>0) {
 				data_send["id"] = $(this).closest('tr.blacklisted').attr('data-id');
-				data_send["cell"]= $(this).closest('tr.blacklisted').attr('data-cell');
-			}else{
-				data_send['type']='est';
-				data_send['id'] = $(this).closest('tr.blacklisted').attr('data-id');
-				data_send['cell']=$(this).closest('tr.blacklisted').attr('data-cell');
-				//data_send['cell']='';
+				data_send["cell"] = $(this).closest('tr.blacklisted').attr('data-cell');
+				data_send["type"] = "all";
 			}
-			
+			// if($(this).closest('#interne').length>0){
+			// 	data_send["type"]="int";
+			// 	data_send["id"] = $(this).closest('tr.blacklisted').attr('data-id');
+			// 	data_send["cell"]= $(this).closest('tr.blacklisted').attr('data-cell');
+			// }else{
+			// 	data_send['type']='est';
+			// 	data_send['id'] = $(this).closest('tr.blacklisted').attr('data-id');
+			// 	data_send['cell']=$(this).closest('tr.blacklisted').attr('data-cell');
+			// 	//data_send['cell']='';
+			// }
+
 			var url_bl = '{{admin.generateUrl('revblacklist')}}';
 			$(this).text('rimuovendo');
-			
+			$('#overlay').attr("style","display:block");
+
 			$.ajax({
 				url: url_bl,
 				data: data_send,
 				success: function(risposta){
 					console.log(risposta);
-					if(risposta['type']=='int'){
-						var type='interne';
-					}else{
-						var type='esterne';
+					if(risposta['type']=='all'){
+						var type='all';
 					}
+
 					var Ok=0;
-					if(risposta['id']!='' && risposta['statusid']=='ok'){
-						$('#'+type+' tr.contatto-tr-title.blacklisted[data-id="'+risposta['id']+'"] .show-blacklist').remove();
-						$('#'+type+' tr.contatto-tr[data-id="'+risposta['id']+'"]').removeClass('blacklisted').addClass('not-blacklisted');
-						Ok=Ok+1;
-					}
-					
-					if(type=='interne' && risposta['cell']!='' && risposta['statuscell']=='ok'){
-						$('#'+type+' tr.contatto-tr-title.blacklisted[data-cell="'+risposta['cell']+'"] .show-blacklist').remove();
+					// if(risposta['id']!='' && risposta['statusid']=='ok'){
+					// 	$('#'+type+' tr.contatto-tr-title.blacklisted[data-id="'+risposta['id']+'"] .show-blacklist').remove();
+					// 	$('#'+type+' tr.contatto-tr[data-id="'+risposta['id']+'"]').removeClass('blacklisted').addClass('not-blacklisted');
+					// 	$('#overlay').attr("style","display:none");
+					// 	Ok=Ok+1;
+					// }
+
+					if(type=='all' && risposta['cell']!='' && risposta['statuscell']=='ok' && risposta['statusid']=='ok'){
+						$('#esterne tr.contatto-tr-title.blacklisted[data-cell="'+risposta['cell']+'"] .show-blacklist').remove();
+						$('#esterne tr.contatto-tr[data-cell="'+risposta['cell']+'"]').removeClass('blacklisted').addClass('not-blacklisted');
+						$('#interne tr.contatto-tr-title.blacklisted[data-cell="'+risposta['cell']+'"] .show-blacklist').remove();
 						$('#interne tr.contatto-tr[data-cell="'+risposta['cell']+'"]').removeClass('blacklisted').addClass('not-blacklisted');
-						Ok=Ok+1;	
+						$('#overlay').attr("style","display:none");
+						Ok=Ok+1;
 					}
 					if(Ok==0){
 						alert('si è verificato un problema, riprovare o contattare il supporto tecnico di linkappeal');
+                        $('#overlay').attr("style","display:none");
 					}
-					
+
 				},
 				complete: function(){
 				}
 			});
-			$(this).text('Rimuovi dalla blacklist');
+			$(this).text('Rimuovi tutti dalla blacklist');
 	});
-	
-	
+
+
 	function check_fields_ok(){
 		var ok=true;
 		$('.error').remove();
@@ -515,6 +907,30 @@
 		});
 		return ok;
 	}
+
+		 function check_fields_ok_all(){
+			 var ok=true;
+			 $('.error').remove();
+			 var count=0;
+			 $('.search-row-blk.active').each(function(){
+				 count=count+1;
+				 if(count==1){
+					 selectValue=$(this).find('select.sceglicampo').val();
+				 }else{
+					 //se i select hanno stesso vlore dai errore
+					 if($(this).find('select.sceglicampo').val()==selectValue){
+						 ok=false;
+						 $(this).append('<div class="error">i campi su cui cercare non possono essere gli stessi');
+					 }
+				 }
+
+				 if ($(this).find('.value-blk').val()==''){
+					 ok=false;
+					 $(this).append('<div class="error">il campo non pu&ograve; essere vuoto');
+				 }
+			 });
+			 return ok;
+		 }
 	
 	function show_message (htmlstring, classname, id){
 		//printo il messaggio
