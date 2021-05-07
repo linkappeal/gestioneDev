@@ -474,10 +474,10 @@ class SmsrecheckAdminController extends Controller
                         $stmt8->execute();
 // invio sms lead_uni
 /////////////////////////////////////// invio sms_send
-                           /* if($this->container->getParameter('sms_send_lead_uni')){
+                            if($this->container->getParameter('sms_send_lead_uni')){
                                 $sms_send = new SendSmsDirect($cellulare);
                                 $sms_send->Send();
-                            }*/
+                            }
 // invio sms
                         // inserimento in blacklist_extraction
                         // recupero info per id lead_uni
@@ -505,11 +505,11 @@ class SmsrecheckAdminController extends Controller
                         $stmt48 = $em48->getConnection()->prepare($sql_insert_in_blacklist);
                         $stmt48->execute();
 /////////////////////////////////////// invio sms_send
-                                /*
+
                                 if($this->container->getParameter('sms_send_lead_uni_esterne')){
                                    $sms_send = new SendSmsDirect($cellulare);
                                    $sms_send->Send();
-                                } */
+                                }
 // invio sms
                         // inserimento in blacklist_esterne
                         $sql_insert_into_blacklist_esterne ="INSERT IGNORE INTO blacklist_esterne (lead_id, data_inserimento) VALUES (".$Lead_Source_id.",'".$DateNow."')";

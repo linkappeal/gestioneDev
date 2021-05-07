@@ -23,16 +23,9 @@
   </component>
   <component name="ChangeListManager">
     <list default="true" id="b201f8b7-90ad-40ee-a6ae-efb29b131cac" name="Default Changelist" comment="">
-      <change beforePath="$PROJECT_DIR$/.idea/deployment.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/deployment.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/.idea/php.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/php.xml" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/app/Resources/views/Emails/alert_prod_bypdo.html.twig" beforeDir="false" afterPath="$PROJECT_DIR$/app/Resources/views/Emails/alert_prod_bypdo.html.twig" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/app/Resources/views/blacklister.html.twig" beforeDir="false" afterPath="$PROJECT_DIR$/app/Resources/views/blacklister.html.twig" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/rotte.txt" beforeDir="false" afterPath="$PROJECT_DIR$/rotte.txt" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/AppBundle/Admin/BlacklisterAdmin.php" beforeDir="false" afterPath="$PROJECT_DIR$/src/AppBundle/Admin/BlacklisterAdmin.php" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/AppBundle/Controller/BlacklisterAdminController.php" beforeDir="false" afterPath="$PROJECT_DIR$/src/AppBundle/Controller/BlacklisterAdminController.php" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/AppBundle/Controller/CRUDConcorsoController.php" beforeDir="false" afterPath="$PROJECT_DIR$/src/AppBundle/Controller/CRUDConcorsoController.php" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/web/css/ac74def.css" beforeDir="false" afterPath="$PROJECT_DIR$/web/css/ac74def.css" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/app/Resources/views/listato_smsrecheck.html.twig" beforeDir="false" afterPath="$PROJECT_DIR$/app/Resources/views/listato_smsrecheck.html.twig" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/AppBundle/Controller/SmsrecheckAdminController.php" beforeDir="false" afterPath="$PROJECT_DIR$/src/AppBundle/Controller/SmsrecheckAdminController.php" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -184,7 +177,8 @@
       <workItem from="1620125315550" duration="12377000" />
       <workItem from="1620142455294" duration="1736000" />
       <workItem from="1620204165737" duration="2891000" />
-      <workItem from="1620288379961" duration="16515000" />
+      <workItem from="1620288379961" duration="19865000" />
+      <workItem from="1620375841198" duration="919000" />
     </task>
     <task id="LOCAL-00001" summary="Initial commit">
       <created>1616767033497</created>
@@ -242,7 +236,14 @@
       <option name="project" value="LOCAL" />
       <updated>1620204430120</updated>
     </task>
-    <option name="localTasksCounter" value="9" />
+    <task id="LOCAL-00009" summary="- [blacklister] dividere il bottone di blacklist in blacklist tutti - solo questo record&#10;- [blacklister] al click sul pulsante blacklist far partire il loader fino a quando non ha completato la procedura di blacklisting&#10;- [blacklister] aggiungere filtri di ricerca (solo anagrafiche esterne si/no)&#10;- [blacklister] dare la possibilità di fare ricerca su un multiriga dei cellulari">
+      <created>1620313502792</created>
+      <option name="number" value="00009" />
+      <option name="presentableId" value="LOCAL-00009" />
+      <option name="project" value="LOCAL" />
+      <updated>1620313502792</updated>
+    </task>
+    <option name="localTasksCounter" value="10" />
     <servers />
   </component>
   <component name="TypeScriptGeneratedFilesManager">
@@ -310,10 +311,10 @@
       <screen x="0" y="0" width="1920" height="1040" />
     </state>
     <state x="524" y="285" key="#com.intellij.fileTypes.FileTypeChooser/-1440.0.1440.860/0.0.1920.1040@0.0.1920.1040" timestamp="1618841368623" />
-    <state x="0" y="0" key="CommitChangelistDialog2" timestamp="1620204428043">
+    <state x="0" y="0" key="CommitChangelistDialog2" timestamp="1620313500276">
       <screen x="0" y="0" width="1920" height="1040" />
     </state>
-    <state x="0" y="0" key="CommitChangelistDialog2/-1440.0.1440.860/0.0.1920.1040@0.0.1920.1040" timestamp="1620204428043" />
+    <state x="0" y="0" key="CommitChangelistDialog2/-1440.0.1440.860/0.0.1920.1040@0.0.1920.1040" timestamp="1620313500276" />
     <state x="133" y="85" key="DiffContextDialog" timestamp="1616768339614">
       <screen x="0" y="0" width="1920" height="1040" />
     </state>
@@ -354,10 +355,10 @@
       <screen x="0" y="0" width="1920" height="1040" />
     </state>
     <state x="794" y="399" key="VCS.EditChangelistDialog/-1440.0.1440.860/0.0.1920.1040@0.0.1920.1040" timestamp="1620204505579" />
-    <state x="352" y="127" key="Vcs.Push.Dialog.v2" timestamp="1620204443865">
+    <state x="352" y="127" key="Vcs.Push.Dialog.v2" timestamp="1620313506009">
       <screen x="0" y="0" width="1920" height="1040" />
     </state>
-    <state x="352" y="127" key="Vcs.Push.Dialog.v2/-1440.0.1440.860/0.0.1920.1040@0.0.1920.1040" timestamp="1620204443865" />
+    <state x="352" y="127" key="Vcs.Push.Dialog.v2/-1440.0.1440.860/0.0.1920.1040@0.0.1920.1040" timestamp="1620313506009" />
     <state x="92" y="92" width="1736" height="856" maximized="true" key="com.intellij.history.integration.ui.views.FileHistoryDialog" timestamp="1620142755280">
       <screen x="0" y="0" width="1920" height="1040" />
     </state>
