@@ -482,35 +482,6 @@
 			 })
 		 });
 
-
-	// $(document).on('ifChecked', '#check-multiriga', function(event) {
-	// 	$('#cerca-txt').removeClass();
-	// 	$('#TxtArea').addClass('value-blk form-control');
-	// 	$('#cerca-txt').attr('style','display:none');
-	// 	$('#cerca-txt').val('');
-	// 	$('#TxtArea').attr('style','display:block');
-	// 	$('#searchThis').attr('id','searchAll');
-	// 	$('#filtro').attr('style','display:none;text-align:right');
-	// 	$('#info').attr('style','display:block;text-align:right');
-	// 	$('#info').append("<p id='info-txt'><B>La ricerca verrà effettuata automaticamente in tutte le anagrafiche</B></p>")
-	// 	$('#scegli').attr('style','display:none');
-	// 	$('.blk-button btn btn-primary').removeClass();
-	// });
-	//
-	// $(document).on('ifUnchecked', '#check-multiriga', function(event) {
-	// 	$('#TxtArea').removeClass();
-	// 	$('#cerca-txt').addClass('value-blk form-control');
-	// 	$('#TxtArea').attr('style','display:none');
-	// 	$('#TxtArea').val('');
-	// 	$('#cerca-txt').attr('style','display:block');
-	// 	$('#searchAll').attr('id','searchThis');
-	// 	$('#scegli').attr('style','display:block');
-	// 	$('#filtro').attr('style','display:block');
-	// 	$('#info').attr('style','display:block;text-align:right');
-	// 	$('#info-txt').remove();
-	//
-	// });
-
 	$(document).on('ifChecked', '#cont-int', function(event) {
 		$('#cont-int').val('int');
 	});
@@ -550,15 +521,18 @@
 						data_send["second-field"]=$(this).find('select.sceglicampo').val();
 						data_send["second-value"]=$(this).find('.value-blk').val();
 					}
+
 					 count= count+1;
 				});
 				var url_search = '{{admin.generateUrl('searchContact')}}';
+
 				$('#search-result').html('<p>Searching dbs</p><div class="mini-loader"></div>');
 				$.ajax({url: url_search,
 					data: data_send,
 					success: function(risposta){
 						//console.log(risposta);
 						$('#search-result').html(risposta['contatti-intHtml']);
+
 						
 						
 					
@@ -603,11 +577,6 @@
 		 });
 
 
-
-
-
-
-
 	$(document).on('click', '.add-and-row', function(){
 		$('#ch-multiriga').attr('style','display:none');
 		$('#search-container').addClass('second-field-active');
@@ -635,19 +604,9 @@
 			if($(this).closest('#interne').length>0 || $(this).closest('#esterne').length>0) {
 				data_send["id"] = $(this).closest('tr.not-blacklisted').attr('data-id');
 				data_send["cell"] = $(this).closest('tr.not-blacklisted').attr('data-cell');
+				data_send["email"] = $(this).closest('tr.not-blacklisted').attr('data-email');
 				data_send["type"] = "all";
 			}
-
-			// if($(this).closest('#interne').length>0){
-			// 	//data_send["type"]="int";
-			// 	data_send["id"] = $(this).closest('tr.not-blacklisted').attr('data-id');
-			// 	data_send["cell"]= $(this).closest('tr.not-blacklisted').attr('data-cell');
-			// }else{
-			// 	//data_send['type']='est';
-			// 	data_send['id'] = $(this).closest('tr.not-blacklisted').attr('data-id');
-			// 	data_send['cell']=$(this).closest('tr.not-blacklisted').attr('data-cell');
-			// 	//data_send['cell']='';
-			// }
 
 			var url_bl = '{{admin.generateUrl('blacklist')}}';
 			$(this).text('blacklistando');
@@ -658,29 +617,33 @@
 				data: data_send,
 				success: function(risposta){
 					console.log(risposta);
-					// if(risposta['type']=='int'){
-					// 	var type='interne';
-					// }else{
-					// 	var type='esterne';
-					// }
 					if (risposta['type']=='all'){
 						var type='all';
 					}
 
 					var Ok=0;
-					if(risposta['id']!='' && risposta['statusid']=='ok'){
-						$('#'+type+' tr.contatto-tr-title.not-blacklisted[data-id="'+risposta['id']+'"] .body-v').append('<div class="show-blacklist">Blacklistato ora</div>');
-						$('#'+type+' tr.contatto-tr[data-id="'+risposta['id']+'"]').removeClass('not-blacklisted').addClass('blacklisted');
+					if(type=='all' && risposta['statuscell']=='ko'){
+						$('#interne tr.contatto-tr-title.not-blacklisted[data-email="'+risposta['email']+'"] .body-v').append('<div class="show-blacklist">Blacklistato ora</div>');
+						$('#interne tr.contatto-tr[data-email="'+risposta['email']+'"]').removeClass('not-blacklisted').addClass('blacklisted');
+						$('#esterne tr.contatto-tr-title.not-blacklisted[data-email="'+risposta['email']+'"] .body-v').append('<div class="show-blacklist">Blacklistato ora</div>');
+						$('#esterne tr.contatto-tr[data-email="'+risposta['email']+'"]').removeClass('not-blacklisted').addClass('blacklisted');
+
 						$('#overlay').attr("style","display:none");
 						Ok=Ok+1;
 					}
 
-					if(type=='all' && risposta['cell']!='' && risposta['statuscell']=='ok' && risposta['statusid']=='ok'){
+					if(type=='all' && risposta['statuscell']!=''){
 						$('#esterne tr.contatto-tr-title.not-blacklisted[data-cell="'+risposta['cell']+'"] .body-v').append('<div class="show-blacklist">Blacklistato ora</div>');
 						$('#esterne tr.contatto-tr[data-cell="'+risposta['cell']+'"]').removeClass('not-blacklisted').addClass('blacklisted');
-
 						$('#interne tr.contatto-tr-title.not-blacklisted[data-cell="'+risposta['cell']+'"] .body-v').append('<div class="show-blacklist">Blacklistato ora</div>');
 						$('#interne tr.contatto-tr[data-cell="'+risposta['cell']+'"]').removeClass('not-blacklisted').addClass('blacklisted');
+
+						$('#esterne tr.contatto-tr-title.not-blacklisted[data-email="'+risposta['email']+'"] .body-v').append('<div class="show-blacklist">Blacklistato ora</div>');
+						$('#esterne tr.contatto-tr[data-email="'+risposta['email']+'"]').removeClass('not-blacklisted').addClass('blacklisted');
+						$('#interne tr.contatto-tr-title.not-blacklisted[data-email="'+risposta['email']+'"] .body-v').append('<div class="show-blacklist">Blacklistato ora</div>');
+						$('#interne tr.contatto-tr[data-email="'+risposta['email']+'"]').removeClass('not-blacklisted').addClass('blacklisted');
+
+
 						$('#overlay').attr("style","display:none");
 						Ok=Ok+1;
 					}
@@ -692,9 +655,6 @@
 
 					if(Ok==0){
 						alert('si è verificato un problema, riprovare o contattare il supporto tecnico di linkappeal');
-						$('#overlay').attr("style","display:none");
-					}else if(Ok==null){
-						alert("Non è possibile blacklistare tutti gli elementi: CELLULARE NON PRESENTE! ");
 						$('#overlay').attr("style","display:none");
 					}
 				},
@@ -712,10 +672,12 @@
                  data_send["type"]="int";
                  data_send["id"] = $(this).closest('tr.not-blacklisted').attr('data-id');
                  data_send["cell"]= $(this).closest('tr.not-blacklisted').attr('data-cell');
+				 data_send["email"]= $(this).closest('tr.not-blacklisted').attr('data-email');
              }else{
                  data_send['type']='est';
                  data_send['id'] = $(this).closest('tr.not-blacklisted').attr('data-id');
                  data_send['cell']=$(this).closest('tr.not-blacklisted').attr('data-cell');
+				 data_send["email"]= $(this).closest('tr.not-blacklisted').attr('data-email');
                  //data_send['cell']='';
              }
 
@@ -741,24 +703,28 @@
                          Ok=Ok+1;
 
                      }
-                     if(type=='interne' && risposta['cell']!='' && risposta['statuscell']=='ok'){
+					 if(type=='interne' && risposta['cell']!='' && risposta['statuscell']=='ok' && risposta['statusid']=='ok' && risposta['statusemail']=='ko'){
                          $('#'+type+' tr.contatto-tr-title.not-blacklisted[data-id="'+risposta['id']+'"] .body-v').append('<div class="show-blacklist">Blacklistato ora</div>');
-                         $('#interne tr.contatto-tr[data-id="'+risposta['id']+'"]').removeClass('not-blacklisted').addClass('blacklisted');
+                         $('#'+type+' tr.contatto-tr[data-id="'+risposta['id']+'"]').removeClass('not-blacklisted').addClass('blacklisted');
 						 $('#overlay').attr("style","display:none");
                          Ok=Ok+1;
                      }
-                     if(risposta['statuscell']=='ko' && risposta['statusid']=='ko'){
-						 Ok=null;
+					 if(risposta['statuscell']=='ok' && risposta['statusemail']=='ok' && risposta['statusid']=='ok'){
+						 $('#'+type+' tr.contatto-tr-title.not-blacklisted[data-id="'+risposta['id']+'"] .body-v').append('<div class="show-blacklist">Blacklistato ora</div>');
+						 $('#'+type+' tr.contatto-tr[data-id="'+risposta['id']+'"]').removeClass('not-blacklisted').addClass('blacklisted');
 						 $('#overlay').attr("style","display:none");
+						 Ok=Ok+1;
+					 }
+					 if(risposta['statuscell']=='ko' && risposta['statusemail']=='ok' && risposta['statusid']=='ok'){
+						 $('#'+type+' tr.contatto-tr-title.not-blacklisted[data-id="'+risposta['id']+'"] .body-v').append('<div class="show-blacklist">Blacklistato ora</div>');
+						 $('#'+type+' tr.contatto-tr[data-id="'+risposta['id']+'"]').removeClass('not-blacklisted').addClass('blacklisted');
+						 $('#overlay').attr("style","display:none");
+						 Ok=Ok+1;
 					 }
                      if(Ok==0){
                          alert('Si è verificato un problema, riprovare o contattare il supporto tecnico di linkappeal');
 						 $('#overlay').attr("style","display:none");
-                     }else if(Ok==null){
-						 alert("Non è possibile blacklistare questo elemento: CELLULARE NON PRESENTE! ");
-						 $('#overlay').attr("style","display:none");
-					 }
-
+                     }
                  },
                  complete: function(){
                  }
@@ -775,11 +741,12 @@
 				 data_send["type"]="int";
 				 data_send["id"] = $(this).closest('tr.blacklisted').attr('data-id');
 				 data_send["cell"]= $(this).closest('tr.blacklisted').attr('data-cell');
+				 data_send["email"]= $(this).closest('tr.blacklisted').attr('data-email');
 			 }else{
 				 data_send['type']='est';
 				 data_send['id'] = $(this).closest('tr.blacklisted').attr('data-id');
 				 data_send['cell']=$(this).closest('tr.blacklisted').attr('data-cell');
-				 //data_send['cell']='';
+				 data_send['email']= $(this).closest('tr.blacklisted').attr('data-email');
 			 }
 
 			 var url_bl = '{{admin.generateUrl('thisrevblacklist')}}';
@@ -802,10 +769,23 @@
 						 $('#overlay').attr("style","display:none");
 						 Ok=Ok+1;
 					 }
-
-					 if(type=='interne' && risposta['cell']!='' && risposta['statuscell']=='ok'){
+					 if(type=='interne' && risposta['cell']!='' && risposta['statuscell']=='ok' && risposta['statusid']=='ok' && risposta['statusemail']=='ko'){
 						 $('#'+type+' tr.contatto-tr-title.blacklisted[data-id="'+risposta['id']+'"] .show-blacklist').remove();
-						 $('#interne tr.contatto-tr[data-id="'+risposta['id']+'"]').removeClass('blacklisted').addClass('not-blacklisted');
+						 $('#'+type+' tr.contatto-tr[data-id="'+risposta['id']+'"]').removeClass('blacklisted').addClass('not-blacklisted');
+						 $('#overlay').attr("style","display:none");
+						 Ok=Ok+1;
+					 }
+					 if(risposta['statuscell']=='ok' && risposta['statusemail']=='ok' && risposta['statusid']=='ok'){
+						 $('#'+type+' tr.contatto-tr-title.blacklisted[data-id="'+risposta['id']+'"] .show-blacklist').remove();
+						 $('#'+type+' tr.contatto-tr[data-id="'+risposta['id']+'"]').removeClass('blacklisted').addClass('not-blacklisted');
+						 Ok=Ok+1;
+					 }
+
+					 if(risposta['statuscell']=='ko' && risposta['statusemail']=='ok' && risposta['statusid']=='ok'){
+						 $('#'+type+' tr.contatto-tr-title.blacklisted[data-id="'+risposta['id']+'"] .show-blacklist').remove();
+						 $('#'+type+' tr.contatto-tr[data-id="'+risposta['id']+'"]').removeClass('blacklisted').addClass('not-blacklisted');
+						 // $('#'+type+' tr.contatto-tr-title.blacklisted[data-email="'+risposta['email']+'"] .show-blacklist').remove();
+						 // $('#'+type+' tr.contatto-tr[data-email="'+risposta['email']+'"]').removeClass('blacklisted').addClass('not-blacklisted');
 						 $('#overlay').attr("style","display:none");
 						 Ok=Ok+1;
 					 }
@@ -813,7 +793,6 @@
 						 alert('si è verificato un problema, riprovare o contattare il supporto tecnico di linkappeal');
                          $('#overlay').attr("style","display:none");
 					 }
-
 				 },
 				 complete: function(){
 				 }
@@ -829,18 +808,9 @@
 			if($(this).closest('#interne').length>0 || $(this).closest('#esterne').length>0) {
 				data_send["id"] = $(this).closest('tr.blacklisted').attr('data-id');
 				data_send["cell"] = $(this).closest('tr.blacklisted').attr('data-cell');
+				data_send["email"]= $(this).closest('tr.blacklisted').attr('data-email');
 				data_send["type"] = "all";
 			}
-			// if($(this).closest('#interne').length>0){
-			// 	data_send["type"]="int";
-			// 	data_send["id"] = $(this).closest('tr.blacklisted').attr('data-id');
-			// 	data_send["cell"]= $(this).closest('tr.blacklisted').attr('data-cell');
-			// }else{
-			// 	data_send['type']='est';
-			// 	data_send['id'] = $(this).closest('tr.blacklisted').attr('data-id');
-			// 	data_send['cell']=$(this).closest('tr.blacklisted').attr('data-cell');
-			// 	//data_send['cell']='';
-			// }
 
 			var url_bl = '{{admin.generateUrl('revblacklist')}}';
 			$(this).text('rimuovendo');
@@ -856,14 +826,20 @@
 					}
 
 					var Ok=0;
-					// if(risposta['id']!='' && risposta['statusid']=='ok'){
-					// 	$('#'+type+' tr.contatto-tr-title.blacklisted[data-id="'+risposta['id']+'"] .show-blacklist').remove();
-					// 	$('#'+type+' tr.contatto-tr[data-id="'+risposta['id']+'"]').removeClass('blacklisted').addClass('not-blacklisted');
-					// 	$('#overlay').attr("style","display:none");
-					// 	Ok=Ok+1;
-					// }
+					if(type=='all' && risposta['statusid']=='ok' && risposta['statuscell']=='ko' && risposta['cell']==''){
+						$('#esterne tr.contatto-tr-title.blacklisted[data-id="'+risposta['id']+'"] .show-blacklist').remove();
+						$('#esterne tr.contatto-tr[data-id="'+risposta['id']+'"]').removeClass('blacklisted').addClass('not-blacklisted');
+						$('#interne tr.contatto-tr-title.blacklisted[data-id="'+risposta['id']+'"] .show-blacklist').remove();
+						$('#interne tr.contatto-tr[data-id="'+risposta['id']+'"]').removeClass('blacklisted').addClass('not-blacklisted');
+						$('#esterne tr.contatto-tr-title.blacklisted[data-email="'+risposta['email']+'"] .show-blacklist').remove();
+						$('#esterne tr.contatto-tr[data-email="'+risposta['email']+'"]').removeClass('blacklisted').addClass('not-blacklisted');
+						$('#interne tr.contatto-tr-title.blacklisted[data-email="'+risposta['email']+'"] .show-blacklist').remove();
+						$('#interne tr.contatto-tr[data-email="'+risposta['email']+'"]').removeClass('blacklisted').addClass('not-blacklisted');
+						$('#overlay').attr("style","display:none");
+						Ok=Ok+1;
+					}
 
-					if(type=='all' && risposta['cell']!='' && risposta['statuscell']=='ok' && risposta['statusid']=='ok'){
+					if(type=='all' && risposta['statuscell']=='ok' && risposta['statusid']=='ok'){
 						$('#esterne tr.contatto-tr-title.blacklisted[data-cell="'+risposta['cell']+'"] .show-blacklist').remove();
 						$('#esterne tr.contatto-tr[data-cell="'+risposta['cell']+'"]').removeClass('blacklisted').addClass('not-blacklisted');
 						$('#interne tr.contatto-tr-title.blacklisted[data-cell="'+risposta['cell']+'"] .show-blacklist').remove();

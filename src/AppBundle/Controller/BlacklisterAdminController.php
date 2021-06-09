@@ -42,6 +42,7 @@ class BlacklisterAdminController extends Controller
 {
     //modifica Francesco 16042021
     //produzione@linkappeal.it
+    //francescomartucci@linkappeal.it
 	public static $emailProduction = 'francescomartucci@linkappeal.it';
 	// RENDER FUNCIONS
 	//render listato template
@@ -84,8 +85,6 @@ class BlacklisterAdminController extends Controller
                 $Par[].=$firstfield.': '.$value.' & '.$md5_par;
             }
         }
-
-
         $queryIntOk='';
         $queryEstOk='';
         foreach ($Par as $p) {
@@ -105,6 +104,7 @@ class BlacklisterAdminController extends Controller
         $campagna = array();
         $leadUniIdsArr = array();
         $leadUniIdsArrCell = array();
+        $leadUniIdsArrEmail = array();
         $inBl = array();
         $IntLogs = array();
         $UsiRecenti = array();
@@ -154,6 +154,9 @@ class BlacklisterAdminController extends Controller
                         }
                         if ($field == 'cellulare') {
                             $leadUniIdsArrCell[$cont_id] = $value;
+                        }
+                        if ($field == 'email'){
+                            $leadUniIdsArrEmail[$cont_id] = $value;
                         }
                         if ($value != '') {
 // //////////////////////////////////////////////////////////////////////////////////////////////
@@ -377,7 +380,7 @@ class BlacklisterAdminController extends Controller
                                 $recentspan = '<span  class="bl-etichetta bl-etichetta-red">uso non recente</span>';
                             }
                             $contactHeader = '<h4>ID INTERNO: ' . $cont_id . ' | LOG <span class="logs">Data: ' . $IntLogs[$cont_id]["data"] . ', Url: ' . $IntLogs[$cont_id]["url"] . ', Ip: ' . $IntLogs[$cont_id]["indirizzo_ip"] . '</span>' . $IntLogs[$cont_id]["statusHtml"] . $recentspan . '</h4>' . $blacklistedClassString;
-                            $usi_intHTML .= '<tr class="contatto-tr-title contatto-tr ' . $blacklistedClass . ' ' . $IntLogs[$cont_id]["status"] . '" data-id="' . $cont_id . '" data-cell="' . $leadUniIdsArrCell[$cont_id] . '"><td class="body-v">' . $contactHeader . '</td></tr><tr class="contatto-tr-data contatto-tr ' . $blacklistedClass . ' ' . $IntLogs[$cont_id]["status"] . '" data-id="' . $cont_id . '" data-cell="' . $leadUniIdsArrCell[$cont_id] . '"><td class="body-v"><div class="contatto-dati "><div class="typoOfT"><span>Dati</span></div><div>' . ${'contatto_int_' . $cont_id} . '</div></div>';
+                            $usi_intHTML .= '<tr class="contatto-tr-title contatto-tr ' . $blacklistedClass . ' ' . $IntLogs[$cont_id]["status"] . '" data-id="' . $cont_id . '" data-cell="' . $leadUniIdsArrCell[$cont_id] . '" data-email="'.$leadUniIdsArrEmail[$cont_id].'"><td class="body-v">' . $contactHeader . '</td></tr><tr class="contatto-tr-data contatto-tr ' . $blacklistedClass . ' ' . $IntLogs[$cont_id]["status"] . '" data-id="' . $cont_id . '" data-cell="' . $leadUniIdsArrCell[$cont_id] . '" data-email="'.$leadUniIdsArrEmail[$cont_id].'" ><td class="body-v"><div class="contatto-dati "><div class="typoOfT"><span>Dati</span></div><div>' . ${'contatto_int_' . $cont_id} . '</div></div>';
                             if (isset(${'usi_int_' . $cont_id}) and count(${'usi_int_' . $cont_id}) > 0) {
                                 $usi_intHTML .= '<div class="contatto-usi"><div class="typoOfT"><span>Usi</span></div><div><table><tr><th>Aging</th><th>Tipologia</th><th>Data Inizio</th><th>Data fine</th><th>Cliente</th><th>Additional</th></tr>';
                                 krsort(${'usi_int_' . $cont_id});
@@ -390,7 +393,7 @@ class BlacklisterAdminController extends Controller
                             } else {
                                 $usi_intHTML .= '<div class="" style="padding-left:7px;border:none !important;"><p><b>Usi: </b>Nessun uso trovato per il contatto</p></div>';
                             }
-                            $usi_intHTML .= '<div class="contatto-button"><input  type="text" style="opacity:0;" class="copialog-data" value="Data: ' . $IntLogs[$cont_id]["data"] . ', Url: ' . $IntLogs[$cont_id]["url"] . ', Ip: ' . $IntLogs[$cont_id]["indirizzo_ip"] . '"><button class="blk-button btn btn-primary">Blacklista tutti</button><button class="blk-button-rev btn btn-primary">Rimuovi tutti da blacklist</button><button class="blk-button-this btn btn-primary">Blacklista questo record</button><button class="blk-button-rev-this btn btn-primary">Rimuovi questo record dalla blacklist</button><button class="btn btn-primary copialog">Copia log</button></div></td></tr><tr class="empty-row"><td></td></tr>';
+                            $usi_intHTML .= '<div class="contatto-button"><input  type="text" style="opacity:0;" class="copialog-data" value="Data: ' . $IntLogs[$cont_id]["data"] . ', Url: ' . $IntLogs[$cont_id]["url"] . ', Ip: ' . $IntLogs[$cont_id]["indirizzo_ip"] . '"><button class="blk-button btn btn-primary" style="display:none">Blacklista tutti</button><button class="blk-button-rev btn btn-primary" style="display: none">Rimuovi tutti da blacklist</button><button class="blk-button-this btn btn-primary">Blacklista questo record</button><button class="blk-button-rev-this btn btn-primary">Rimuovi questo record dalla blacklist</button><button class="btn btn-primary copialog">Copia log</button></div></td></tr><tr class="empty-row"><td></td></tr>';
 
                         }
                         $usi_intHTML .= '</table>';
@@ -413,6 +416,7 @@ class BlacklisterAdminController extends Controller
     $contatti_est=array();
     $contatti_estHTML='';
     $leadEstIdsArr=array();
+    $leadEstIdsArrEmail=array();
     $esBlc=array();
     $EstLogs=array();
 
@@ -454,6 +458,9 @@ class BlacklisterAdminController extends Controller
 ////////////////////////////////////////////////////////////////
                     if ($field == 'cellulare') {
                         $leadEstIdsArrCell[$cont_id] = $value;
+                    }
+                    if ($field == 'email'){
+                        $leadEstIdsArrEmail[$cont_id] = $value;
                     }
 ////////////////////////////////////////////////////////////////
                     if ($value != '') {
@@ -613,7 +620,7 @@ class BlacklisterAdminController extends Controller
 
             $contactHeader='<h4>ID ESTERNO: '.$cont_id.' | LOG <span class="logs">Data: '.$EstLogs[$cont_id]["data"].', Url: '.$EstLogs[$cont_id]["url"].', Ip: '.$EstLogs[$cont_id]["indirizzo_ip"].'</span>'.$EstLogs[$cont_id]["statusHtml"].$recentspan.'</h4>'.$blacklistedClassString;
 
-            $usi_estHTML.='<tr class="contatto-tr-title contatto-tr '.$blacklistedClass.' '.$EstLogs[$cont_id]["status"].'" data-id="'.$cont_id.'" data-cell="'.$leadEstIdsArrCell[$cont_id].'"><td class="body-v">'.$contactHeader.'</td></tr><tr class="contatto-tr-data contatto-tr '.$blacklistedClass.' '.$EstLogs[$cont_id]["status"].'" data-id="'.$cont_id.'" data-cell="'.$leadEstIdsArrCell[$cont_id].'"><td class="body-v"><div class="contatto-dati"><div class="typoOfT"><span>Dati</span></div><div>'.${'contatto_est_'.$cont_id}.'</div></div>';
+            $usi_estHTML.='<tr class="contatto-tr-title contatto-tr '.$blacklistedClass.' '.$EstLogs[$cont_id]["status"].'" data-id="'.$cont_id.'" data-cell="'.$leadEstIdsArrCell[$cont_id].'" data-email="'.$leadEstIdsArrEmail[$cont_id].'"><td class="body-v">'.$contactHeader.'</td></tr><tr class="contatto-tr-data contatto-tr '.$blacklistedClass.' '.$EstLogs[$cont_id]["status"].'" data-id="'.$cont_id.'" data-cell="'.$leadEstIdsArrCell[$cont_id].'" data-email="'.$leadEstIdsArrEmail[$cont_id].'"><td class="body-v"><div class="contatto-dati"><div class="typoOfT"><span>Dati</span></div><div>'.${'contatto_est_'.$cont_id}.'</div></div>';
             if(isset(${'usi_est'.$cont_id}) AND count(${'usi_est'.$cont_id})>0){
                 $usi_estHTML.='<div class="contatto-usi"><div class="typoOfT"><span>Usi</span></div><div><table><tr><th>Aging</th><th>Tipologia</th><th>Data Inizio</th><th>Data fine</th><th>Cliente</th><th>Additional</th></tr>';
                 krsort(${'usi_est'.$cont_id});
@@ -626,7 +633,7 @@ class BlacklisterAdminController extends Controller
             }else{
                 $usi_estHTML.='<div class="" style="padding-left:7px;border:none !important;"><p><b>Usi: </b>Nessun uso trovato per il contatto</p></div>';
             }
-            $usi_estHTML.='<div class="contatto-button"><input type="text" style="opacity:0;" class="copialog-data" value="Data: '.$EstLogs[$cont_id]["data"].', Url: '.$EstLogs[$cont_id]["url"].', Ip: '.$EstLogs[$cont_id]["indirizzo_ip"].'"><button class="blk-button btn btn-primary">Blacklista tutti</button><button class="blk-button-rev btn btn-primary">Rimuovi tutti da blacklist</button><button class="blk-button-this btn btn-primary">Blacklista questo record</button><button class="blk-button-rev-this btn btn-primary">Rimuovi questo record dalla blacklist</button><button class="btn btn-primary copialog">Copia log</button></div></td></tr><tr class="empty-row"><td></td></tr>';
+            $usi_estHTML.='<div class="contatto-button"><input type="text" style="opacity:0;" class="copialog-data" value="Data: '.$EstLogs[$cont_id]["data"].', Url: '.$EstLogs[$cont_id]["url"].', Ip: '.$EstLogs[$cont_id]["indirizzo_ip"].'"><button class="blk-button btn btn-primary" style="display: none">Blacklista tutti</button><button class="blk-button-rev btn btn-primary" style="display: none">Rimuovi tutti da blacklist</button><button class="blk-button-this btn btn-primary">Blacklista questo record</button><button class="blk-button-rev-this btn btn-primary">Rimuovi questo record dalla blacklist</button><button class="btn btn-primary copialog">Copia log</button></div></td></tr><tr class="empty-row"><td></td></tr>';
         }
         $usi_estHTML.='</table>';
 
@@ -761,6 +768,7 @@ class BlacklisterAdminController extends Controller
         $campagna = array();
         $leadUniIdsArr = array();
         $leadUniIdsArrCell = array();
+        $leadUniIdsArrEmail = array();
         $inBl = array();
         $IntLogs = array();
         $UsiRecenti = array();
@@ -805,6 +813,9 @@ class BlacklisterAdminController extends Controller
                     }
                     if ($field == 'cellulare') {
                         $leadUniIdsArrCell[$cont_id] = $value;
+                    }
+                    if ($field == 'email'){
+                        $leadUniIdsArrEmail[$cont_id]=$value;
                     }
                     if ($value != '') {
 // //////////////////////////////////////////////////////////////////////////////////////////////
@@ -1033,7 +1044,7 @@ class BlacklisterAdminController extends Controller
                     $recentspan = '<span  class="bl-etichetta bl-etichetta-red">uso non recente</span>';
                 }
                 $contactHeader = '<h4>ID INTERNO: ' . $cont_id . ' | LOG <span class="logs">Data: ' . $IntLogs[$cont_id]["data"] . ', Url: ' . $IntLogs[$cont_id]["url"] . ', Ip: ' . $IntLogs[$cont_id]["indirizzo_ip"] . '</span>' . $IntLogs[$cont_id]["statusHtml"] . $recentspan . '</h4>' . $blacklistedClassString;
-                $usi_intHTML .= '<tr class="contatto-tr-title contatto-tr ' . $blacklistedClass . ' ' . $IntLogs[$cont_id]["status"] . '" data-id="' . $cont_id . '" data-cell="' . $leadUniIdsArrCell[$cont_id] . '"><td class="body-v">' . $contactHeader . '</td></tr><tr class="contatto-tr-data contatto-tr ' . $blacklistedClass . ' ' . $IntLogs[$cont_id]["status"] . '" data-id="' . $cont_id . '" data-cell="' . $leadUniIdsArrCell[$cont_id] . '"><td class="body-v"><div class="contatto-dati "><div class="typoOfT"><span>Dati</span></div><div>' . ${'contatto_int_' . $cont_id} . '</div></div>';
+                $usi_intHTML .= '<tr class="contatto-tr-title contatto-tr ' . $blacklistedClass . ' ' . $IntLogs[$cont_id]["status"] . '" data-id="' . $cont_id . '" data-cell="' . $leadUniIdsArrCell[$cont_id] . '" data-email="'.$leadUniIdsArrEmail[$cont_id].'"><td class="body-v">' . $contactHeader . '</td></tr><tr class="contatto-tr-data contatto-tr ' . $blacklistedClass . ' ' . $IntLogs[$cont_id]["status"] . '" data-id="' . $cont_id . '" data-cell="' . $leadUniIdsArrCell[$cont_id] . '" data-email="'.$leadUniIdsArrEmail[$cont_id].'"><td class="body-v"><div class="contatto-dati "><div class="typoOfT"><span>Dati</span></div><div>' . ${'contatto_int_' . $cont_id} . '</div></div>';
                 if (isset(${'usi_int_' . $cont_id}) and count(${'usi_int_' . $cont_id}) > 0) {
                     $usi_intHTML .= '<div class="contatto-usi"><div class="typoOfT"><span>Usi</span></div><div><table><tr><th>Aging</th><th>Tipologia</th><th>Data Inizio</th><th>Data fine</th><th>Cliente</th><th>Additional</th></tr>';
                     krsort(${'usi_int_' . $cont_id});
@@ -1046,7 +1057,7 @@ class BlacklisterAdminController extends Controller
                 } else {
                     $usi_intHTML .= '<div class="" style="padding-left:7px;border:none !important;"><p><b>Usi: </b>Nessun uso trovato per il contatto</p></div>';
                 }
-                $usi_intHTML .= '<div class="contatto-button"><input  type="text" style="opacity:0;" class="copialog-data" value="Data: ' . $IntLogs[$cont_id]["data"] . ', Url: ' . $IntLogs[$cont_id]["url"] . ', Ip: ' . $IntLogs[$cont_id]["indirizzo_ip"] . '"><button class="blk-button btn btn-primary">Blacklista tutti</button><button class="blk-button-rev btn btn-primary">Rimuovi tutti da blacklist</button><button class="blk-button-this btn btn-primary">Blacklista questo record</button><button class="blk-button-rev-this btn btn-primary">Rimuovi questo record dalla blacklist</button><button class="btn btn-primary copialog">Copia log</button></div></td></tr><tr class="empty-row"><td></td></tr>';
+                $usi_intHTML .= '<div class="contatto-button"><input  type="text" style="opacity:0;" class="copialog-data" value="Data: ' . $IntLogs[$cont_id]["data"] . ', Url: ' . $IntLogs[$cont_id]["url"] . ', Ip: ' . $IntLogs[$cont_id]["indirizzo_ip"] . '"><button class="blk-button btn btn-primary" style="">Blacklista tutti</button><button class="blk-button-rev btn btn-primary">Rimuovi tutti da blacklist</button><button class="blk-button-this btn btn-primary">Blacklista questo record</button><button class="blk-button-rev-this btn btn-primary">Rimuovi questo record dalla blacklist</button><button class="btn btn-primary copialog">Copia log</button></div></td></tr><tr class="empty-row"><td></td></tr>';
 
             }
             $usi_intHTML .= '</table>';
@@ -1061,6 +1072,7 @@ class BlacklisterAdminController extends Controller
         $contatti_est = array();
         $contatti_estHTML = '';
         $leadEstIdsArr = array();
+        $leadEstIdsArrEmail = array();
         $esBlc = array();
         $EstLogs = array();
         if ($queryEstOk == 1) {
@@ -1096,6 +1108,9 @@ class BlacklisterAdminController extends Controller
 ////////////////////////////////////////////////////////////////
                     if ($field == 'cellulare') {
                         $leadEstIdsArrCell[$cont_id] = $value;
+                    }
+                    if ($field == 'email'){
+                        $leadEstIdsArrEmail[$cont_id] = $value;
                     }
 ////////////////////////////////////////////////////////////////
                     if ($value != '') {
@@ -1260,7 +1275,7 @@ class BlacklisterAdminController extends Controller
 
                 $contactHeader = '<h4>ID ESTERNO: ' . $cont_id . ' | LOG <span class="logs">Data: ' . $EstLogs[$cont_id]["data"] . ', Url: ' . $EstLogs[$cont_id]["url"] . ', Ip: ' . $EstLogs[$cont_id]["indirizzo_ip"] . '</span>' . $EstLogs[$cont_id]["statusHtml"] . $recentspan . '</h4>' . $blacklistedClassString;
 
-                $usi_estHTML .= '<tr class="contatto-tr-title contatto-tr ' . $blacklistedClass . ' ' . $EstLogs[$cont_id]["status"] . '" data-id="' . $cont_id . '" data-cell="'.$leadEstIdsArrCell[$cont_id].'" ><td class="body-v">' . $contactHeader . '</td></tr><tr class="contatto-tr-data contatto-tr ' . $blacklistedClass . ' ' . $EstLogs[$cont_id]["status"] . '" data-id="' . $cont_id . '" data-cell="' . $leadEstIdsArrCell[$cont_id] . '"><td class="body-v"><div class="contatto-dati"><div class="typoOfT"><span>Dati</span></div><div>' . ${'contatto_est_' . $cont_id} . '</div></div>';
+                $usi_estHTML .= '<tr class="contatto-tr-title contatto-tr ' . $blacklistedClass . ' ' . $EstLogs[$cont_id]["status"] . '" data-id="' . $cont_id . '" data-cell="'.$leadEstIdsArrCell[$cont_id].'" data-email="'.$leadEstIdsArrEmail[$cont_id].'"><td class="body-v">' . $contactHeader . '</td></tr><tr class="contatto-tr-data contatto-tr ' . $blacklistedClass . ' ' . $EstLogs[$cont_id]["status"] . '" data-id="' . $cont_id . '" data-cell="' . $leadEstIdsArrCell[$cont_id] . '" data-email="'.$leadEstIdsArrEmail[$cont_id].'"><td class="body-v"><div class="contatto-dati"><div class="typoOfT"><span>Dati</span></div><div>' . ${'contatto_est_' . $cont_id} . '</div></div>';
                 if (isset(${'usi_est' . $cont_id}) and count(${'usi_est' . $cont_id}) > 0) {
                     $usi_estHTML .= '<div class="contatto-usi"><div class="typoOfT"><span>Usi</span></div><div><table><tr><th>Aging</th><th>Tipologia</th><th>Data Inizio</th><th>Data fine</th><th>Cliente</th><th>Additional</th></tr>';
                     krsort(${'usi_est' . $cont_id});
@@ -1273,7 +1288,7 @@ class BlacklisterAdminController extends Controller
                 } else {
                     $usi_estHTML .= '<div class="" style="padding-left:7px;border:none !important;"><p><b>Usi: </b>Nessun uso trovato per il contatto</p></div>';
                 }
-                $usi_estHTML .= '<div class="contatto-button"><input type="text" style="opacity:0;" class="copialog-data" value="Data: ' . $EstLogs[$cont_id]["data"] . ', Url: ' . $EstLogs[$cont_id]["url"] . ', Ip: ' . $EstLogs[$cont_id]["indirizzo_ip"] . '"><button class="blk-button btn btn-primary">Blacklista tutti</button><button class="blk-button-rev btn btn-primary">Rimuovi tutti da blacklist</button><button class="blk-button-this btn btn-primary">Blacklista questo record</button><button class="blk-button-rev-this btn btn-primary">Rimuovi questo record dalla blacklist</button><button class="btn btn-primary copialog">Copia log</button></div></td></tr><tr class="empty-row"><td></td></tr>';
+                $usi_estHTML .= '<div class="contatto-button"><input type="text" style="opacity:0;" class="copialog-data" value="Data: ' . $EstLogs[$cont_id]["data"] . ', Url: ' . $EstLogs[$cont_id]["url"] . ', Ip: ' . $EstLogs[$cont_id]["indirizzo_ip"] . '"><button class="blk-button btn btn-primary" id="blk-all" style="">Blacklista tutti</button><button class="blk-button-rev btn btn-primary">Rimuovi tutti da blacklist</button><button class="blk-button-this btn btn-primary">Blacklista questo record</button><button class="blk-button-rev-this btn btn-primary">Rimuovi questo record dalla blacklist</button><button class="btn btn-primary copialog">Copia log</button></div></td></tr><tr class="empty-row"><td></td></tr>';
             }
             $usi_estHTML .= '</table>';
 
@@ -1385,91 +1400,188 @@ class BlacklisterAdminController extends Controller
 
 
 	 public function blacklistAction(Request $request){
-		$type	 	= $request->get('type');
-		$id			= $request->get('id');
-		$cell		= $request->get('cell');
-		$DateNow=date('Y-m-d H:i:s');
-		$statusId='';
-		$statusCell='';
-		$idsTarget=array();
-		$idsTarget_app=array();
-         if ($cell != null) {
-			//blacklist via id in blacklist_extraction
-			//recupero source_db, source_tbl, source_id
-			$QuerySelect="SELECT lu.id, lu.source_db, lu.source_tbl, lu.source_id,lu.cellulare FROM lead_uni lu where (lu.id =".$id. " or lu.cellulare='".$cell."') and lu.id not in (select be.lead_id from blacklist_extraction be)";
-            $em3 = $this->getDoctrine()->getManager();
-			$stmt3 = $em3->getConnection()->prepare($QuerySelect);
-			$stmt3->execute();
-			$_toBlacklist =  $stmt3->fetchAll();
-			/* */ $source_id='';
-			$source_db='';
-			$source_tbl='';
-			$source_id='';
-			foreach($_toBlacklist as $bl) {
-                /* */
-                $idsTarget[] = $bl['id'];
-                $bl_id = $bl['id'];
-                $source_db = $bl['source_db'];
-                $source_tbl = $bl['source_tbl'];
-                $source_id = $bl['source_id'];
-                $source_cell = $bl['cellulare'];
+         $type = $request->get('type');
+         $id = $request->get('id');
+         $cell = $request->get('cell');
+         $email = $request->get('email');
+         $DateNow = date('Y-m-d H:i:s');
+         $statusId = '';
+         $statusCell = '';
+         $statusEmail = '';
+         $idsTarget = array();
+         $idsTarget_app = array();
 
-                    $Query = "INSERT IGNORE INTO blacklist_extraction (lead_id, source_db, source_tbl, source_id, data_creazione)
+         if($cell!=null) {
+             //blacklist via id in blacklist_extraction
+             //recupero source_db, source_tbl, source_id
+             $QuerySelect = "SELECT lu.id, lu.source_db, lu.source_tbl, lu.source_id,lu.cellulare,lu.email FROM lead_uni lu where (lu.id ='" . $id . "' or lu.cellulare='" . $cell . "') and lu.id not in (select be.lead_id from blacklist_extraction be)";
+             $em3 = $this->getDoctrine()->getManager();
+             $stmt3 = $em3->getConnection()->prepare($QuerySelect);
+             $stmt3->execute();
+             $_toBlacklist = $stmt3->fetchAll();
+             /* */
+             $source_id = '';
+             $source_db = '';
+             $source_tbl = '';
+             $source_id = '';
+             foreach ($_toBlacklist as $bl) {
+                 $idsTarget[] = $bl['id'];
+                 $bl_id = $bl['id'];
+                 $source_db = $bl['source_db'];
+                 $source_tbl = $bl['source_tbl'];
+                 $source_id = $bl['source_id'];
+                 $source_cell = $bl['cellulare'];
+                 $source_email = $bl['email'];
+
+                 $Query = "INSERT IGNORE INTO blacklist_extraction (lead_id, source_db, source_tbl, source_id, data_creazione)
                         VALUES ('" . $bl_id . "','" . $source_db . "','" . $source_tbl . "','" . $source_id . "','" . $DateNow . "')";
-                    $em = $this->getDoctrine()->getManager();
-                    $stmt = $em->getConnection()->prepare($Query);
-                    if ($stmt->execute()) {
-                        $statusId = 'ok';
-                    } else {
-                        $statusId = 'ko';
-                    }
+                 $em = $this->getDoctrine()->getManager();
+                 $stmt = $em->getConnection()->prepare($Query);
+                 if ($stmt->execute()) {
+                     $statusId = 'ok';
+                 } else {
+                     $statusId = 'ko';
+                 }
 
-                    if ($cell and $cell != '') {
-                        $Query2 = "INSERT IGNORE INTO blacklist_numeri (cellulare, tipo_estrazione, data_creazione) VALUES ('" . $source_cell . " ','dpo blacklist', '" . $DateNow . "')";
-                        $em2 = $this->getDoctrine()->getManager();
-                        $stmt2 = $em2->getConnection()->prepare($Query2);
-                        if ($stmt2->execute()) {
-                            // it worked
-                            $statusCell = 'ok';
-                        }
-                    }
-                }
 
-                    $Query_All_Esterne = " select lue.id,lue.cellulare from lead_uni_esterne lue where (lue.cellulare = '".$cell."' or lue.cellulare = md5('".$cell."')) and lue.id not in (select be.lead_id from blacklist_esterne be)";
-                    $em9 = $this->getDoctrine()->getManager();
-                    $stmt9 = $em9->getConnection()->prepare($Query_All_Esterne);
-                    $stmt9->execute();
-                    $_toBlacklist_Esterne =  $stmt9->fetchAll();
-                    foreach($_toBlacklist_Esterne as $ble){
-                        $DateNow=date('Y-m-d H:i:s');
-                        //      Ciclo per inserimento blacklist
-                        $idsTarget_app[]= $ble['id'];
-                        $ide=intval($ble['id']);
-                        $cell_ext=$ble['cellulare'];
+                 $Query2 = "INSERT IGNORE INTO blacklist_numeri (cellulare, tipo_estrazione, data_creazione) VALUES ('" . $source_cell . " ','dpo blacklist', '" . $DateNow . "')";
+                 $em2 = $this->getDoctrine()->getManager();
+                 $stmt2 = $em2->getConnection()->prepare($Query2);
+                 if ($stmt2->execute()) {
+                     $statusCell = 'ok';
+                 } else {
+                     $statusCell = 'ko';
+                 }
 
-                            $Query = "INSERT IGNORE INTO blacklist_esterne (lead_id, data_inserimento) VALUES (" . $ide . ",'" . $DateNow . "')";
-                            $em8 = $this->getDoctrine()->getManager();
-                            $stmt8 = $em8->getConnection()->prepare($Query);
-                            if ($stmt8->execute()) {
-                                $statusId = 'ok';
-                            } else {
-                                $statusId = 'ko';
-                            }
-                        }
 
-             $idsTarget=array_merge($idsTarget,$idsTarget_app);
-             $Par='type= '.$type.'; id= '.implode(',',$idsTarget).'; cell= '.$cell.'; statusId= '.$statusId.'; statusCell= '.$statusCell;
-             $this->write_history_blk('blacklist', $Par);
-             $this->send_email_bl($type, 'blacklistato', implode(",",$idsTarget)); /* */
+                 if ($source_email != null) {
+                     $Query10 = "INSERT IGNORE INTO blacklist_email (email,data_richiesta) VALUES ('" . $source_email . "', '" . $DateNow . "')";
+                     $em10 = $this->getDoctrine()->getManager();
+                     $stmt10 = $em10->getConnection()->prepare($Query10);
+                     if ($stmt10->execute()) {
+                         $statusEmail = 'ok';
+                     } else {
+                         $statusEmail = 'ko';
+                     }
+                 } else {
+                     $statusEmail = 'ko';
+                 }
+             }
 
-                    }else {
-                        $statusCell = 'ko';
-                        $statusId = 'ko';
-                    }
+             $Query_All_Esterne = " select lue.id,lue.cellulare,lue.email from lead_uni_esterne lue where (lue.cellulare = '" . $cell . "' or lue.cellulare = md5('" . $cell . "')) and lue.id not in (select be.lead_id from blacklist_esterne be)";
+             $em9 = $this->getDoctrine()->getManager();
+             $stmt9 = $em9->getConnection()->prepare($Query_All_Esterne);
+             $stmt9->execute();
+             $_toBlacklist_Esterne = $stmt9->fetchAll();
+             foreach ($_toBlacklist_Esterne as $ble) {
+                 $DateNow = date('Y-m-d H:i:s');
+                 //      Ciclo per inserimento blacklist
+                 $idsTarget_app[] = $ble['id'];
+                 $ide = intval($ble['id']);
+                 $cell_ext = $ble['cellulare'];
+                 $email_ext = $ble['email'];
 
+                 $Query = "INSERT IGNORE INTO blacklist_esterne (lead_id, data_inserimento) VALUES (" . $ide . ",'" . $DateNow . "')";
+                 $em8 = $this->getDoctrine()->getManager();
+                 $stmt8 = $em8->getConnection()->prepare($Query);
+                 if ($stmt8->execute()) {
+                     $statusId = 'ok';
+                 } else {
+                     $statusId = 'ko';
+                 }
+
+                 if ($email_ext != null) {
+                     $Query10 = "INSERT IGNORE INTO blacklist_email (email,data_richiesta) VALUES ('" . $email_ext . "', '" . $DateNow . "')";
+                     $em10 = $this->getDoctrine()->getManager();
+                     $stmt10 = $em10->getConnection()->prepare($Query10);
+                     if ($stmt10->execute()) {
+                         $statusEmail = 'ok';
+                     } else {
+                         $statusEmail = 'ko';
+                     }
+                 }
+
+             }
+         }
+         if($cell==null) {
+             $statusCell='ko';
+             $QuerySelect="SELECT lu.id, lu.source_db, lu.source_tbl, lu.source_id, lu.email, lu.cellulare FROM lead_uni lu where lu.email ='".$email."'";
+             $em3 = $this->getDoctrine()->getManager();
+             $stmt3 = $em3->getConnection()->prepare($QuerySelect);
+             $stmt3->execute();
+             $_toBlacklist =  $stmt3->fetchAll();
+             /* */ $source_id='';
+             $source_db='';
+             $source_tbl='';
+             $source_id='';
+             foreach($_toBlacklist as $bl) {
+                 /* */
+                 $idsTarget[] = $bl['id'];
+                 $bl_id = $bl['id'];
+                 $source_db = $bl['source_db'];
+                 $source_tbl = $bl['source_tbl'];
+                 $source_id = $bl['source_id'];
+                 $email_int = $bl['email'];
+                 $source_cell=$bl['cellulare'];
+
+                 $Query9= "INSERT IGNORE INTO blacklist_extraction (lead_id, source_db, source_tbl, source_id, data_creazione)
+                        VALUES ('" . $bl_id . "','" . $source_db . "','" . $source_tbl . "','" . $source_id . "','" . $DateNow . "')";
+                 $em9 = $this->getDoctrine()->getManager();
+                 $stmt9 = $em9->getConnection()->prepare($Query9);
+                 if ($stmt9->execute()) {
+                     $statusId = 'ok';
+                 } else {
+                     $statusId = 'ko';
+                 }
+
+                 $Query10 = "INSERT IGNORE INTO blacklist_email (email,data_richiesta) VALUES ('".$email_int."', '".$DateNow."')";
+                 $em10 = $this->getDoctrine()->getManager();
+                 $stmt10 = $em10->getConnection()->prepare($Query10);
+                 if ($stmt10->execute()) {
+                     $statusEmail = 'ok';
+                 } else {
+                     $statusEmail = 'ko';
+                 }
+             }
+
+             $Query_All_Esterne = "select lue.id,lue.email from lead_uni_esterne lue where lue.email='".$email."'";
+             $em9 = $this->getDoctrine()->getManager();
+             $stmt9 = $em9->getConnection()->prepare($Query_All_Esterne);
+             $stmt9->execute();
+             $_toBlacklist_Esterne =  $stmt9->fetchAll();
+             foreach($_toBlacklist_Esterne as $ble){
+                 $DateNow=date('Y-m-d H:i:s');
+                 //      Ciclo per inserimento blacklist
+                 $idsTarget_app[]= $ble['id'];
+                 $ide=intval($ble['id']);
+                 $email_ext=$ble['email'];
+
+                 $Query = "INSERT IGNORE INTO blacklist_esterne (lead_id, data_inserimento) VALUES ('".$ide."','".$DateNow."')";
+                 $em8 = $this->getDoctrine()->getManager();
+                 $stmt8 = $em8->getConnection()->prepare($Query);
+                 if ($stmt8->execute()) {
+                     $statusId = 'ok';
+                 } else {
+                     $statusId = 'ko';
+                 }
+
+                 $Query11 = "INSERT IGNORE INTO blacklist_email (email, data_richiesta) VALUES ('".$email_ext."','".$DateNow."')";
+                 $em11 = $this->getDoctrine()->getManager();
+                 $stmt11 = $em11->getConnection()->prepare($Query11);
+                 if ($stmt11->execute()) {
+                     $statusEmail = 'ok';
+                 } else {
+                     $statusEmail = 'ko';
+                 }
+             }
+         }
+         $idsTarget=array_merge($idsTarget,$idsTarget_app);
+         $Par='type= '.$type.'; id= '.implode(',',$idsTarget).'; cell= '.$cell.'; email= '.$email.'; statusId= '.$statusId.'; statusCell= '.$statusCell.'; statusEmail= '.$statusEmail;
+         $this->write_history_blk('blacklist', $Par);
+         $this->send_email_bl($type, 'blacklistato', implode(",",$idsTarget)); /* */
 
          $response = new Response();
-         $response->setContent(json_encode(array('statusid'=>$statusId, 'statuscell'=>$statusCell, 'type'=>$type, 'id'=>$id, 'cell'=>$cell)));
+         $response->setContent(json_encode(array('statusid'=>$statusId, 'statuscell'=>$statusCell, 'statusemail'=>$statusEmail,'type'=>$type, 'id'=>$id, 'cell'=>$cell, 'email'=>$email)));
          $response->headers->set('Content-Type', 'application/json');
          return $response;
 
@@ -1488,7 +1600,7 @@ class BlacklisterAdminController extends Controller
              $emailTo= $this::$emailProduction;
              // Create a message
              $message = \Swift_Message::newInstance('Blacklist necessita un check '.date('Y-m-d H:i:s'));
-             $message->setFrom(['noreply@linkappeal.it' => 'gestionale blacklister'])
+             $message->setFrom(['noreply@linkappeal.it' => 'Gestionale - Blacklister '.date("Y-m-d H:i:s").''])
                  ->setTo([$emailTo])
                  ->setBody($this->renderView(
                  // app/Resources/views/Emails/list_extracted.html.twig
@@ -1508,72 +1620,139 @@ class BlacklisterAdminController extends Controller
 		$type	 	= $request->get('type');
 		$id			= $request->get('id');
 		$cell		= $request->get('cell');
+		$email      = $request->get('email');
 		$DateNow=date('Y-m-d h:i:s');
 		$statusId='';
 		$statusCell='';
+		$statusEmail='';
 		$idsTarget=array();
 		$idsTarget_app=array();
-
-		    $Query_pre_delete_int="select lu.id from lead_uni lu where (cellulare = '".$cell."' or cellulare = md5('".$cell."')) and lu.id in (select be.lead_id from blacklist_extraction be)";
+		if($cell!=null) {
+            $Query_pre_delete_int = "select lu.id from lead_uni lu where (cellulare = '" . $cell . "' or cellulare = md5('" . $cell . "')) and lu.id in (select be.lead_id from blacklist_extraction be)";
             $em_pre_int = $this->getDoctrine()->getManager();
             $stmt_pre_int = $em_pre_int->getConnection()->prepare($Query_pre_delete_int);
             $stmt_pre_int->execute();
-            $_pre_int=$stmt_pre_int->fetchAll();
+            $_pre_int = $stmt_pre_int->fetchAll();
             foreach ($_pre_int as $preint) {
                 $idsTarget[] = $preint['id'];
             }
             //blacklist via id in blacklist_extraction
             //$Query="DELETE FROM blacklist_extraction WHERE lead_id=".$id;
-             $Query="DELETE from blacklist_extraction WHERE lead_id in (
-                        select id from lead_uni where 
-                        (cellulare = '".$cell."' or cellulare = md5('".$cell."')))";
-             $em = $this->getDoctrine()->getManager();
-             $stmt = $em->getConnection()->prepare($Query);
-             if ($stmt->execute()) {
-                 $statusId='ok';
-             } else {
-                 $statusId='ko';
-             }
-			//blacklist via number
-			if($cell AND $cell!=''){
-				$Query2="DELETE FROM blacklist_numeri WHERE  (cellulare = '".$cell."' or cellulare = md5('".$cell."'))";
-				$em2 = $this->getDoctrine()->getManager();
-				$stmt2 = $em2->getConnection()->prepare($Query2);
-				if ($stmt2->execute()) {
-					$statusCell='ok';
-				}
+            $Query = "DELETE from blacklist_extraction WHERE lead_id in (
+            select id from lead_uni where 
+            (cellulare = '" . $cell . "' or cellulare = md5('" . $cell . "')))";
+            $em = $this->getDoctrine()->getManager();
+            $stmt = $em->getConnection()->prepare($Query);
+            if ($stmt->execute()) {
+                $statusId = 'ok';
+            } else {
+                $statusId = 'ko';
+            }
+            //blacklist via number
+            $Query2 = "DELETE FROM blacklist_numeri WHERE  (cellulare = '" . $cell . "' or cellulare = md5('" . $cell . "'))";
+            $em2 = $this->getDoctrine()->getManager();
+            $stmt2 = $em2->getConnection()->prepare($Query2);
+            if ($stmt2->execute()) {
+                $statusCell = 'ok';
+            } else {
+                $statusCell = 'ko';
+            }
 
-                $Query_pre_delete_est="select lue.id from lead_uni_esterne lue where (lue.cellulare = '".$cell."' or lue.cellulare = md5('".$cell."')) and lue.id in (select be.lead_id from blacklist_esterne be)";
-				$em_pre_est = $this->getDoctrine()->getManager();
-                $stmt_pre_est = $em_pre_est->getConnection()->prepare($Query_pre_delete_est);
-                $stmt_pre_est->execute();
-                $_pre_est=$stmt_pre_est->fetchAll();
-                foreach ($_pre_est as $prest) {
-                    $idsTarget_app[] = $prest['id'];
-                }
+            $Query_pre_delete_est = "select lue.id from lead_uni_esterne lue where (lue.cellulare = '" . $cell . "' or lue.cellulare = md5('" . $cell . "')) and lue.id in (select be.lead_id from blacklist_esterne be)";
+            $em_pre_est = $this->getDoctrine()->getManager();
+            $stmt_pre_est = $em_pre_est->getConnection()->prepare($Query_pre_delete_est);
+            $stmt_pre_est->execute();
+            $_pre_est = $stmt_pre_est->fetchAll();
+            foreach ($_pre_est as $prest) {
+                $idsTarget_app[] = $prest['id'];
+            }
 
+            $Query = "DELETE FROM blacklist_esterne where lead_id  in ( select id from lead_uni_esterne where (cellulare = '" . $cell . "' or cellulare = md5('" . $cell . "')))";
+            $em = $this->getDoctrine()->getManager();
+            $stmt2 = $em->getConnection()->prepare($Query);
+            if ($stmt2->execute()) {
+                $statusId = 'ok';
+            } else {
+                $statusId = 'ko';
+            }
 
-                $Query="DELETE FROM blacklist_esterne where lead_id  in ( select id from lead_uni_esterne where (cellulare = '".$cell."' or cellulare = md5('".$cell."')))";
-                $em = $this->getDoctrine()->getManager();
-                $stmt2 = $em->getConnection()->prepare($Query);
-                $_rev_est=$stmt2->fetchAll();
-                foreach ($_rev_est as $revest){
-                    $idsTarget_app[]=$revest['id'];
-                }
-                if ($stmt2->execute()) {
-                    $statusId='ok';
+            if ($email != null) {
+                $Query5 = "DELETE FROM blacklist_email WHERE (email='" . $email . "')";
+                $em5 = $this->getDoctrine()->getManager();
+                $stmt5 = $em5->getConnection()->prepare($Query5);
+                if ($stmt5->execute()) {
+                    $statusEmail = 'ok';
                 } else {
-                    $statusId='ko';
+                    $statusEmail = 'ko';
                 }
-			}
+
+                $Query6 = "DELETE FROM blacklist_esterne where lead_id  in ( select id from lead_uni_esterne where email ='" . $email . "')";
+                $em6 = $this->getDoctrine()->getManager();
+                $stmt6 = $em6->getConnection()->prepare($Query6);
+                if ($stmt6->execute()) {
+                    $statusId = 'ok';
+                } else {
+                    $statusId = 'ko';
+                }
+            } else {
+                $statusEmail = 'ko';
+            }
+        }
+        if($email!=null && $cell==null){
+             $statusCell='ko';
+             $Query_pre_delete_int="select lu.id from lead_uni lu where (cellulare = '".$cell."' or cellulare = md5('".$cell."')) and lu.id in (select be.lead_id from blacklist_extraction be)";
+             $em_pre_int = $this->getDoctrine()->getManager();
+             $stmt_pre_int = $em_pre_int->getConnection()->prepare($Query_pre_delete_int);
+             $stmt_pre_int->execute();
+             $_pre_int=$stmt_pre_int->fetchAll();
+             foreach ($_pre_int as $preint) {
+                 $idsTarget[] = $preint['id'];
+             }
+
+            $Query4="DELETE FROM blacklist_extraction WHERE (lead_id='".$id."')";
+            $em4 = $this->getDoctrine()->getManager();
+            $stmt4 = $em4->getConnection()->prepare($Query4);
+            if ($stmt4->execute()) {
+                $statusId = 'ok';
+            } else {
+                $statusId = 'ko';
+            }
+            $Query5="DELETE FROM blacklist_email WHERE (email='".$email."')";
+            $em5 = $this->getDoctrine()->getManager();
+            $stmt5 = $em5->getConnection()->prepare($Query5);
+            if ($stmt5->execute()) {
+                $statusEmail = 'ok';
+            } else {
+                $statusEmail = 'ko';
+            }
+             $Query_pre_delete_est = "select lue.id from lead_uni_esterne lue where (lue.cellulare = '" . $cell . "' or lue.cellulare = md5('" . $cell . "')) and lue.id in (select be.lead_id from blacklist_esterne be)";
+             $em_pre_est = $this->getDoctrine()->getManager();
+             $stmt_pre_est = $em_pre_est->getConnection()->prepare($Query_pre_delete_est);
+             $stmt_pre_est->execute();
+             $_pre_est = $stmt_pre_est->fetchAll();
+             foreach ($_pre_est as $prest) {
+                 $idsTarget_app[] = $prest['id'];
+             }
+
+            $Query6 = "DELETE FROM blacklist_esterne where lead_id  in ( select id from lead_uni_esterne where email ='".$email."')";
+            $em6 = $this->getDoctrine()->getManager();
+            $stmt6 = $em6->getConnection()->prepare($Query6);
+            if ($stmt6->execute()) {
+                $statusId = 'ok';
+            } else {
+                $statusId = 'ko';
+            }
+        }else{
+            $statusEmail='ko';
+        }
 
         $idsTarget=array_merge($idsTarget,$idsTarget_app);
-		$Par='type= '.$type.'; id= '.implode(',',$idsTarget).'; cell= '.$cell.'; statusId= '.$statusId.'; statusCell= '.$statusCell;
+		$Par='type= '.$type.'; id= '.implode(',',$idsTarget).'; cell= '.$cell.'; email= '.$email.'; statusId= '.$statusId.'; statusCell= '.$statusCell.'; statusEmail= '.$statusEmail;
 		$this->write_history_blk('de-blacklist', $Par);
 		$this->send_email_bl($type,'deblacklistato',implode(",",$idsTarget));
 		$response = new Response();
 
-		$response->setContent(json_encode(array('statusid'=>$statusId, 'statuscell'=>$statusCell, 'type'=>$type, 'id'=>$id, 'cell'=>$cell)));
+		$response->setContent(json_encode(array('statusid'=>$statusId, 'statuscell'=>$statusCell, 'statusemail'=>$statusEmail, 'type'=>$type, 'id'=>$id, 'cell'=>$cell, 'email'=>$email)));
 		$response->headers->set('Content-Type', 'application/json');
 		return $response;
 	 }
@@ -1611,8 +1790,12 @@ class BlacklisterAdminController extends Controller
         $type	 	= $request->get('type');
         $id			= $request->get('id');
         $cell		= $request->get('cell');
-        $camp       =$request->get('camp');
+        $camp       = $request->get('camp');
+        $email      = $request->get('email');
         $DateNow=date('Y-m-d H:i:s');
+        $statusId='';
+        $statusCell='';
+        $statusEmail='';
         if($type=='int'){
             //bl interna
             //blacklist via id in blacklist_extraction
@@ -1637,40 +1820,87 @@ class BlacklisterAdminController extends Controller
                 $source_tbl = $bl['source_tbl'];
                 $source_id = $bl['source_id'];
                 $source_cell = $bl['cellulare'];
-                $statusId='ko';
-                $statusCell='ko';
-                if ($source_cell !=null) {
+
+                if ($cell !=null && $email==null) {
+                    $statusEmail='ko';
                     //      Ciclo per inserimento blacklist
                     $Queryext = "INSERT IGNORE INTO blacklist_extraction (lead_id, source_db, source_tbl, source_id, data_creazione)
-                VALUES ('" . $bl_id . "','" . $source_db . "','" . $source_tbl . "','" . $source_id . "','" . $DateNow . "')";
+                    VALUES ('" . $bl_id . "','" . $source_db . "','" . $source_tbl . "','" . $source_id . "','" . $DateNow . "')";
                     $em = $this->getDoctrine()->getManager();
                     $stmt = $em->getConnection()->prepare($Queryext);
                     if ($stmt->execute()) {
-                        // it worked
                         $statusId = 'ok';
                     } else {
-                        // it didn't
                         $statusId = 'ko';
                     }
-                    //
-                    if ($cell and $cell != '') {
-                        $Query2 = "INSERT IGNORE INTO blacklist_numeri (cellulare, tipo_estrazione, data_creazione) VALUES ('" . $source_cell . " ','dpo blacklist', '" . $DateNow . "')";
-                        $em2 = $this->getDoctrine()->getManager();
-                        $stmt2 = $em2->getConnection()->prepare($Query2);
-                        if ($stmt2->execute()) {
-                            // it worked
-                            $statusCell = 'ok';
-                        }
+
+                    $Query2 = "INSERT IGNORE INTO blacklist_numeri (cellulare, tipo_estrazione, data_creazione) VALUES ('" . $source_cell . " ','dpo blacklist', '" . $DateNow . "')";
+                    $em2 = $this->getDoctrine()->getManager();
+                    $stmt2 = $em2->getConnection()->prepare($Query2);
+                    if ($stmt2->execute()) {
+                        $statusCell = 'ok';
+                    }else{
+                        $statusCell = 'ko';
                     }
                 }
+                if($email!=null && $cell!=null){
+                    $Queryext = "INSERT IGNORE INTO blacklist_extraction (lead_id, source_db, source_tbl, source_id, data_creazione)
+                    VALUES ('" . $bl_id . "','" . $source_db . "','" . $source_tbl . "','" . $source_id . "','" . $DateNow . "')";
+                    $em = $this->getDoctrine()->getManager();
+                    $stmt = $em->getConnection()->prepare($Queryext);
+                    if ($stmt->execute()) {
+                        $statusId = 'ok';
+                    } else {
+                        $statusId = 'ko';
+                    }
 
+                    $Query2 = "INSERT IGNORE INTO blacklist_numeri (cellulare, tipo_estrazione, data_creazione) VALUES ('" . $source_cell . " ','dpo blacklist', '" . $DateNow . "')";
+                    $em2 = $this->getDoctrine()->getManager();
+                    $stmt2 = $em2->getConnection()->prepare($Query2);
+                    if ($stmt2->execute()) {
+                        $statusCell = 'ok';
+                    }else{
+                        $statusCell = 'ko';
+                    }
+
+                    $Queryemail = "INSERT IGNORE INTO blacklist_email (email,data_richiesta)
+                    VALUES ('" . $email . "','" . $DateNow . "')";
+                    $em1 = $this->getDoctrine()->getManager();
+                    $stmt1 = $em1->getConnection()->prepare($Queryemail);
+                    if ($stmt1->execute()) {
+                        $statusEmail = 'ok';
+                    } else {
+                        $statusEmail = 'ko';
+                    }
+                }else if($cell==null){
+                    $statusCell='ko';
+                    $Queryext = "INSERT IGNORE INTO blacklist_extraction (lead_id, source_db, source_tbl, source_id, data_creazione)
+                    VALUES ('" . $bl_id . "','" . $source_db . "','" . $source_tbl . "','" . $source_id . "','" . $DateNow . "')";
+                    $em = $this->getDoctrine()->getManager();
+                    $stmt = $em->getConnection()->prepare($Queryext);
+                    if ($stmt->execute()) {
+                        $statusId = 'ok';
+                    } else {
+                        $statusId = 'ko';
+                    }
+
+                    $Queryemail = "INSERT IGNORE INTO blacklist_email (email,data_richiesta)
+                    VALUES ('" . $email . "','" . $DateNow . "')";
+                    $em1 = $this->getDoctrine()->getManager();
+                    $stmt1 = $em1->getConnection()->prepare($Queryemail);
+                    if ($stmt1->execute() && $stmt->execute()) {
+                        $statusEmail = 'ok';
+                    } else {
+                        $statusEmail = 'ko';
+                    }
+                }
             }
         }else{
             //bl esterna
-            $statusCell='ko';
-            $statusId='ko';
-
-            $Query_All_Esterne = " select id,cellulare from lead_uni_esterne where (cellulare = '".$cell."' or cellulare = md5('".$cell."'))";
+            $statusCell='';
+            $statusId='';
+            $statusEmail='';
+            $Query_All_Esterne = " select id,cellulare from lead_uni_esterne where (cellulare = '".$cell."' or cellulare = md5('".$cell."')) and id='".$id."'";
             $em9 = $this->getDoctrine()->getManager();
             $stmt9 = $em9->getConnection()->prepare($Query_All_Esterne);
             $stmt9->execute();
@@ -1682,31 +1912,68 @@ class BlacklisterAdminController extends Controller
                 $idsTarget[]= $ble['id'];
                 $ide=intval($ble['id']);
                 $cell_ext=$ble['cellulare'];
-                if ($cell_ext !=null) {
+                if ($cell!=null && $email==null) {
+                    $statusEmail='ko';
+                    $statusCell='ok';
                     $Query = "INSERT IGNORE INTO blacklist_esterne (lead_id, data_inserimento) VALUES (" . $ide . ",'" . $DateNow . "')";
                     $em8 = $this->getDoctrine()->getManager();
                     $stmt8 = $em8->getConnection()->prepare($Query);
                     if ($stmt8->execute()) {
-                        // it worked
                         $statusId = 'ok';
                     } else {
-                        // it didn't
                         $statusId = 'ko';
                     }
                 }
+                if($cell!=null && $email!=null) {
+                    $statusCell='ok';
+                    $Query = "INSERT IGNORE INTO blacklist_esterne (lead_id, data_inserimento) VALUES (" . $ide . ",'" . $DateNow . "')";
+                    $em8 = $this->getDoctrine()->getManager();
+                    $stmt8 = $em8->getConnection()->prepare($Query);
+                    if ($stmt8->execute()) {
+                        $statusId = 'ok';
+                    } else {
+                        $statusId = 'ko';
+                    }
 
+                    $Queryemailext = "INSERT IGNORE INTO blacklist_email (email,data_richiesta)
+                    VALUES ('" . $email . "','" . $DateNow . "')";
+                    $em9 = $this->getDoctrine()->getManager();
+                    $stmt9 = $em9->getConnection()->prepare($Queryemailext);
+                    if ($stmt9->execute()) {
+                        $statusEmail = 'ok';
+                    } else {
+                        $statusEmail = 'ko';
+                    }
+                }else if($cell==null){
+                    $statusCell='ko';
+                    $Query = "INSERT IGNORE INTO blacklist_esterne (lead_id, data_inserimento) VALUES (" . $ide . ",'" . $DateNow . "')";
+                    $em8 = $this->getDoctrine()->getManager();
+                    $stmt8 = $em8->getConnection()->prepare($Query);
+                    if ($stmt8->execute()) {
+                        $statusId = 'ok';
+                    } else {
+                        $statusId = 'ko';
+                    }
 
+                    $Queryemailext = "INSERT IGNORE INTO blacklist_email (email,data_richiesta)
+                    VALUES ('" . $email . "','" . $DateNow . "')";
+                    $em9 = $this->getDoctrine()->getManager();
+                    $stmt9 = $em9->getConnection()->prepare($Queryemailext);
+                    if ($stmt9->execute()) {
+                        $statusEmail = 'ok';
+                    } else {
+                        $statusEmail = 'ko';
+                    }
+                }
             }
         }
-        if ($statusCell=='ok' and $statusId=='ok'){
-            $Par='type= '.$type.'; id= '.implode(',',$idsTarget).'; cell= '.$cell.'; statusId= '.$statusId.'; statusCell= '.$statusCell;
-            $this->write_history_blk('blacklist', $Par);
-            $this->send_email_bl($type,'blacklistato',implode(',',$idsTarget)); /* */
-        }else{
 
-        }
+        $Par='type= '.$type.'; id= '.implode(',',$idsTarget).'; cell= '.$cell.'; email= '.$email.'; statusId= '.$statusId.'; statusCell= '.$statusCell.'; statusEmail= '.$statusEmail;
+        $this->write_history_blk('blacklist', $Par);
+        $this->send_email_bl($type,'blacklistato',implode(',',$idsTarget)); /* */
+
         $response = new Response();
-        $response->setContent(json_encode(array('statusid'=>$statusId, 'statuscell'=>$statusCell, 'type'=>$type, 'id'=>$id, 'cell'=>$cell)));
+        $response->setContent(json_encode(array('statusid'=>$statusId, 'statuscell'=>$statusCell, 'statusemail'=>$statusEmail , 'type'=>$type, 'id'=>$id, 'cell'=>$cell, 'email'=>$email)));
         $response->headers->set('Content-Type', 'application/json');
         return $response;
     }
@@ -1716,55 +1983,143 @@ class BlacklisterAdminController extends Controller
             $type	 	= $request->get('type');
             $id			= $request->get('id');
             $cell		= $request->get('cell');
+            $email      = $request->get('email');
             $DateNow=date('Y-m-d h:i:s');
+            $statusCell='';
+            $statusEmail='';
+            $statusId='';
             if($type=='int'){
-                //bl interna
-                //blacklist via id in blacklist_extraction
-                //$Query="DELETE FROM blacklist_extraction WHERE lead_id=".$id;
-                $Query="DELETE from blacklist_extraction WHERE lead_id in (
-                        select id from lead_uni where 
-                        (cellulare = '".$cell."' or cellulare = md5('".$cell."')))";
-                $em = $this->getDoctrine()->getManager();
-                $stmt = $em->getConnection()->prepare($Query);
-                if ($stmt->execute()) {
-                    // it worked
-                    $statusId='ok';
-                } else {
-                    // it didn't
-                    $statusId='ko';
-                }
-                //blacklist via number
-                $statusCell='ko';
-                if($cell AND $cell!=''){
-                    $Query2="DELETE FROM blacklist_numeri WHERE  (cellulare='".$cell."' or cellulare = md5('".$cell."'))";
+                if($cell!=null && $email==null) {
+                    //bl interna
+                    //blacklist via id in blacklist_extraction
+                    //$Query="DELETE FROM blacklist_extraction WHERE lead_id=".$id;
+                    $Query = "DELETE from blacklist_extraction WHERE lead_id in 
+                    (select id from lead_uni where (cellulare = '" . $cell . "' or cellulare = md5('" . $cell . "')) and id='".$id."' )";
+                    $em = $this->getDoctrine()->getManager();
+                    $stmt = $em->getConnection()->prepare($Query);
+                    if ($stmt->execute()) {
+                        $statusId = 'ok';
+                    } else {
+                        $statusId = 'ko';
+                    }
+                    //blacklist via number
+
+                    $Query2 = "DELETE FROM blacklist_numeri WHERE  (cellulare='" . $cell . "' or cellulare = md5('" . $cell . "'))";
                     $em2 = $this->getDoctrine()->getManager();
                     $stmt2 = $em2->getConnection()->prepare($Query2);
                     if ($stmt2->execute()) {
-                        // it worked
-                        $statusCell='ok';
+                        $statusCell = 'ok';
+                    }else{
+                        $statusCell='ko';
                     }
                 }
+                if($email!=null && $cell!=null){
+                    $Query4="DELETE FROM blacklist_extraction WHERE  (lead_id='".$id."')";
+                    $em4 = $this->getDoctrine()->getManager();
+                    $stmt4 = $em4->getConnection()->prepare($Query4);
+                    if ($stmt4->execute()){
+                        $statusId='ok';
+                    }else{
+                        $statusId='ko';
+                    }
 
+                    $Query5="DELETE FROM blacklist_email WHERE  (email='".$email."')";
+                    $em5 = $this->getDoctrine()->getManager();
+                    $stmt5 = $em5->getConnection()->prepare($Query5);
+                    if ($stmt5->execute() && $stmt4->execute()) {
+                        $statusEmail='ok';
+                    }else{
+                        $statusEmail='ko';
+                    }
+
+                    $Query2 = "DELETE FROM blacklist_numeri WHERE  (cellulare='" . $cell . "' or cellulare = md5('" . $cell . "'))";
+                    $em2 = $this->getDoctrine()->getManager();
+                    $stmt2 = $em2->getConnection()->prepare($Query2);
+                    if ($stmt2->execute()) {
+                        $statusCell = 'ok';
+                    }else{
+                        $statusCell = 'ko';
+                    }
+                }else if($cell==null){
+                    $statusCell='ko';
+                    $Query4="DELETE FROM blacklist_extraction WHERE  (lead_id='".$id."')";
+                    $em4 = $this->getDoctrine()->getManager();
+                    $stmt4 = $em4->getConnection()->prepare($Query4);
+                    if ($stmt4->execute()){
+                        $statusId='ok';
+                    }else{
+                        $statusId='ko';
+                    }
+
+                    $Query5="DELETE FROM blacklist_email WHERE  (email='".$email."')";
+                    $em5 = $this->getDoctrine()->getManager();
+                    $stmt5 = $em5->getConnection()->prepare($Query5);
+                    if ($stmt5->execute() && $stmt4->execute()) {
+                        $statusEmail='ok';
+                    }else{
+                        $statusEmail='ko';
+                    }
+                }
             }else{
                 //bl esterna
-                $statusCell='ko';
-                $Query="DELETE FROM blacklist_esterne where lead_id  in ( select id from lead_uni_esterne where (cellulare = '".$cell."' or cellulare = md5('".$cell."')))";
-                $em = $this->getDoctrine()->getManager();
-                $stmt = $em->getConnection()->prepare($Query);
-                if ($stmt->execute()) {
-                    // it worked
-                    $statusId='ok';
-                } else {
-                    // it didn't
-                    $statusId='ko';
+                if($cell!=null && $email==null ) {
+                    $statusCell='ok';
+                    $statusEmail='ko';
+                    $Query = "DELETE FROM blacklist_esterne where lead_id  in ( select id from lead_uni_esterne where (cellulare = '" . $cell . "' or cellulare = md5('" . $cell . "')) and id='".$id."')";
+                    $em = $this->getDoctrine()->getManager();
+                    $stmt = $em->getConnection()->prepare($Query);
+                    if ($stmt->execute()) {
+                        $statusId = 'ok';
+                    } else {
+                        $statusId = 'ko';
+                    }
+                }
+                if ($email!=null && $cell!=null){
+                    $statusCell='ok';
+                    $Query6 = "DELETE FROM blacklist_esterne where lead_id  in ( select id from lead_uni_esterne where (id = '" . $id . "'))";
+                    $em6 = $this->getDoctrine()->getManager();
+                    $stmt6 = $em6->getConnection()->prepare($Query6);
+                    if ($stmt6->execute()) {
+                        $statusId = 'ok';
+                    } else {
+                        $statusId = 'ko';
+                    }
+
+                    $Query7 = "DELETE FROM blacklist_email where email='" . $email . "'";
+                    $em7 = $this->getDoctrine()->getManager();
+                    $stmt7 = $em7->getConnection()->prepare($Query7);
+                    if ($stmt7->execute()) {
+                        $statusEmail = 'ok';
+                    } else {
+                        $statusEmail = 'ko';
+                    }
+                }else if($cell==null){
+                    $statusCell='ko';
+                    $Query6 = "DELETE FROM blacklist_esterne where lead_id  in ( select id from lead_uni_esterne where (id = '" . $id . "'))";
+                    $em6 = $this->getDoctrine()->getManager();
+                    $stmt6 = $em6->getConnection()->prepare($Query6);
+                    if ($stmt6->execute()) {
+                        $statusId = 'ok';
+                    } else {
+                        $statusId = 'ko';
+                    }
+
+                    $Query7 = "DELETE FROM blacklist_email where email='" . $email . "'";
+                    $em7 = $this->getDoctrine()->getManager();
+                    $stmt7 = $em7->getConnection()->prepare($Query7);
+                    if ($stmt7->execute()) {
+                        $statusEmail = 'ok';
+                    } else {
+                        $statusEmail = 'ko';
+                    }
                 }
             }
 
-            $Par='type= '.$type.'; id= '.$id.'; cell= '.$cell.'; statusId= '.$statusId.'; statusCell= '.$statusCell;
+            $Par='type= '.$type.'; id= '.$id.'; cell= '.$cell.'; email= '.$email.'; statusId= '.$statusId.'; statusCell= '.$statusCell.'; statusEmail= '.$statusEmail;
             $this->write_history_blk('de-blacklist', $Par);
             $this->send_email_bl($type,'deblacklistato',$id);
             $response = new Response();
-            $response->setContent(json_encode(array('statusid'=>$statusId, 'statuscell'=>$statusCell, 'type'=>$type, 'id'=>$id, 'cell'=>$cell)));
+            $response->setContent(json_encode(array('statusid'=>$statusId, 'statuscell'=>$statusCell, 'statusemail'=>$statusEmail, 'type'=>$type, 'id'=>$id, 'cell'=>$cell, 'email'=>$email)));
             $response->headers->set('Content-Type', 'application/json');
             return $response;
         }
